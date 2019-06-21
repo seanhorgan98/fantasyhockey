@@ -1,0 +1,14 @@
+Need to decide what to do about the app bar. Takes up lots of room and may not be necessary
+Without it the design may look a little weird though.
+Premier League fantasy app doesn't have one though so should be fine.
+
+App Page Layout:
+["Log In",
+ "My Team",
+    "Transfer Page",
+ "League", 
+ "Stats", 
+    "Player Stats", 
+    "Fixtures & Results", 
+    "Rules"
+]
