@@ -1,0 +1,5 @@
+<resources>
+    <string name="facebook_app_id">341150139910485</string>
+    <string name="app_name">"fantasy_hockey"</string>
+    <string name="fb_login_protocol_scheme">fb341150139910485</string>
+</resources>

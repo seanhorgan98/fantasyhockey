@@ -1,5 +1,7 @@
 // main.dart
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'auth.dart';
 import 'pages/home_page.dart';
 
@@ -75,5 +77,38 @@ class LoginButton extends StatelessWidget {
             );
           }
         });
+  }
+}
+
+class FacebookLoginButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return RaisedButton(
+      onPressed: () => startFacebookLogin(),
+      child: Text("Sign in with Facebook"),
+      color: Colors.blue,
+
+    );
+  }
+}
+
+void startFacebookLogin() async {
+  var facebookLogin = FacebookLogin();
+  var result = await facebookLogin.logInWithReadPermissions(['email', 'public_profile']);
+
+  switch (result.status){
+    case FacebookLoginStatus.loggedIn:
+      FacebookAccessToken myToken = result.accessToken;
+      AuthCredential credential = FacebookAuthProvider.getCredential(accessToken: myToken.token);
+
+      FirebaseUser firebaseUser = await FirebaseAuth.instance.signInWithCredential(credential);
+      print(firebaseUser.displayName); /***/
+      break;
+    case FacebookLoginStatus.cancelledByUser:
+      print("Facebook sign in cancelled by user");
+      break;
+    case FacebookLoginStatus.error:
+      print("Facebook sign in failed");
+      break;
   }
 }
