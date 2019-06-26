@@ -36,7 +36,7 @@ class AuthService {
     // Start
     loading.add(true);
 
-    // Step 1 EXCEPTION HERE WHEN LOGGING IN
+    // Step 1
     GoogleSignInAccount googleUser = await _googleSignIn.signIn();
 
     // Step 2
