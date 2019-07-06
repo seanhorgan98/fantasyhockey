@@ -5,16 +5,13 @@ class MyTeamPage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-     // debugShowCheckedModeBanner: false,
-      home: new Scaffold(
+    return new Scaffold(
         appBar: new AppBar(
           backgroundColor: Colors.blue[700],
           title: new Text("My Team"),
         ),
         body: myGridView.build(),
-      ),
-    );
+      );
   }
 }
 
