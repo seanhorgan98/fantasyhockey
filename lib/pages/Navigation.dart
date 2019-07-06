@@ -48,7 +48,6 @@ class _NavigationState extends State<Navigation> {
   void onTabTapped(int index) {
    setState(() {
      _currentIndex = index;
-     print("Tapped");
    });
   }
 }
