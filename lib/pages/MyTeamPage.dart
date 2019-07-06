@@ -28,7 +28,10 @@ class MyTeamPageState extends State<MyTeamPage> {
 class MyGridView{
  //Filler Names, Will need to be loaded from DB
   List players = ["Adshead", "Cabbage", "Horgan", "Montgomery", "SOH", "Bond", "TB3"];
+  int captain = 2;
 
+  //On Button Click Popop
+  //Not sure how to get this Promise
   Future<Response> _asyncSimpleDialog(context, name) async {
     return await showDialog<Response>(
         context: context,
@@ -37,24 +40,28 @@ class MyGridView{
           return SimpleDialog(
             title: Text(name),
             children: <Widget>[
+              // Check if benched to disable
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.pop(context, Response.Captain);
                 },
                 child: const Text('Captain'),
               ),
+              // Need two ways to handle - into pitch / off
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.pop(context, Response.Substitute);
                 },
                 child: const Text('Substitute'),
               ),
+              // Navigate - Player stats
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.pop(context, Response.Stats);
                 },
                 child: const Text('Player Stats'),
               ),
+              // Navigate - transfer
               SimpleDialogOption(
                 onPressed: () {
                   Navigator.pop(context, Response.Transfer);
@@ -66,8 +73,13 @@ class MyGridView{
         });
   }
 
-  RaisedButton getStructuredGridCell(name, color, context) {
+  RaisedButton getStructuredGridCell(name, captain, color, context) {
+      if(captain){
+        name = name + "\n(Captain)";
+      }
     return new RaisedButton(
+      
+
       elevation: 5,
       color: color,
       child: new Column(
@@ -78,7 +90,8 @@ class MyGridView{
           new Center(
             child: new Text(
               name,
-              style: new TextStyle(fontSize: 25, color: Colors.black)                  
+              style: new TextStyle(fontSize: 25, color: Colors.black),
+              textAlign: TextAlign.center,                  
             ),
           ),
         ],
@@ -97,13 +110,13 @@ class MyGridView{
       mainAxisSpacing: 10.0,
       crossAxisSpacing: 10,
       children: <Widget>[
-        getStructuredGridCell(players[0], Colors.red, context),
-        getStructuredGridCell(players[1], Colors.red, context),
-        getStructuredGridCell(players[2], Colors.orange, context),
-        getStructuredGridCell(players[3], Colors.orange, context),
-        getStructuredGridCell(players[4], Colors.yellow, context),
-        getStructuredGridCell(players[5], Colors.yellow, context),
-        getStructuredGridCell(players[6], Colors.grey, context),
+        getStructuredGridCell(players[0], captain == 0, Colors.red, context),
+        getStructuredGridCell(players[1], captain == 1, Colors.red, context),
+        getStructuredGridCell(players[2], captain == 2,Colors.orange, context),
+        getStructuredGridCell(players[3], captain == 3, Colors.orange, context),
+        getStructuredGridCell(players[4], captain == 4, Colors.yellow, context),
+        getStructuredGridCell(players[5], captain == 5 , Colors.yellow, context),
+        getStructuredGridCell(players[6], captain == 6,Colors.grey, context),
       ],
       
     );
