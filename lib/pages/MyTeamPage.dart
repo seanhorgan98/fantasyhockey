@@ -12,14 +12,17 @@ class MyTeamPageState extends State<MyTeamPage> {
   List teamPlayers = ["Adshead", "Cabbage", "Horgan", "Montgomery", "SOH", "Bond", "TB3"];
   List teamPoints = [-2, 4, 2, 5, 8, 6, 15];
   int captain = 2;
+  int week = 50;
+  int total = 120;
 
   ButtonTheme getStructuredGridCell(player, points, captain, color, context) {
+    String display = player;
     // Special treatment for captain
     if(captain){
       // Display
       //TODO - Decide which of these looks better
-        player = player + "\n(Captain)";
-        //player = player + " (C)";
+        display = player + "\n(Captain)";
+        //display = player + " (C)";
 
         //Calculate extra points
         //if (triple captain)
@@ -28,28 +31,21 @@ class MyTeamPageState extends State<MyTeamPage> {
     }
 
     //Show weekly score
-    player = player + "\n" + points.toString();
+    display = display + "\n" + points.toString();
 
     return new ButtonTheme(
       minWidth: 200,
-      height: 100,
+      height: 95,
       child: RaisedButton(
         elevation: 10,
         color: color,
-        child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          verticalDirection: VerticalDirection.down,
-          children: <Widget>[
-            new Center(
+        child: new Center(
               child: new Text(
-                player,
+                display,
                 style: new TextStyle(fontSize: 25, color: Colors.black),
                 textAlign: TextAlign.center,                  
               ),
             ),
-          ],
-        ),
         onPressed: () {_asyncSimpleDialog(context, player);}
       )
     );
@@ -109,21 +105,23 @@ class MyTeamPageState extends State<MyTeamPage> {
 
         body: SizedBox(
           height: double.infinity,
-          child: GridView.count(         
+          child: ListView(         
           primary: true,
-          crossAxisCount: 1,
-          childAspectRatio: 4.5,
-          mainAxisSpacing: 0,
-          crossAxisSpacing: 100,
           padding: const EdgeInsets.all(5.5),
           children: <Widget>[
             
             //Transfer and points info
             SizedBox(
-              //height: 100,
+              height: 100,
               child: Card(
                 color: Colors.purple,
-                child: Center( child: Text("Some info about team", style: TextStyle(fontSize: 30),),),
+                child: Center(
+                   child: 
+                    Text("GW:" + week.toString()+ "\nTotal:" + total.toString(),
+                      style: TextStyle(fontSize: 30),
+                      textAlign: TextAlign.center,
+                    )
+                  ,),
               ),
             ),
             
@@ -153,12 +151,12 @@ class MyTeamPageState extends State<MyTeamPage> {
             // Substitute
             Container( 
               color: Colors.purple,
-              child: getStructuredGridCell(teamPlayers[6] + " (Sub)", teamPoints[6], false, Colors.grey, context)
+              child: getStructuredGridCell(teamPlayers[6], teamPoints[6], false, Colors.grey, context)
             ),
             
             //Boosts
             SizedBox(
-              height: 10000,
+              height: 50,
               child: Card(
                 color: Colors.purple,
                 child: Center( child: Text("Boosts", style: TextStyle(fontSize: 30),),),
