@@ -8,14 +8,27 @@ class MyTeamPage extends StatefulWidget{
 
 class MyTeamPageState extends State<MyTeamPage> {
 
-   //Filler Names, Will need to be loaded from DB
-  List players = ["Adshead", "Cabbage", "Horgan", "Montgomery", "SOH", "Bond", "TB3"];
+   //Filler Data, Will need to be loaded from DB
+  List teamPlayers = ["Adshead", "Cabbage", "Horgan", "Montgomery", "SOH", "Bond", "TB3"];
+  List teamPoints = [-2, 4, 2, 5, 8, 6, 15];
   int captain = 2;
 
-  ButtonTheme getStructuredGridCell(name, captain, color, context) {
+  ButtonTheme getStructuredGridCell(player, points, captain, color, context) {
+    // Special treatment for captain
     if(captain){
-       name = name + "\n(Captain)";
+      //Display
+      //TODO - Decide which of these looks better
+        player = player + "\n(Captain)";
+        //player = player + " (C)";
+
+        //Calculate extra points
+        //if (triple captain)
+        //points * 3
+        points = 2 * points;
     }
+
+    //Show weekly score
+    player = player + "\n" + points.toString();
 
     return new ButtonTheme(
       minWidth: 200,
@@ -30,27 +43,27 @@ class MyTeamPageState extends State<MyTeamPage> {
           children: <Widget>[
             new Center(
               child: new Text(
-                name,
+                player,
                 style: new TextStyle(fontSize: 25, color: Colors.black),
                 textAlign: TextAlign.center,                  
               ),
             ),
           ],
         ),
-        onPressed: () {_asyncSimpleDialog(context, name);}
+        onPressed: () {_asyncSimpleDialog(context, player);}
       )
     );
   }
 
   //On Button Click Popop
   //Not sure how to get this Promise
-  Future<Response> _asyncSimpleDialog(context, name) async {
+  Future<Response> _asyncSimpleDialog(context, player) async {
     return await showDialog<Response>(
         context: context,
         barrierDismissible: true,
         builder: (context) {
           return SimpleDialog(
-            title: Text(name),
+            title: Text(player),
             children: <Widget>[
               // Check if benched to disable
               SimpleDialogOption(
@@ -118,29 +131,29 @@ class MyTeamPageState extends State<MyTeamPage> {
             // Row for each position in team
             Row(
               children: <Widget>[
-                getStructuredGridCell(players[0], captain == 0, Colors.red, context),
-                getStructuredGridCell(players[1], captain == 1, Colors.red, context),
+                getStructuredGridCell(teamPlayers[0], teamPoints[0], captain == 0, Colors.red, context),
+                getStructuredGridCell(teamPlayers[1], teamPoints[1], captain == 1, Colors.red, context),
               ],
             ),
             
             Row(
               children: <Widget>[
-                getStructuredGridCell(players[2], captain == 2, Colors.orange, context),
-                getStructuredGridCell(players[3], captain == 3, Colors.orange, context),
+                getStructuredGridCell(teamPlayers[2], teamPoints[2], captain == 2, Colors.orange, context),
+                getStructuredGridCell(teamPlayers[3], teamPoints[3], captain == 3, Colors.orange, context),
               ],
             ),
 
             Row(
               children: <Widget>[
-                getStructuredGridCell(players[4], captain == 4, Colors.yellow, context),
-                getStructuredGridCell(players[5], captain == 5, Colors.yellow, context),
+                getStructuredGridCell(teamPlayers[4], teamPoints[4], captain == 4, Colors.yellow, context),
+                getStructuredGridCell(teamPlayers[5], teamPoints[5], captain == 5, Colors.yellow, context),
               ],
             ),              
             
             // Substitute
             Container( 
               color: Colors.purple,
-              child: getStructuredGridCell(players[6], false, Colors.grey, context)
+              child: getStructuredGridCell(teamPlayers[6], teamPoints[6], false, Colors.grey, context)
             ),
             
             //Boosts
