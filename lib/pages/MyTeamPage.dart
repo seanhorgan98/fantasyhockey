@@ -16,7 +16,7 @@ class MyTeamPageState extends State<MyTeamPage> {
   ButtonTheme getStructuredGridCell(player, points, captain, color, context) {
     // Special treatment for captain
     if(captain){
-      //Display
+      // Display
       //TODO - Decide which of these looks better
         player = player + "\n(Captain)";
         //player = player + " (C)";
@@ -108,22 +108,22 @@ class MyTeamPageState extends State<MyTeamPage> {
         ),
 
         body: SizedBox(
-          height: 700,
+          height: double.infinity,
           child: GridView.count(         
           primary: true,
           crossAxisCount: 1,
           childAspectRatio: 4.5,
           mainAxisSpacing: 0,
-          crossAxisSpacing: 20,
+          crossAxisSpacing: 100,
           padding: const EdgeInsets.all(5.5),
           children: <Widget>[
             
             //Transfer and points info
             SizedBox(
-              height: 10,
+              //height: 100,
               child: Card(
                 color: Colors.purple,
-                child: Center( child: Text("Some info about team"),),
+                child: Center( child: Text("Some info about team", style: TextStyle(fontSize: 30),),),
               ),
             ),
             
@@ -153,15 +153,15 @@ class MyTeamPageState extends State<MyTeamPage> {
             // Substitute
             Container( 
               color: Colors.purple,
-              child: getStructuredGridCell(teamPlayers[6], teamPoints[6], false, Colors.grey, context)
+              child: getStructuredGridCell(teamPlayers[6] + " (Sub)", teamPoints[6], false, Colors.grey, context)
             ),
             
             //Boosts
             SizedBox(
-              height: 10,
+              height: 10000,
               child: Card(
                 color: Colors.purple,
-                child: Center( child: Text("Boosts"),),
+                child: Center( child: Text("Boosts", style: TextStyle(fontSize: 30),),),
               ),
             ),
 
