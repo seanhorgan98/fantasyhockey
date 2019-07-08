@@ -86,10 +86,8 @@ class MyTeamPageState extends State<MyTeamPage> {
   Widget _buildDisplay(BuildContext context, DocumentSnapshot doc){
   //call data
     List teamPlayers = doc['players'];
-    List<int> teamPoints = [-2, 4, 2, 5, 8, 6, 15];
-    int captain = 2;
-    int week = 50;
-    int total = 120;
+    List teamPoints = doc['points'];
+    int captain = doc['captain'];
 
     return SafeArea(
       child: ListView(
@@ -101,7 +99,7 @@ class MyTeamPageState extends State<MyTeamPage> {
               color: Colors.purple,
               child: Center(
                 child: 
-                  Text("GW:" + week.toString()+ "\nTotal:" + total.toString(),
+                  Text("GW:" + doc['totals'][0].toString()+ "\nTotal:" + doc['totals'][1],
                     style: TextStyle(fontSize: 30),
                     textAlign: TextAlign.center,
                   )
