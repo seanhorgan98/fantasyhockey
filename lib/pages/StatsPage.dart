@@ -6,70 +6,85 @@ class StatsPage extends StatelessWidget{
     return SafeArea(
         child: Column(
           children: <Widget>[
+            //Title
+            Container(
+              padding: EdgeInsets.fromLTRB(15, 25, 0, 0),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text("Statistics", style: TextStyle(fontSize: 30, fontFamily: 'Titillium', color: Colors.white)),
+              )
+            ),
             //Top Scorer and Assister new
             Container(
-            margin: EdgeInsets.symmetric(vertical: 20.0),
+            margin: EdgeInsets.fromLTRB(15, 15, 0, 15),
             height: 200.0,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: <Widget>[
                 //Top Scorer
                 Container(
-                  width: 160.0,
-                  color: Colors.red,
-                  child: Text("Top Scorer")
+                  width: 170.0,
+                  color: Colors.yellow[800],
+                  alignment: Alignment.center,
+                  child: Text("Top Scorer", style: TextStyle(fontSize: 24, fontFamily: 'Titillium'))
                 ),
                 //Top Assister
                 Container(
-                  width: 160.0,
-                  color: Colors.blue,
-                  child: Text("Top Assister"),
+                  width: 170.0,
+                  color: Colors.grey[500],
+                  alignment: Alignment.center,
+                  child: Text("Top Assister", style: TextStyle(fontSize: 24, fontFamily: 'Titillium')),
                 ),
                 //Top Points
                 Container(
-                  width: 160.0,
-                  color: Colors.green,
-                  child: Text("Top Total Points"),
+                  width: 170.0,
+                  color: Colors.yellow[900],
+                  alignment: Alignment.center,
+                  child: Text("Top Points", style: TextStyle(fontSize: 24, fontFamily: 'Titillium')),
                 ),
                 //Best GW
                 Container(
-                  width: 160.0,
-                  color: Colors.yellow,
-                  child: Text("Top GW"),
+                  width: 170.0,
+                  color: Colors.blue[300],
+                  alignment: Alignment.center,
+                  child: Text("Top GW", style: TextStyle(fontSize: 24, fontFamily: 'Titillium')),
                 ),
               ],
             ),
           ),
             //Player stats
             Container(
-              margin: new EdgeInsets.symmetric(horizontal: 50),
+              margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
               child: MaterialButton(
                 minWidth: MediaQuery.of(context).size.width,
+                height: 50,
                 color: Theme.of(context).accentColor,
-                onPressed: (){},
-                child: Text("Player Stats", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),),
+                onPressed: () => print("Player Stats"),
+                child: Text("Player Stats", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
               ),
             ),
             
             //Fixtures & Results
             Container(
-              margin: new EdgeInsets.symmetric(horizontal: 50),
+              margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
               child: MaterialButton(
                 minWidth: MediaQuery.of(context).size.width,
+                height: 50,
                 color: Theme.of(context).accentColor,
-                onPressed: (){},
-                child: Text("Fixtures & Results", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),),
+                onPressed: () => print("Fixtures & Results"),
+                child: Text("Fixtures & Results", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
               ),
             ),
             
             //Rules
             Container(
-              margin: new EdgeInsets.symmetric(horizontal: 50),
+              margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
+                height: 50,
               child: MaterialButton(
                 minWidth: MediaQuery.of(context).size.width,
                 color: Theme.of(context).accentColor,
-                onPressed: (){},
-                child: Text("Rules", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),),
+                onPressed: () => print("Rules"),
+                child: Text("Rules", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
               ),
             ),
           ],
