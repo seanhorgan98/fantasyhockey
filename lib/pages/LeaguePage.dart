@@ -8,81 +8,74 @@ class LeaguePage extends StatefulWidget{
 }
 
 class LeaguePageState extends State<LeaguePage>{
-
-    Widget bodyData()=>DataTable(
-    sortAscending: false,
-    sortColumnIndex: 2,
-    columns: <DataColumn>[
-      DataColumn(
-        label: Text("Rank"),
-        numeric: true,
-        onSort: (i,b){
-          setState((){
-            teams.sort((a,b)=>a.rank.compareTo(b.rank));
-          });
-          
-        },
-      ),
-      DataColumn(
-        label: Text("Team Name"),
-        numeric: false,
-        onSort: (i,b){
-          setState(() {
-            teams.sort((a,b)=>a.teamName.compareTo(b.teamName));
-          });
-        },
-      ),
-      DataColumn(
-        label: Text("Total Points"),
-        numeric: true,
-        onSort: (i,b){
-          setState(() {
-            teams.sort((a,b)=>a.total.compareTo(b.total));
-          });
-        },
-      ),
-      DataColumn(
-        label: Text("GW"),
-        numeric: true,
-        onSort: (i,b){
-          setState(() {
-            teams.sort((a,b)=>a.gw.compareTo(b.gw));
-          });
-        },
-      ),
-    ],
-    rows: teams.map((team)=>DataRow(
-      cells: [
-        //Team Rank
-        DataCell(
-          Text(team.rank)
-        ),
-        //Team Name
-        DataCell(
-          Text(team.teamName)
-        ),
-        //Total Points
-        DataCell(
-          Text(team.total)
-        ),
-        //GW Points
-        DataCell(
-          Text(team.gw)
-        ),
-      ]
-    )).toList()
-  );
-
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue[700],
-        title: Text("League Table"),
-      ),
-      body: Container(
-        child: bodyData(),
+    return SafeArea(
+      child: Container(
+        height: double.infinity,
+        child: DataTable(
+          sortAscending: false,
+          sortColumnIndex: 2,
+          columns: <DataColumn>[
+            DataColumn(
+              label: Text("Rank"),
+              numeric: true,
+              onSort: (i,b){
+                setState((){
+                  teams.sort((a,b)=>a.rank.compareTo(b.rank));
+                });
+                
+              },
+            ),
+            DataColumn(
+              label: Text("Team"),
+              numeric: false,
+              onSort: (i,b){
+                setState(() {
+                  teams.sort((a,b)=>a.teamName.compareTo(b.teamName));
+                });
+              },
+            ),
+            DataColumn(
+              label: Text("Points"),
+              numeric: true,
+              onSort: (i,b){
+                setState(() {
+                  teams.sort((a,b)=>a.total.compareTo(b.total));
+                });
+              },
+            ),
+            DataColumn(
+              label: Text("GW"),
+              numeric: true,
+              onSort: (i,b){
+                setState(() {
+                  teams.sort((a,b)=>a.gw.compareTo(b.gw));
+                });
+              },
+            ),
+          ],
+          rows: teams.map((team)=>DataRow(
+            cells: [
+              //Team Rank
+              DataCell(
+                Text(team.rank)
+              ),
+              //Team Name
+              DataCell(
+                Text(team.teamName)
+              ),
+              //Total Points
+              DataCell(
+                Text(team.total)
+              ),
+              //GW Points
+              DataCell(
+                Text(team.gw)
+              ),
+            ]
+          )).toList()
+        ),
       )
     );
   }

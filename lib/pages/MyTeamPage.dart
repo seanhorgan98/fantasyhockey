@@ -9,7 +9,7 @@ class MyTeamPage extends StatefulWidget{
 class MyTeamPageState extends State<MyTeamPage> {
 
    //Filler Data, Will need to be loaded from DB
-  List teamPlayers = ["Adshead", "Cabbage", "Horgan", "Montgomery", "SOH", "Bond", "TB3"];
+  List teamPlayers = ["J.Adshead", "Cabbage", "Horgan", "Montgomery", "SOH", "Bond", "TB3"];
   List teamPoints = [-2, 4, 2, 5, 8, 6, 15];
   int captain = 2;
   int week = 50;
@@ -21,8 +21,9 @@ class MyTeamPageState extends State<MyTeamPage> {
     if(captain){
       // Display
       //TODO - Decide which of these looks better
-        display = player + "\n(Captain)";
-        //display = player + " (C)";
+        //display = player + "\n(Captain)";
+        //I prefer this
+        display = player + " (C)";
 
         //Calculate extra points
         //if (triple captain)
@@ -97,13 +98,8 @@ class MyTeamPageState extends State<MyTeamPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: new AppBar(
-          backgroundColor: Colors.blue[700],
-          title: new Text("My Team"),
-        ),
-
-        body: SizedBox(
+    return SafeArea(
+        child: SizedBox(
           height: double.infinity,
           child: ListView(         
           primary: true,
@@ -162,14 +158,11 @@ class MyTeamPageState extends State<MyTeamPage> {
                 child: Center( child: Text("Boosts", style: TextStyle(fontSize: 30),),),
               ),
             ),
-
           ]  
         )
       )
     );
   }
-
-
 }
 
 
