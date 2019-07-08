@@ -8,7 +8,7 @@ import 'pages/HomePage.dart';
 void main(){
   runApp(MaterialApp(
     home: MyApp(),
-    theme: ThemeData(fontFamily: 'Raleway'),
+    theme: ThemeData(fontFamily: 'Titillium'),
   ));
 }
 
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       title: title,
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        accentColor: Colors.amberAccent,
+        accentColor: Colors.white,
       ),
       home: new HomePage(title),
     );

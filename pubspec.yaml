@@ -51,6 +51,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
       - assets/background.png
+      - assets/background.jpg
+      - assets/geometry.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -67,6 +69,9 @@ flutter:
      - family: Raleway
        fonts:
          - asset: assets/fonts/Raleway-Regular.ttf
+     - family: Titillium
+       fonts:
+         - asset: assets/fonts/TitilliumWeb-Regular.ttf
 
   
   # For details regarding fonts from package dependencies,

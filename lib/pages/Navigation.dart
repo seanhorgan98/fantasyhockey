@@ -28,7 +28,7 @@ class _NavigationState extends State<Navigation> {
         //Draw background
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/background.png"),
+            image: AssetImage("assets/images/geometry.png"),
             fit: BoxFit.cover,
           ),
         ),
