@@ -8,10 +8,15 @@ class MyTeamPage extends StatefulWidget{
 }
 
 class MyTeamPageState extends State<MyTeamPage> {
-  ButtonTheme getStructuredGridCell(player, points, captain, color, context) {
+  ButtonTheme getStructuredGridCell(index, doc, color, context) {
+    String player = doc['players'][index];
+    int points = doc['points'][index];
+    int cap = doc['captain'];
+
+
     String display = player;
     // Special treatment for captain
-    if(captain){
+    if(cap == index){
       display = player + " (C)";
       //Calculate extra points
       //if (triple captain)
@@ -23,7 +28,7 @@ class MyTeamPageState extends State<MyTeamPage> {
     display = display + "\n" + points.toString();
 
     return new ButtonTheme(
-      minWidth: 200,
+      minWidth: 180,
       height: 95,
       child: RaisedButton(
         elevation: 10,
@@ -35,13 +40,18 @@ class MyTeamPageState extends State<MyTeamPage> {
                 textAlign: TextAlign.center,                  
               ),
             ),
-        onPressed: () {_asyncSimpleDialog(context, player);}
+        onPressed: () {
+          Future<Response> popup =  _asyncSimpleDialog(context, player);
+          popup.then((value) => 
+            handleMenuChoice(value, index, doc)).catchError((error) => 
+              handleMenuChoiceError(error));
+
+          }
       )
     );
   }
 
   //On Button Click Popop
-  //Not sure how to get this Promise
   Future<Response> _asyncSimpleDialog(context, player) async {
     return await showDialog<Response>(
         context: context,
@@ -84,13 +94,10 @@ class MyTeamPageState extends State<MyTeamPage> {
   }
 
   Widget _buildDisplay(BuildContext context, DocumentSnapshot doc){
-  //call data
-    List teamPlayers = doc['players'];
-    List teamPoints = doc['points'];
-    int captain = doc['captain'];
-
     return SafeArea(
-      child: ListView(
+      child: Column(
+        //padding: EdgeInsets.all(15),
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children:<Widget>[
           //Transfer and points info
           SizedBox(
@@ -107,32 +114,36 @@ class MyTeamPageState extends State<MyTeamPage> {
             ),
           ),
           
-          // Row for each position in team
           Row(
-            children: <Widget>[
-              getStructuredGridCell(teamPlayers[0], teamPoints[0], captain == 0, Colors.red, context),
-              getStructuredGridCell(teamPlayers[1], teamPoints[1], captain == 1, Colors.red, context),
-            ],
-          ),
-          
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[    
+                getStructuredGridCell(0, doc, Colors.red, context),
+                getStructuredGridCell(1, doc, Colors.red, context),            
+              ],
+            ),
+
           Row(
-            children: <Widget>[
-              getStructuredGridCell(teamPlayers[2], teamPoints[2], captain == 2, Colors.orange, context),
-              getStructuredGridCell(teamPlayers[3], teamPoints[3], captain == 3, Colors.orange, context),
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[    
+              getStructuredGridCell(2, doc, Colors.orange, context),
+              getStructuredGridCell(3, doc, Colors.orange, context),            
             ],
           ),
 
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              getStructuredGridCell(teamPlayers[4], teamPoints[4], captain == 4, Colors.yellow, context),
-              getStructuredGridCell(teamPlayers[5], teamPoints[5], captain == 5, Colors.yellow, context),
+              getStructuredGridCell(4, doc, Colors.yellow, context),
+              getStructuredGridCell(5, doc, Colors.yellow, context),              
             ],
-          ),              
-          
+          ),
+
+
+
           // Substitute
           Container( 
             color: Colors.purple,
-            child: getStructuredGridCell(teamPlayers[6], teamPoints[6], false, Colors.grey, context)
+            child: getStructuredGridCell(6, doc, Colors.grey, context)
           ),
           
           //Boosts
@@ -156,10 +167,63 @@ class MyTeamPageState extends State<MyTeamPage> {
       builder: (context, snapshot){
         if(!snapshot.hasData) {return const Text('Loading...');}
         return Builder(
-          builder: (BuildContext context) {return _buildDisplay(context, snapshot.data.documents[0]);}
-        );        
+          builder: (BuildContext context) {
+            return _buildDisplay(context, snapshot.data.documents[0]);
+          }
+        );
       } 
     );
+  }
+
+
+  /*
+  This is where all the navigation / data handdling
+  for clicking on players happens
+  Captain is finished
+  Sub TODO tomorrow
+  Stats is future priority
+  Transfers needs more work done for it but high priority
+  */
+  handleMenuChoice(Response value, index, doc) {
+
+    if (value == Response.Captain) { 
+      //check if valid player to make captain
+      if (index == 6 || index == doc['captain']) {return;}
+
+      //Bunch of nonsense to avoid race conditions
+      //Copied straight from tutorial
+      Firestore.instance.runTransaction((transaction) async {
+        DocumentSnapshot freshSnap = 
+          await transaction.get(doc.reference);
+        await transaction.update(freshSnap.reference, {
+          //make captain index
+          'captain': index,
+        });
+      });
+      
+
+    } else if (value == Response.Substitute ) {
+      if(index == 6){
+        /*
+          To substitute the sub will have to open firestore to player data and do if's on that
+        */
+        // Give choice of same position
+        //swap choice with 6
+    } else {
+        // swap index with 6
+    }
+    } else if (value == Response.Stats) {
+      //Do nothing
+
+    } else if (value == Response.Transfer) {
+      //Do nothing for now
+
+    }
+    
+  }
+
+  handleMenuChoiceError(error) {
+      //wtf do you do with errors lol
   }
 }
 
