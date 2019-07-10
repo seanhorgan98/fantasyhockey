@@ -179,13 +179,10 @@ class MyTeamPageState extends State<MyTeamPage> {
   /*
   This is where all the navigation / data handdling
   for clicking on players happens
-  Captain is finished
-  Sub TODO tomorrow
   Stats is future priority
   Transfers needs more work done for it but high priority
   */
   handleMenuChoice(Response value, index, doc) {
-
     if (value == Response.Captain) { 
       //check if valid player to make captain
       if (index == 6 || index == doc['captain']) {return;}
@@ -203,15 +200,31 @@ class MyTeamPageState extends State<MyTeamPage> {
       
 
     } else if (value == Response.Substitute ) {
-      if(index == 6){
+        if(index == 6){
         /*
           To substitute the sub will have to open firestore to player data and do if's on that
         */
         // Give choice of same position
         //swap choice with 6
-    } else {
+      } else {
+        var players = doc['players'];
+        var points = doc['points'];
+        var temp = [players[index], points[index]];
+        players[index] = players[6];
+        points[index] = points[6];
+        players[6] = temp[0];
+        points[0] = temp[1];
         // swap index with 6
-    }
+        Firestore.instance.runTransaction((transaction) async {
+          DocumentSnapshot freshSnap = await transaction.get(doc.reference);
+          await transaction.update(freshSnap.reference, {
+            'points': points,          
+          });     
+          await transaction.update(freshSnap.reference, {
+            'players': players,        
+          });
+        });     
+      }
     } else if (value == Response.Stats) {
       //Do nothing
 
