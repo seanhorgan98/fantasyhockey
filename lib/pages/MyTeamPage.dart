@@ -48,7 +48,7 @@ class MyTeamPageState extends State<MyTeamPage> {
           SizedBox(
             height: 100,
             child: Card(
-              color: Colors.purple,
+              color: Colors.lightGreen[900],
               child: Center(
                 child: 
                   Text(header,
@@ -91,12 +91,12 @@ class MyTeamPageState extends State<MyTeamPage> {
             child: getStructuredGridCell(6, doc, Colors.grey, context)
           ),
           
-          //Boosts
+          //Adverts
           SizedBox(
-            height: 50,
+            height: 80,
             child: Card(
-              color: Colors.purple,
-              child: Center( child: Text("Boosts", style: TextStyle(fontSize: 30),),),
+              color: Colors.green,
+              child: Center( child: Text("Advert Space", style: TextStyle(fontSize: 30),),),
             ),
           ),
 
