@@ -115,17 +115,18 @@ class MyTeamPageState extends State<MyTeamPage> {
   ButtonTheme getStructuredGridCell(int index, DocumentSnapshot doc, Color color, BuildContext context) {
     String player = doc['players'][index];
     int points = doc['points'][index];
+    String price = doc['prices'][index];
     int cap = doc['captain'];
 
 
     String display = player;
     // Special treatment for captain
     if(cap == index){
-      display = player + " (C)";
+      display = display + " (C)";
     }
 
     //Create Display String
-    display = display + "\nLast GW: " + points.toString() + "\n£££";
+    display = display + "\nLast GW: " + points.toString() + "\n£" + price;
 
     return new ButtonTheme(
       minWidth: 180,
@@ -181,7 +182,7 @@ class MyTeamPageState extends State<MyTeamPage> {
     Handler function for each response
     Called by _handleMenuChoice
     Substitute has helper function - _makeSub
-    NULLs ignored safely
+    NULL handled safely
   */
   _handleCaptainResponse(int index, DocumentSnapshot doc){
     //check if valid player to make captain
@@ -247,17 +248,21 @@ class MyTeamPageState extends State<MyTeamPage> {
     if(index == null) {return;}
     var players = doc['players'];
     var points = doc['points'];
-    var temp = [players[index], points[index]];
+    var prices = doc['prices'];
+    var temp = [players[index], points[index], prices[index]];
     players[index] = players[6];
     points[index] = points[6];
+    prices[index] = prices[6];
     players[6] = temp[0];
     points[6] = temp[1];
+    prices[6] = temp[2];
     // swap index with 6
     Firestore.instance.runTransaction((transaction) async {
       DocumentSnapshot freshSnap = await transaction.get(doc.reference);
       await transaction.update(freshSnap.reference, {
         'points': points,
-        'players': players,           
+        'players': players,
+        'prices' : prices,           
       });     
     });   
   }
