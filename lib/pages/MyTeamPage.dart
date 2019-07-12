@@ -52,7 +52,7 @@ class MyTeamPageState extends State<MyTeamPage> {
               child: Center(
                 child: 
                   Text(header,
-                    style: TextStyle(fontSize: 30),
+                    style: TextStyle(fontSize: 30, fontFamily: 'Titillium'),
                     textAlign: TextAlign.center,
                   )
                 ,),
@@ -96,7 +96,7 @@ class MyTeamPageState extends State<MyTeamPage> {
             height: 80,
             child: Card(
               color: Colors.green,
-              child: Center( child: Text("Advert Space", style: TextStyle(fontSize: 30),),),
+              child: Center( child: Text("Advert Space", style: TextStyle(fontSize: 30, fontFamily: 'Titillium'),),),
             ),
           ),
 
@@ -137,7 +137,7 @@ class MyTeamPageState extends State<MyTeamPage> {
         child: new Center(
               child: new Text(
                 display,
-                style: new TextStyle(fontSize: 25, color: Colors.black),
+                style: new TextStyle(fontSize: 22, color: Colors.black, fontFamily: 'Titillium'),
                 textAlign: TextAlign.center,                  
               ),
             ),

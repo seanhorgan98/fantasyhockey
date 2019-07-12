@@ -1,3 +1,6 @@
+import 'package:fantasy_hockey/pages/Fixtures.dart';
+import 'package:fantasy_hockey/pages/Rules.dart';
+import 'package:fantasy_hockey/pages/PlayerStats.dart';
 import 'package:flutter/material.dart';
 
 class StatsPage extends StatelessWidget{
@@ -59,7 +62,9 @@ class StatsPage extends StatelessWidget{
                 minWidth: MediaQuery.of(context).size.width,
                 height: 50,
                 color: Theme.of(context).accentColor,
-                onPressed: () => print("Player Stats"),
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerStats()));                 
+                },
                 child: Text("Player Stats", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
               ),
             ),
@@ -71,7 +76,9 @@ class StatsPage extends StatelessWidget{
                 minWidth: MediaQuery.of(context).size.width,
                 height: 50,
                 color: Theme.of(context).accentColor,
-                onPressed: () => print("Fixtures & Results"),
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Fixtures()));                 
+                },
                 child: Text("Fixtures & Results", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
               ),
             ),
@@ -83,7 +90,9 @@ class StatsPage extends StatelessWidget{
               child: MaterialButton(
                 minWidth: MediaQuery.of(context).size.width,
                 color: Theme.of(context).accentColor,
-                onPressed: () => print("Rules"),
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Rules()));                 
+                },
                 child: Text("Rules", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
               ),
             ),
