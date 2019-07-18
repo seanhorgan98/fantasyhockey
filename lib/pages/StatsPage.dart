@@ -106,14 +106,14 @@ class StatsPage extends StatelessWidget{
               child: Text("Rules", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
             ),
           ),
-          //Add Game/Mod button
+        //Add Game/Mod button
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Container(
               padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
                 child: FlatButton(
-                  color: Colors.white,
+                  color: Colors.grey[400],
                   onPressed: (){
                    Navigator.push(context, MaterialPageRoute(builder: (context) => Mod()));                 
                   },

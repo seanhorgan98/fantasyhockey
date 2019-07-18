@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,22 @@ class LeaguePage extends StatefulWidget{
 }
 
 class LeaguePageState extends State<LeaguePage>{
+  List<Team> teams;
+  Future<Team> sortTeams(AsyncSnapshot snapshot) async {
+    teams = new List<Team>();
+
+    //Loop through firebase teams and add them to list of teams
+    for(var i = 0;i<snapshot.data.documents.length;i++){
+      Team team = new Team(teamName: snapshot.data.documents[i]['teamName'],
+                            gw: snapshot.data.documents[i]['gw'],
+                            total: snapshot.data.documents[i]['points']);
+      teams.add(team);
+    }
+    teams.sort((a,b) => b.total.compareTo(a.total));
+    //Use list.sort
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -30,7 +47,7 @@ class LeaguePageState extends State<LeaguePage>{
                   stops: [0,1],
                   colors: [
                     Colors.white,
-                    Colors.black
+                    Colors.red,
                   ]
                 )
               ),
@@ -51,76 +68,53 @@ class LeaguePageState extends State<LeaguePage>{
                       style: TextStyle(fontSize: 24, fontFamily: 'Titillium'),
                     ),
                     Divider(height: 20,),
-                    //DataTable
-                    DataTable(
-                      sortAscending: false,
-                      columns: <DataColumn>[
-                        DataColumn(
-                          label: Text("Rank"),
-                          numeric: true,
-                          onSort: (i,b){
-                            setState((){
-                              teams.sort((a,b)=>b.rank.compareTo(a.rank));
-                              
-                            });
-                            
-                          },
+                    //Headings
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          child: Text("Pos."),
                         ),
-                        DataColumn(
-                          label: Text("Team"),
-                          numeric: false,
-                          onSort: (i,b){
-                            setState(() {
-                              teams.sort((a,b)=>b.teamName.compareTo(a.teamName));
-                            });
-                          },
+                        Container(
+                          child: Text("Team Name"),
                         ),
-                        DataColumn(
-                          label: Text("Points"),
-                          numeric: true,
-                          onSort: (i,b){
-                            setState(() {
-                              teams.sort((a,b)=>b.total.compareTo(a.total));
-                            });
-                          },
+                        Container(
+                          child: Text("GW"),
                         ),
-                        DataColumn(
-                          label: Text("GW"),
-                          numeric: true,
-                          onSort: (i,b){
-                            setState(() {
-                              teams.sort((a,b)=>b.gw.compareTo(a.gw));
-                            });
-                          },
+                        Container(
+                          child: Text("Total"),
                         ),
                       ],
-                      rows: teams.map((team)=>DataRow(
-                        cells: [
-                          //Team Rank
-                          DataCell(
-                            Text(team.rank.toString())
-                          ),
-                          //Team Name
-                          DataCell(
-                            Text(team.teamName)
-                          ),
-                          //Total Points
-                          DataCell(
-                            Text(team.total.toString())
-                          ),
-                          //GW Points
-                          DataCell(
-                            Text(team.gw.toString())
-                          ),
-                        ]
-                      )).toList()
                     ),
-                  ],
-                ),
+                    //DataTable || ACTUAL LEAGUE TABLE
+                    Flexible(
+                      child: StreamBuilder(
+                        stream: Firestore.instance.collection('Teams').snapshots(),
+                        builder: (context, snapshot){
+                          if(!snapshot.hasData) {return const Text('Loading...');}
+
+                          //Create Firestore list of all teams
+                          sortTeams(snapshot);
+
+                          return ListView.separated(
+                            shrinkWrap: true,
+                              padding: const EdgeInsets.all(8.0),
+                              itemCount: snapshot.data.documents.length,
+                              itemBuilder: (context, index) => 
+                                _buildListItem(context, index, teams),  
+                              separatorBuilder: (BuildContext context, int index) => const Divider(height: 30,),
+                          );
+                        }
+                      ),
+                    )
+                  ]
+                )
               ),
             ),
             Container(
-
+              //Very unsure why this needs to be here but it does
             )
           ],
         )
@@ -129,25 +123,37 @@ class LeaguePageState extends State<LeaguePage>{
   }
 }
 
-class Entry{
-  int rank;
+Widget _buildListItem(BuildContext context, int index, List<Team> teams){
+  return Row(
+    mainAxisSize: MainAxisSize.max,
+    mainAxisAlignment: MainAxisAlignment.spaceBetween, //Changes horizontal spacing
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: <Widget>[
+      //Might need to switch from flexible to something else to sort out alignment issues
+      Flexible(flex: 2,child: Text((index+1).toString())),
+      Flexible(flex: 5,child: Text(teams[index].teamName)),
+      Flexible(flex: 2,child: Text(teams[index].gw.toString())),
+      Flexible(flex: 2,child: Text(teams[index].total.toString()))
+    ],
+  );
+}
+
+
+
+
+
+class Team{
   String teamName;
   int total;
   int gw;
 
-  Entry({this.rank, this.teamName, this.total, this.gw});
+  Team({this.teamName, this.total, this.gw});
 }
 
 /* Process
 1. Get Data from Firebase
-2. Assign data in descending order of total points into each row
-  This means using some sort of a for loop and using i to determine the rank
-3. The DataTable will then take and display this info automatically.
+2. Loop through and assign each firebase team to a team object
+3. Add these objects to an array
+4. Sort the array 
 */
-var teams = <Entry>[
-  Entry(rank: 1, teamName: "Horgan Donors", total: 459, gw: 24),
-  Entry(rank: 2, teamName: "Gluten Town F.C.", total: 372, gw: 32),
-  Entry(rank: 3, teamName: "The Name's Bond. Grog Bond.", total: 330, gw: 15),
-  Entry(rank: 4, teamName: "Sam's Team", total: 6, gw: 1),
-  Entry(rank: 5, teamName: "Test", total: 21, gw: 12)
-];
+//Entry(rank: 5, teamName: "Test", total: 21, gw: 12)
