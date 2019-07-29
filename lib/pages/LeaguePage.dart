@@ -149,11 +149,3 @@ class Team{
 
   Team({this.teamName, this.total, this.gw});
 }
-
-/* Process
-1. Get Data from Firebase
-2. Loop through and assign each firebase team to a team object
-3. Add these objects to an array
-4. Sort the array 
-*/
-//Entry(rank: 5, teamName: "Test", total: 21, gw: 12)

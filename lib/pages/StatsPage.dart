@@ -2,9 +2,25 @@ import 'package:fantasy_hockey/pages/Fixtures.dart';
 import 'package:fantasy_hockey/pages/Rules.dart';
 import 'package:fantasy_hockey/pages/PlayerStats.dart';
 import 'package:fantasy_hockey/pages/Mod.dart';
+import 'package:fantasy_hockey/pages/auth.dart';
 import 'package:flutter/material.dart';
 
 class StatsPage extends StatelessWidget{
+  //Constructor
+  StatsPage({this.auth, this.onSignedOut});
+  final BaseAuth auth;
+  final VoidCallback onSignedOut;
+
+
+  void _signOut() async{
+    try{
+      await auth.signOut();
+      onSignedOut();
+    } catch (e){
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -108,7 +124,7 @@ class StatsPage extends StatelessWidget{
           ),
         //Add Game/Mod button
         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Container(
               padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
@@ -119,12 +135,18 @@ class StatsPage extends StatelessWidget{
                   },
                   child: Text("MOD"),
                 ),
+            ),
+            Container(
+              child: FlatButton(
+                color: Colors.red,
+                child: Text("Log Out"),
+                onPressed: _signOut,
               ),
+            )
             ],
           ),
         ],
       ),
     );
   }
-  
 }

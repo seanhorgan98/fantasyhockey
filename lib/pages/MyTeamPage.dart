@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fantasy_hockey/pages/auth.dart';
 import 'package:flutter/material.dart';
 enum Response { Captain, Substitute, Stats, Transfer }
 
 class MyTeamPage extends StatefulWidget{
+  //Constructor
+  MyTeamPage({this.auth});
+  final BaseAuth auth;
+
   @override
   MyTeamPageState createState() => new MyTeamPageState();
 }
