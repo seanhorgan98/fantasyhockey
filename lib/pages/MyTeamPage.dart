@@ -7,7 +7,7 @@ class MyTeamPage extends StatefulWidget{
   //Constructor
   MyTeamPage({this.auth});
   final BaseAuth auth;
-
+  
   @override
   MyTeamPageState createState() => new MyTeamPageState();
 }

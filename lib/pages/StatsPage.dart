@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fantasy_hockey/pages/Fixtures.dart';
 import 'package:fantasy_hockey/pages/Rules.dart';
 import 'package:fantasy_hockey/pages/PlayerStats.dart';
@@ -21,6 +22,20 @@ class StatsPage extends StatelessWidget{
     }
   }
 
+  Widget buildScorerWidget(String queryString){
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('Players').orderBy(queryString, descending: true).limit(1).snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+        return Text(
+          snapshot.data.documents[0][queryString].toString(),
+          style: TextStyle(fontSize: 24, fontFamily: 'Titillium'));
+      },
+
+
+      
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -38,6 +53,8 @@ class StatsPage extends StatelessWidget{
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
+
+
               //Top Scorer
               Container(
                 margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -45,8 +62,12 @@ class StatsPage extends StatelessWidget{
                 height: 170,
                 color: Colors.yellow[800],
                 alignment: Alignment.center,
-                child: Text("Top Scorer", style: TextStyle(fontSize: 24, fontFamily: 'Titillium'))
+                child: 
+                //Query Players collection for player with most goals
+                  buildScorerWidget('goals')
               ),
+
+
               //Top Assister
               Container(
                 margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -54,13 +75,16 @@ class StatsPage extends StatelessWidget{
                 height: 170,
                 color: Colors.yellow[800],
                 alignment: Alignment.center,
-                child: Text("Top Assister", style: TextStyle(fontSize: 24, fontFamily: 'Titillium')),
+                child: 
+                  buildScorerWidget('assists')
               ),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
+
+
               //Top Points
               Container(
                 margin: EdgeInsets.fromLTRB(15, 0, 15, 15),
@@ -68,8 +92,11 @@ class StatsPage extends StatelessWidget{
                 height: 170,
                 color: Colors.yellow[800],
                 alignment: Alignment.center,
-                child: Text("Top Points", style: TextStyle(fontSize: 24, fontFamily: 'Titillium')),
+                child: 
+                  Text("Top Points", style: TextStyle(fontSize: 24, fontFamily: 'Titillium')),
               ),
+
+
               //Best GW
               Container(
                 margin: EdgeInsets.fromLTRB(15, 0, 15, 15),
@@ -77,7 +104,8 @@ class StatsPage extends StatelessWidget{
                 height: 170,
                 color: Colors.yellow[800],
                 alignment: Alignment.center,
-                child: Text("Top GW", style: TextStyle(fontSize: 24, fontFamily: 'Titillium')),
+                child: 
+                  Text("Top GW", style: TextStyle(fontSize: 24, fontFamily: 'Titillium')),
               ),
             ],
           ),
