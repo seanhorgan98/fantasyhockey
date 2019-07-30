@@ -100,11 +100,11 @@ class LeaguePageState extends State<LeaguePage>{
 
                           return ListView.separated(
                             shrinkWrap: true,
-                              padding: const EdgeInsets.all(8.0),
-                              itemCount: snapshot.data.documents.length,
-                              itemBuilder: (context, index) => 
-                                _buildListItem(context, index, teams),  
-                              separatorBuilder: (BuildContext context, int index) => const Divider(height: 30,),
+                            padding: const EdgeInsets.all(8.0),
+                            itemCount: snapshot.data.documents.length,
+                            itemBuilder: (context, index) => 
+                              _buildListItem(context, index, teams),  
+                            separatorBuilder: (BuildContext context, int index) => const Divider(height: 30,),
                           );
                         }
                       ),
