@@ -22,17 +22,15 @@ class StatsPage extends StatelessWidget{
     }
   }
 
-  Widget buildScorerWidget(String queryString){
+  Widget buildLeaderWidgets(String queryString){
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('Players').orderBy(queryString, descending: true).limit(1).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
         return Text(
-          snapshot.data.documents[0][queryString].toString(),
-          style: TextStyle(fontSize: 24, fontFamily: 'Titillium'));
+          //Returning the player name + ": " + number of stat
+          (snapshot.data.documents[0].documentID) + ": " + (snapshot.data.documents[0][queryString].toString()),
+          style: TextStyle(fontSize: 20, fontFamily: 'Titillium'));
       },
-
-
-      
     );
   }
 
@@ -47,7 +45,7 @@ class StatsPage extends StatelessWidget{
             padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
             child: Align(
               alignment: Alignment.center,
-              child: Text("Statistics", style: TextStyle(fontSize: 30, fontFamily: 'Titillium', color: Colors.white)),
+              child: Text("Statistics", style: TextStyle(fontSize: 30, fontFamily: 'Titillium', color: Colors.black)),
             )
           ),
           Row(
@@ -63,8 +61,17 @@ class StatsPage extends StatelessWidget{
                 color: Colors.yellow[800],
                 alignment: Alignment.center,
                 child: 
-                //Query Players collection for player with most goals
-                  buildScorerWidget('goals')
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      //Title
+                      Text("Top Scorer", style: TextStyle(fontSize: 15),),
+                      //Query Players collection for player with most goals
+                      buildLeaderWidgets('goals')
+                    ],
+                  )
+                
               ),
 
 
@@ -76,7 +83,16 @@ class StatsPage extends StatelessWidget{
                 color: Colors.yellow[800],
                 alignment: Alignment.center,
                 child: 
-                  buildScorerWidget('assists')
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      //Title
+                      Text("Most Assists", style: TextStyle(fontSize: 15),),
+                      //Query Players collection for player with most goals
+                      buildLeaderWidgets('assists')
+                    ],
+                  )
               ),
             ],
           ),
@@ -93,7 +109,16 @@ class StatsPage extends StatelessWidget{
                 color: Colors.yellow[800],
                 alignment: Alignment.center,
                 child: 
-                  Text("Top Points", style: TextStyle(fontSize: 24, fontFamily: 'Titillium')),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      //Title
+                      Text("Most Total Points", style: TextStyle(fontSize: 15),),
+                      //Query Players collection for player with most goals
+                      buildLeaderWidgets('totalPoints')
+                    ],
+                  )
               ),
 
 
@@ -105,7 +130,16 @@ class StatsPage extends StatelessWidget{
                 color: Colors.yellow[800],
                 alignment: Alignment.center,
                 child: 
-                  Text("Top GW", style: TextStyle(fontSize: 24, fontFamily: 'Titillium')),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      //Title
+                      Text("Top GW", style: TextStyle(fontSize: 15),),
+                      //Query Players collection for player with most goals
+                      buildLeaderWidgets('gw')
+                    ],
+                  )
               ),
             ],
           ),
