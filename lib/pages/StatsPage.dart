@@ -26,6 +26,7 @@ class StatsPage extends StatelessWidget{
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('Players').orderBy(queryString, descending: true).limit(1).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+        if(!snapshot.hasData) {return const Text('Loading...');}
         return Text(
           //Returning the player name + ": " + number of stat
           (snapshot.data.documents[0].documentID) + ": " + (snapshot.data.documents[0][queryString].toString()),
