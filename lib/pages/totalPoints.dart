@@ -1,0 +1,56 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+class TotalPoints extends StatefulWidget {
+  @override
+  _TotalPointsState createState() => _TotalPointsState();
+}
+
+class _TotalPointsState extends State<TotalPoints> {
+  
+  _buildListItem(BuildContext context, int index){
+    return StreamBuilder(
+      stream: Firestore.instance.collection("Players").orderBy("totalPoints", descending: true).snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+        if(!snapshot.hasData) {return const Text('Loading...');}
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Text((index+1).toString() + ". "),
+            Text(snapshot.data.documents[index].documentID),
+            Text(snapshot.data.documents[index]['totalPoints'].toString()),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Text("Top Total Points"),
+        ),
+        body: Container(
+              child: StreamBuilder(
+                stream: Firestore.instance.collection("Players").snapshots(),
+                builder: (context, snapshot){
+                  if(!snapshot.hasData) {return const Text("Loading...");}
+
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.all(15),
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (context, index) =>
+                      _buildListItem(context, index),
+                    separatorBuilder: (BuildContext context, int index) => Divider(height: 15,),
+                  );
+                }
+              ),
+            ),
+      ),
+    );
+  }
+}

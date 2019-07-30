@@ -29,6 +29,7 @@ class _NavigationState extends State<Navigation> {
       StatsPage(auth: widget.auth, onSignedOut: widget.onSignedOut,)
     ];
     return Scaffold(
+      backgroundColor: Colors.purple[900],
       body: Container(
         //Draw background
         //decoration: BoxDecoration(

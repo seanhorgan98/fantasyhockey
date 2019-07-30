@@ -36,34 +36,22 @@ class PlayerStatsState extends State<PlayerStats>{
         title: Text("Player Stats", style: TextStyle(fontFamily: 'Titillium')),
       ),
       body: Container(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text("Player Stats", style:TextStyle(fontFamily: 'Titillium')),
-            Divider(),
-            //Table
-            Container(
-              child: StreamBuilder(
-                stream: Firestore.instance.collection("Players").snapshots(),
-                builder: (context, snapshot){
-                  if(!snapshot.hasData) {return const Text("Loading...");}
+        child: StreamBuilder(
+          stream: Firestore.instance.collection("Players").snapshots(),
+          builder: (context, snapshot){
+            if(!snapshot.hasData) {return const Text("Loading...");}
 
-                  return ListView.separated(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.all(15),
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (context, index) =>
-                      _buildListItem(context, index),
-                    separatorBuilder: (BuildContext context, int index) => Divider(height: 15,),
-                  );
-                }
-              ),
-            )
-          ],
+            return ListView.separated(
+              shrinkWrap: true,
+              padding: EdgeInsets.all(15),
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) =>
+                _buildListItem(context, index),
+                separatorBuilder: (BuildContext context, int index) => Divider(height: 15,),
+            );
+          }
         ),
-      ),
-    );
+      )
+    );  
   }
 }
