@@ -100,11 +100,11 @@ class LeaguePageState extends State<LeaguePage>{
 
                           return ListView.separated(
                             shrinkWrap: true,
-                              padding: const EdgeInsets.all(8.0),
-                              itemCount: snapshot.data.documents.length,
-                              itemBuilder: (context, index) => 
-                                _buildListItem(context, index, teams),  
-                              separatorBuilder: (BuildContext context, int index) => const Divider(height: 30,),
+                            padding: const EdgeInsets.all(8.0),
+                            itemCount: snapshot.data.documents.length,
+                            itemBuilder: (context, index) => 
+                              _buildListItem(context, index, teams),  
+                            separatorBuilder: (BuildContext context, int index) => const Divider(height: 30,),
                           );
                         }
                       ),
@@ -149,11 +149,3 @@ class Team{
 
   Team({this.teamName, this.total, this.gw});
 }
-
-/* Process
-1. Get Data from Firebase
-2. Loop through and assign each firebase team to a team object
-3. Add these objects to an array
-4. Sort the array 
-*/
-//Entry(rank: 5, teamName: "Test", total: 21, gw: 12)

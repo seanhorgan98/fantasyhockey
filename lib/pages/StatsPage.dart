@@ -1,10 +1,43 @@
-import 'package:fantasy_hockey/pages/Fixtures.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fantasy_hockey/pages/Rules.dart';
 import 'package:fantasy_hockey/pages/PlayerStats.dart';
 import 'package:fantasy_hockey/pages/Mod.dart';
+import 'package:fantasy_hockey/pages/assisters.dart';
+import 'package:fantasy_hockey/pages/auth.dart';
+import 'package:fantasy_hockey/pages/gameWeek.dart';
+import 'package:fantasy_hockey/pages/goalScorers.dart';
+import 'package:fantasy_hockey/pages/totalPoints.dart';
 import 'package:flutter/material.dart';
 
 class StatsPage extends StatelessWidget{
+  //Constructor
+  StatsPage({this.auth, this.onSignedOut});
+  final BaseAuth auth;
+  final VoidCallback onSignedOut;
+
+
+  void _signOut() async{
+    try{
+      await auth.signOut();
+      onSignedOut();
+    } catch (e){
+      print(e);
+    }
+  }
+
+  Widget buildLeaderWidgets(String queryString){
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('Players').orderBy(queryString, descending: true).limit(1).snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+        if(!snapshot.hasData) {return const Text('Loading...');}
+        return Text(
+          //Returning the player name + ": " + number of stat
+          "1.\n" + (snapshot.data.documents[0].documentID) + "\t" + (snapshot.data.documents[0]['team']) +"\n" + (snapshot.data.documents[0][queryString].toString()),
+          style: TextStyle(fontSize: 20, fontFamily: 'Titillium'));
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -20,95 +53,201 @@ class StatsPage extends StatelessWidget{
             )
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
+
+
               //Top Scorer
               Container(
-                margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                width: (MediaQuery.of(context).size.width*0.8)/2,
-                height: 170,
-                color: Colors.yellow[800],
-                alignment: Alignment.center,
-                child: Text("Top Scorer", style: TextStyle(fontSize: 24, fontFamily: 'Titillium'))
+                width: (MediaQuery.of(context).size.width*0.9)/2,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5), color: Colors.grey[50]),
+                child: 
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      //Title
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5), color: Colors.white),
+                        width: double.infinity,
+                        padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
+                        alignment: Alignment.centerLeft,
+                        height: 50,
+                        child: Text("Goals", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                      ),
+                      //Query Players collection for player with most goals
+                      Container(
+                        padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
+                        child: buildLeaderWidgets('goals')
+                      ),
+                      //See Full List
+                      Container(
+                        alignment: Alignment.bottomRight,
+                        child: FlatButton(
+                          child: Text("See full table...", style: TextStyle(color: Colors.grey),),
+                          onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => GoalScorers()));},
+                        )
+                      )
+                    ],
+                  )
+                
               ),
+
+
               //Top Assister
               Container(
-                margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                width: (MediaQuery.of(context).size.width*0.8)/2,
-                height: 170,
-                color: Colors.yellow[800],
+                width: (MediaQuery.of(context).size.width*0.9)/2,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5), color: Colors.grey[50]),
                 alignment: Alignment.center,
-                child: Text("Top Assister", style: TextStyle(fontSize: 24, fontFamily: 'Titillium')),
+                child: 
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      //Title
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5), color: Colors.white),
+                        width: double.infinity,
+                        padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
+                        alignment: Alignment.centerLeft,
+                        height: 50,
+                        child: Text("Assists", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                      ),
+                      //Query Players collection for player with most assists
+                      Container(
+                        padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
+                        child: buildLeaderWidgets('assists')
+                      ),
+                      //See Full List
+                      Container(
+                        alignment: Alignment.bottomRight,
+                        child: FlatButton(
+                          child: Text("See full table...", style: TextStyle(color: Colors.grey),),
+                          onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => Assisters()));},
+                        )
+                      )
+                    ],
+                  )
               ),
             ],
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
+
+
               //Top Points
               Container(
-                margin: EdgeInsets.fromLTRB(15, 0, 15, 15),
-                width: (MediaQuery.of(context).size.width*0.8)/2,
-                height: 170,
-                color: Colors.yellow[800],
+                width: (MediaQuery.of(context).size.width*0.9)/2,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), color: Colors.grey[50]),
                 alignment: Alignment.center,
-                child: Text("Top Points", style: TextStyle(fontSize: 24, fontFamily: 'Titillium')),
+                child: 
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      //Title
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5), color: Colors.white),
+                        width: double.infinity,
+                        padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
+                        alignment: Alignment.centerLeft,
+                        height: 50,
+                        child: Text("Total Points", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                      ),
+                      //Query Players collection for player with most points
+                      Container(
+                        padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
+                        child: buildLeaderWidgets('totalPoints')
+                      ),
+                      //See Full List
+                      Container(
+                        alignment: Alignment.bottomRight,
+                        child: FlatButton(
+                          child: Text("See full table...", style: TextStyle(color: Colors.grey),),
+                          onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => TotalPoints()));},
+                        )
+                      )
+                    ],
+                  )
               ),
+
+
               //Best GW
               Container(
-                margin: EdgeInsets.fromLTRB(15, 0, 15, 15),
-                width: (MediaQuery.of(context).size.width*0.8)/2,
-                height: 170,
-                color: Colors.yellow[800],
+                width: (MediaQuery.of(context).size.width*0.9)/2,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), color: Colors.grey[50]),
                 alignment: Alignment.center,
-                child: Text("Top GW", style: TextStyle(fontSize: 24, fontFamily: 'Titillium')),
+                child: 
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      //Title
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5), color: Colors.white),
+                        width: double.infinity,
+                        padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
+                        alignment: Alignment.centerLeft,
+                        height: 50,
+                        child: Text("GW", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                      ),
+                      //Query Players collection for player with most gw points
+                      Container(
+                        padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
+                        child: buildLeaderWidgets('gw')
+                      ),
+                      //See Full List
+                      Container(
+                        alignment: Alignment.bottomRight,
+                        child: FlatButton(
+                          child: Text("See full table...", style: TextStyle(color: Colors.grey),),
+                          onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => GameWeek()));},
+                        )
+                      )
+                    ],
+                  )
               ),
             ],
           ),
           //Player stats
           Container(
-            margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
+            margin: new EdgeInsets.symmetric(horizontal: 20, vertical: 7),
             child: MaterialButton(
               minWidth: MediaQuery.of(context).size.width,
               height: 50,
-              color: Theme.of(context).accentColor,
+              color: Colors.white,
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerStats()));                 
               },
-              child: Text("Player Stats", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
-            ),
-          ),
-          
-          //Fixtures & Results
-          Container(
-            margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
-            child: MaterialButton(
-              minWidth: MediaQuery.of(context).size.width,
-              height: 50,
-              color: Theme.of(context).accentColor,
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Fixtures()));                 
-              },
-              child: Text("Fixtures & Results", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
+              child: Text("Full Player Stats", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
             ),
           ),
           
           //Rules
           Container(
-            margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
+            margin: new EdgeInsets.symmetric(horizontal: 20, vertical: 0),
             height: 50,
             child: MaterialButton(
               minWidth: MediaQuery.of(context).size.width,
-              color: Theme.of(context).accentColor,
+              color: Colors.white,
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => Rules()));                 
               },
-              child: Text("Rules", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
+              child: Text("Rules & Scoring", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
             ),
           ),
         //Add Game/Mod button
         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Container(
               padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
@@ -119,12 +258,18 @@ class StatsPage extends StatelessWidget{
                   },
                   child: Text("MOD"),
                 ),
+            ),
+            Container(
+              child: FlatButton(
+                color: Colors.red,
+                child: Text("Log Out"),
+                onPressed: _signOut,
               ),
+            )
             ],
           ),
         ],
       ),
     );
   }
-  
 }

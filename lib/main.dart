@@ -1,30 +1,22 @@
 // main.dart
-
+import 'package:fantasy_hockey/pages/RootPage.dart';
+import 'package:fantasy_hockey/pages/auth.dart';
 import 'package:flutter/material.dart';
-
-
-import 'pages/HomePage.dart';
 
 void main(){
   runApp(MaterialApp(
-    home: MyApp(),
+    home: MainApp(),
     theme: ThemeData(fontFamily: 'Titillium'),
   ));
 }
 
-
 //Main Page Class
-class MyApp extends StatelessWidget {
-  final String title = "Log In";
+class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: title,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        accentColor: Colors.white,
-      ),
-      home: new HomePage(title),
+      title: "Log In",
+      home: new RootPage(auth: new Auth()),
     );
   }
 }
