@@ -20,6 +20,7 @@ Color facebookColor = Color(0xff4267B2);
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5), color: Colors.white,
+            border: new Border.all(color: Colors.black)
           ),
           child: InkWell(
             onTap: () => startFacebookLogin(widget.auth, widget.onSignedIn),
@@ -38,7 +39,7 @@ Color facebookColor = Color(0xff4267B2);
                 //Text
                 Container(
                   padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
-                  child: Text("Log in with Facebook", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                  child: Text("Log in with Facebook", style: TextStyle(fontSize: 20),),
                 )
                 
               ],
@@ -64,7 +65,7 @@ Color facebookColor = Color(0xff4267B2);
             Text("Fantasy Hockey", style: TextStyle(fontFamily: 'Titillium', fontSize: 35, fontWeight: FontWeight.bold)),
 
             //Spacer
-            Divider(color: Colors.white, height: MediaQuery.of(context).size.height/3,),
+            Divider(color: Colors.white, height: MediaQuery.of(context).size.height/4,),
             //Login Button
             customFacebookButton(),
           ],
