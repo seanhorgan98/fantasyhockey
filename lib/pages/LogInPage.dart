@@ -11,6 +11,27 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
+Color facebookColor = Color(0xff4267B2);
+
+  Widget customFacebookButton(){
+    return Container(
+      child: ConstrainedBox(
+        constraints: BoxConstraints.expand(),
+        child: Row(
+          children: <Widget>[
+            //Image.asset('assets/images/facebook.jpg'),
+            FlatButton(
+            onPressed: () => startFacebookLogin(widget.auth, widget.onSignedIn),
+            child: Text("Sign in with Facebook", style: TextStyle(color: Colors.white),),
+            color: facebookColor,
+            ),
+          ],
+        )
+          
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -20,11 +41,7 @@ class _LogInPageState extends State<LogInPage> {
         ),
         body: Center(
           //Facebook Button
-          child: RaisedButton(
-            onPressed: () => startFacebookLogin(widget.auth, widget.onSignedIn),
-            child: Text("Sign in with Facebook"),
-            color: Colors.blue,
-          )
+          child: customFacebookButton()
         ),
       ),
     );
@@ -37,3 +54,5 @@ void startFacebookLogin(BaseAuth auth, VoidCallback onSignedIn) async {
   print(userID);
   onSignedIn();
 }
+
+

@@ -32,7 +32,7 @@ class StatsPage extends StatelessWidget{
         if(!snapshot.hasData) {return const Text('Loading...');}
         return Text(
           //Returning the player name + ": " + number of stat
-          "1.\n" + (snapshot.data.documents[0].documentID) + "\t" + (snapshot.data.documents[0]['team']) +"\n" + (snapshot.data.documents[0][queryString].toString()),
+          "1.\n${snapshot.data.documents[0].documentID}\t${snapshot.data.documents[0]['team']}\n${snapshot.data.documents[0][queryString].toString()}",
           style: TextStyle(fontSize: 20, fontFamily: 'Titillium'));
       },
     );

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fantasy_hockey/pages/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fantasy_hockey/pages/TransfersPage.dart';
+
 enum Response { Captain, Substitute, Stats, Transfer }
 
 class MyTeamPage extends StatefulWidget{
@@ -46,7 +48,6 @@ class MyTeamPageState extends State<MyTeamPage> {
       + "\t\tTransfers: " + doc['transfers'][0];
     return SafeArea(
       child: Column(
-        //padding: EdgeInsets.all(15),
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children:<Widget>[
           //Transfer and points info
@@ -241,7 +242,9 @@ class MyTeamPageState extends State<MyTeamPage> {
   }
 
   _handleTransferResponse(int index, DocumentSnapshot doc){
-    _ackAlert(context,  "Coming Soon",  "High Priority");
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) => 
+        TransfersPage(outIndex: index, teamData: doc)));
   }
   
   /*
