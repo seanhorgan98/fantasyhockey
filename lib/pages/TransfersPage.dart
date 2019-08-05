@@ -160,12 +160,22 @@ class TransfersPageState extends State<TransfersPage>{
   }
 
   void confirmTransfer(int value, DocumentSnapshot player){
-    if (value == 0) {return;}
+    //no transfer confirmation
+    if (value == null || value == 0) {return;}
+    //no remaining transfers
+    if (teamData['transfers'][0] == '0'){
+      _ackAlert(context, 'Invalid Transfer', 'No remaining transfers');
+      return;
+    }
+    //Transfer too expensive
+    if (int.parse(teamData['transfers'][0]) + int.parse(teamData['prices'][outIndex]) < player['price'] ) {
+      _ackAlert(context, 'Invalid Transfer', 'Player too expensive');
+      return;
+    }
+
     //TODO firestore edits
     //Team x3, sub, transfers, budget
 
-    //TODO Price check
-    //transfers[] > 0 and (transfers[] + team[outIndex]['price']) > player['price']
     navigateBack();
   }
 
@@ -200,7 +210,7 @@ class TransfersPageState extends State<TransfersPage>{
       });
   }
 
-  navigateBack(){
+  void navigateBack(){
     Navigator.pop(context);
   }
 
