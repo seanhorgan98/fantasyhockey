@@ -15,20 +15,37 @@ Color facebookColor = Color(0xff4267B2);
 
   Widget customFacebookButton(){
     return Container(
-      child: ConstrainedBox(
-        constraints: BoxConstraints.expand(),
-        child: Row(
-          children: <Widget>[
-            //Image.asset('assets/images/facebook.jpg'),
-            FlatButton(
-            onPressed: () => startFacebookLogin(widget.auth, widget.onSignedIn),
-            child: Text("Sign in with Facebook", style: TextStyle(color: Colors.white),),
-            color: facebookColor,
+      height: 50,
+      child: 
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5), color: Colors.white,
+            border: new Border.all(color: Colors.black)
+          ),
+          child: InkWell(
+            onTap: () => startFacebookLogin(widget.auth, widget.onSignedIn),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                //Facebook Logo
+                Container(
+                  padding: EdgeInsets.fromLTRB(2, 2, 0, 2),
+                  child: Image.asset(
+                    'assets/images/facebook.jpg', 
+                    colorBlendMode: BlendMode.colorDodge, 
+                    color: facebookColor,
+                  ),
+                ),
+                //Text
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                  child: Text("Log in with Facebook", style: TextStyle(fontSize: 20),),
+                )
+                
+              ],
             ),
-          ],
+          )
         )
-          
-      ),
     );
   }
 
@@ -36,14 +53,24 @@ Color facebookColor = Color(0xff4267B2);
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("Log In"),
-        ),
-        body: Center(
-          //Facebook Button
-          child: customFacebookButton()
-        ),
-      ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              //Header Image
+              child: Image.asset("assets/images/wallpaper.jpg"),
+            ),
+            Divider(color: Colors.white,),
+            //Title
+            Text("Fantasy Hockey", style: TextStyle(fontFamily: 'Titillium', fontSize: 35, fontWeight: FontWeight.bold)),
+
+            //Spacer
+            Divider(color: Colors.white, height: MediaQuery.of(context).size.height/4,),
+            //Login Button
+            customFacebookButton(),
+          ],
+        )
+      )
     );
   }
 }
