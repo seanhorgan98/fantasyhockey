@@ -27,7 +27,7 @@ class _RootPageState extends State<RootPage> {
     super.initState();
     widget.auth.currentUser().then((userId){
       setState(() {
-        //Comment this line out if you don't want to have it auto log in
+        //Comment this line out if you don't want to have it auto log in     !!!SHOULD BE UNCOMMENTED FOR RELEASE!!!
         //authStatus = userId == null ? AuthStatus.NOT_SIGNED_IN : AuthStatus.SIGNED_IN;
       });
     });

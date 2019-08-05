@@ -1,4 +1,5 @@
 import 'package:fantasy_hockey/pages/auth.dart';
+import 'package:fantasy_hockey/pages/teamcreation.dart';
 import 'package:flutter/material.dart';
 
 class LogInPage extends StatefulWidget {
@@ -11,7 +12,28 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
-Color facebookColor = Color(0xff4267B2);
+  Color facebookColor = Color(0xff4267B2);
+
+
+  _onSignUp(){
+    //Navigate to team creation page
+    Navigator.push(context, MaterialPageRoute(builder: (context) => TeamCreation(auth: widget.auth, onSignedIn: widget.onSignedIn)));
+  }
+
+  Widget customSignUpButton(){
+    return Container(
+      height: 50,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5), color: Colors.white,
+        border: new Border.all(color: Colors.black)
+      ),
+      
+      child: InkWell(
+        onTap: () => _onSignUp(),
+        child: Text("Sign Up", style: TextStyle(fontSize: 20),),
+      ),
+    );
+  }
 
   Widget customFacebookButton(){
     return Container(
@@ -66,8 +88,14 @@ Color facebookColor = Color(0xff4267B2);
 
             //Spacer
             Divider(color: Colors.white, height: MediaQuery.of(context).size.height/4,),
+
             //Login Button
             customFacebookButton(),
+
+            Divider(color: Colors.white,),
+
+            //Sign Up button
+            customSignUpButton(),
           ],
         )
       )
@@ -77,9 +105,8 @@ Color facebookColor = Color(0xff4267B2);
 
 //Async Facebook Login
 void startFacebookLogin(BaseAuth auth, VoidCallback onSignedIn) async {
-  String userID = await auth.signInWithFacebook();
-  print(userID);
+  //TODO: Check if team exists if not then go to team creation
+  await auth.signInWithFacebook();
   onSignedIn();
 }
-
 
