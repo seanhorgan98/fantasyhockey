@@ -24,30 +24,6 @@ class TransfersPageState extends State<TransfersPage>{
   DocumentSnapshot teamData;
   String sortBy = "totalPoints";
 
-  _buildListItem(BuildContext context, int index) {
-    return StreamBuilder(
-      stream: Firestore.instance.collection("Players").orderBy(sortBy, descending: true).snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-        if(!snapshot.hasData) {return const Text('Loading...');}
-        if(snapshot.data.documents[index].documentID == teamData['players'][outIndex]) {
-          return new Container(width: 0, height: 0);
-        }
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            RaisedButton(
-              child: Text(snapshot.data.documents[index].documentID), 
-              onPressed: confirmTransfer(snapshot.data.documents[index])
-              ),
-            Text(snapshot.data.documents[index]['price'].toString()),
-            Text(snapshot.data.documents[index]['totalPoints'].toString()),
-            Text(snapshot.data.documents[index]['appearances'].toString()),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -87,29 +63,6 @@ class TransfersPageState extends State<TransfersPage>{
     }
   }
   
-  Widget _buildHeaders(){
-    var headers = ['Name', 'Price', 'Points', 'Games\nPlayed'];
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        _addHeader(headers[0], 0),
-        _addHeader(headers[1], 1),
-        _addHeader(headers[2], 2),
-        _addHeader(headers[3], 3)
-      ],
-    );
-  }
-
-  Widget _addHeader(String text, int index){
-    return RaisedButton(
-      child: Text(text),
-      color: Colors.blueGrey[200],
-      onPressed: () {
-        sortData(index);
-      }
-    );
-  }
-  
   Widget _addHeaderInfo(BuildContext context){
     String outPlayerName = teamData['players'][outIndex];
     int budget = int.parse(teamData['prices'][outIndex]) + int.parse(teamData['transfers'][1]);
@@ -124,6 +77,18 @@ class TransfersPageState extends State<TransfersPage>{
     );
   }    
   
+  Widget _buildHeaders(){
+    var headers = ['Name', 'Price', 'Points', 'Games\nPlayed'];
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        _addHeader(headers[0], 0),
+        _addHeader(headers[1], 1),
+        _addHeader(headers[2], 2),
+        _addHeader(headers[3], 3)
+      ],
+    );
+  }
 
   void sortData(int column){
     if(column == 1){
@@ -139,6 +104,50 @@ class TransfersPageState extends State<TransfersPage>{
         sortBy = "appearances";
       });
     } 
+  }
+
+  Widget _addHeader(String text, int index){
+    return RaisedButton(
+      child: Text(text),
+      color: Colors.blueGrey[200],
+      onPressed: () {
+        sortData(index);
+      }
+    );
+  }
+  
+  _buildListItem(BuildContext context, int index) {
+    return StreamBuilder(
+      stream: Firestore.instance.collection("Players").orderBy(sortBy, descending: true).snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+        if(!snapshot.hasData) {return const Text('Loading...');}
+        if(snapshot.data.documents[index].documentID == teamData['players'][outIndex]) {
+          return new Container(width: 0, height: 0);
+        }
+        // //TODO uncomment when position field added to players docs
+        // int position;
+        // if (outIndex < 2) { position = 0;}
+        // else if (outIndex > 3) { position = 2; }
+        // else if (outIndex == 2 || outIndex == 3) { position = 1; }
+        // else { position = teamData['sub']; }
+        
+        // if(snapshot.data.documents[index]['position'] == position) {
+        //   return new Container(width: 0, height: 0);
+        // }
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            RaisedButton(
+              child: Text(snapshot.data.documents[index].documentID), 
+              onPressed: confirmTransfer(snapshot.data.documents[index])
+              ),
+            Text(snapshot.data.documents[index]['price'].toString()),
+            Text(snapshot.data.documents[index]['totalPoints'].toString()),
+            Text(snapshot.data.documents[index]['appearances'].toString()),
+          ],
+        );
+      },
+    );
   }
 
   confirmTransfer(DocumentSnapshot doc){
