@@ -116,26 +116,27 @@ class TransfersPageState extends State<TransfersPage>{
     );
   }
   
-  _buildListItem(BuildContext context, int index) {
+  Widget _buildListItem(BuildContext context, int index) {
     return StreamBuilder(
       stream: Firestore.instance.collection("Players").orderBy(sortBy, descending: true).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
         if(!snapshot.hasData) {return const Text('Loading...');}
+
         if(snapshot.data.documents[index].documentID == teamData['players'][outIndex]) {
-          return new Container(width: 0, height: 0);
+          return Container(width: 0, height: 0);
         }
-        // //TODO uncomment when position field added to players docs
-        // int position;
-        // if (outIndex < 2) { position = 0;}
-        // else if (outIndex > 3) { position = 2; }
-        // else if (outIndex == 2 || outIndex == 3) { position = 1; }
-        // else { position = teamData['sub']; }      
-        // if(snapshot.data.documents[index]['position'] == position) {
-        //   return new Container(width: 0, height: 0);
-        // }
+
+        int position;
+        if (outIndex < 2) { position = 0;}
+        else if (outIndex > 3) { position = 2; }
+        else if (outIndex == 2 || outIndex == 3) { position = 1; }
+        else if (outIndex == 6) { position = teamData['sub']; }      
+        if(snapshot.data.documents[index]['position'] != position) {
+          return Container(width: 0, height: 0);
+        }
 
         if (teamData['players'].contains(snapshot.data.documents[index].documentID)){
-          return new Container(width: 0, height: 0);
+          return Container(width: 0, height: 0);
         }
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -161,7 +162,10 @@ class TransfersPageState extends State<TransfersPage>{
   void confirmTransfer(int value, DocumentSnapshot player){
     if (value == 0) {return;}
     //TODO firestore edits
+    //Team x3, sub, transfers, budget
 
+    //TODO Price check
+    //transfers[] > 0 and (transfers[] + team[outIndex]['price']) > player['price']
     navigateBack();
   }
 
