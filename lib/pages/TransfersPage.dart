@@ -129,17 +129,25 @@ class TransfersPageState extends State<TransfersPage>{
         // if (outIndex < 2) { position = 0;}
         // else if (outIndex > 3) { position = 2; }
         // else if (outIndex == 2 || outIndex == 3) { position = 1; }
-        // else { position = teamData['sub']; }
-        
+        // else { position = teamData['sub']; }      
         // if(snapshot.data.documents[index]['position'] == position) {
         //   return new Container(width: 0, height: 0);
         // }
+
+        if (teamData['players'].contains(snapshot.data.documents[index].documentID)){
+          return new Container(width: 0, height: 0);
+        }
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             RaisedButton(
               child: Text(snapshot.data.documents[index].documentID), 
-              onPressed: confirmTransfer(snapshot.data.documents[index])
+              onPressed: () {
+              Future<int> popup = _asyncConfirmPopup(context, snapshot.data.documents[index].documentID);
+              popup.then((value) => 
+                confirmTransfer(value, snapshot.data.documents[index])).catchError((error) 
+                => confirmError(error));
+              }
               ),
             Text(snapshot.data.documents[index]['price'].toString()),
             Text(snapshot.data.documents[index]['totalPoints'].toString()),
@@ -150,7 +158,69 @@ class TransfersPageState extends State<TransfersPage>{
     );
   }
 
-  confirmTransfer(DocumentSnapshot doc){
-    //TODO handle transfer confirmation, firestore edits, redirect to team
+  void confirmTransfer(int value, DocumentSnapshot player){
+    if (value == 0) {return;}
+    //TODO firestore edits
+
+    navigateBack();
   }
+
+  void confirmError(Error err){
+    _ackAlert(context,  "Error",  "Something went wrong\n" + err.toString());
+  }
+
+  //Popup for attempting to transfer bench player
+  Future<int> _asyncConfirmPopup(BuildContext context,String name) async {
+    return await showDialog<int>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text("Transfer in:" + name),
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, 1);
+              },
+              child: Text('Confirm'),
+            ),
+            Row(),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, 0);
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      });
+  }
+
+  navigateBack(){
+    Navigator.pop(context);
+  }
+
+  Future<void> _ackAlert(BuildContext context, String alertTitle, String alert) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(alertTitle),
+          content: Text(alert),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
+
 }
