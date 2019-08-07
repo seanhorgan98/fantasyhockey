@@ -15,7 +15,6 @@ class TransfersPage extends StatefulWidget{
 }
 
 
-
 class TransfersPageState extends State<TransfersPage>{
   
   TransfersPageState({Key key, @required this.outIndex, @required this.teamData});
@@ -49,6 +48,8 @@ class TransfersPageState extends State<TransfersPage>{
     );  
   }
 
+  //used by build to create headers on first run through
+  //Need to move this so 
   Widget _headerCheck(BuildContext context, int index){
     if(index == 0){
       return Column(
@@ -63,6 +64,7 @@ class TransfersPageState extends State<TransfersPage>{
     }
   }
   
+  //builds information to go above table
   Widget _addHeaderInfo(BuildContext context){
     String outPlayerName = teamData['players'][outIndex];
     int budget = int.parse(teamData['prices'][outIndex]) + int.parse(teamData['transfers'][1]);
@@ -77,6 +79,7 @@ class TransfersPageState extends State<TransfersPage>{
     );
   }    
   
+  //builds headers
   Widget _buildHeaders(){
     var headers = ['Name', 'Price', 'Points', 'Games\nPlayed'];
     return Row(
@@ -90,6 +93,7 @@ class TransfersPageState extends State<TransfersPage>{
     );
   }
 
+  //sorts data by any non name column
   void sortData(int column){
     if(column == 1){
       setState(() {
@@ -106,6 +110,7 @@ class TransfersPageState extends State<TransfersPage>{
     } 
   }
 
+  //adds header button to header bar
   Widget _addHeader(String text, int index){
     return RaisedButton(
       child: Text(text),
@@ -116,6 +121,7 @@ class TransfersPageState extends State<TransfersPage>{
     );
   }
   
+  //builds a row in table
   Widget _buildListItem(BuildContext context, int index) {
     return StreamBuilder(
       stream: Firestore.instance.collection("Players").orderBy(sortBy, descending: true).snapshots(),
@@ -128,9 +134,9 @@ class TransfersPageState extends State<TransfersPage>{
 
         int position;
         if (outIndex < 2) { position = 0;}
-        else if (outIndex > 3) { position = 2; }
-        else if (outIndex == 2 || outIndex == 3) { position = 1; }
-        else if (outIndex == 6) { position = teamData['sub']; }      
+        else if (outIndex == 2 || outIndex == 3) { position = 1; }        
+        else if (outIndex == 4 || outIndex == 5) { position = 2; }
+        else if (outIndex == 6) {position = snapshot.data.documents[index]['position'];}      
         if(snapshot.data.documents[index]['position'] != position) {
           return Container(width: 0, height: 0);
         }
@@ -159,13 +165,26 @@ class TransfersPageState extends State<TransfersPage>{
     );
   }
 
+  /*
+    IMPORTANT FUNCTION
+    All validation for transfer goes on here
+    Ensures user confirmed transfer
+    Ensures valid transfer
+    Handles Firestore writes to user team
+    Returns to Team page
+  */
   void confirmTransfer(int value, DocumentSnapshot player){
     //no transfer confirmation
     if (value == null || value == 0) {return;}
     //no remaining transfers
-    if (teamData['transfers'][0] == '0'){
+    if (teamData['transfers'][0] == '0' && teamData['transferSetting'] == 1){
       _ackAlert(context, 'Invalid Transfer', 'No remaining transfers');
       return;
+    }
+    //Transfers Disabled
+    if (teamData['transferSetting'] == 0){
+      _ackAlert(context, 'Invalid Transfer', 'Transfers disabled');
+      return;      
     }
     //Transfer too expensive
     if (int.parse(teamData['transfers'][0]) + int.parse(teamData['prices'][outIndex]) < player['price'] ) {
@@ -173,17 +192,47 @@ class TransfersPageState extends State<TransfersPage>{
       return;
     }
 
-    //TODO firestore edits
-    //Team x3, sub, transfers, budget
+    //update number of transfers left
+    var transfers = teamData['transfers'];
+    if(teamData['transferSetting'] == 1){
+      transfers[0] = (int.parse(transfers[0]) - 1).toString();
+    }
+    //update prices and budget
+    var prices = teamData['prices'];
+    transfers[1] = (int.parse(transfers[1])+int.parse(prices[outIndex])-player['price']).toString();
+    prices[outIndex] = player['price'].toString();
+
+    //update players, points and sub position
+    var players = teamData['players'];
+    players[outIndex] = player.documentID;
+    var points = teamData['points'];
+    points[outIndex] = player['gw'];
+    var sub = teamData['sub'];
+    if(outIndex == 6){
+      sub = player['position'];
+    }
+
+    //Write to Firestore
+    Firestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot freshSnap = await transaction.get(teamData.reference);
+      await transaction.update(freshSnap.reference, {
+        'transfers': transfers,
+        'points': points,
+        'players': players,
+        'prices' : prices,
+        'sub' : sub
+      });     
+    });   
 
     navigateBack();
   }
 
+  //used if transfer confirmation popup fails
   void confirmError(Error err){
     _ackAlert(context,  "Error",  "Something went wrong\n" + err.toString());
   }
 
-  //Popup for attempting to transfer bench player
+  //Popup for transfer confirmation
   Future<int> _asyncConfirmPopup(BuildContext context,String name) async {
     return await showDialog<int>(
       context: context,
@@ -210,10 +259,12 @@ class TransfersPageState extends State<TransfersPage>{
       });
   }
 
+  //This is literally pointless
   void navigateBack(){
     Navigator.pop(context);
   }
 
+  // Reused alert popup
   Future<void> _ackAlert(BuildContext context, String alertTitle, String alert) {
     return showDialog<void>(
       context: context,
@@ -233,8 +284,5 @@ class TransfersPageState extends State<TransfersPage>{
       },
     );
   }
-
-
-
 
 }

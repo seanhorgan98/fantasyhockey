@@ -42,10 +42,15 @@ class MyTeamPageState extends State<MyTeamPage> {
     Calls getStructuredGridCell
   */
   Widget _buildDisplay(BuildContext context, DocumentSnapshot doc){
+    String transfers = doc['transfers'][0];
+    // Check if unlimited transfers
+    if(doc['transferSetting'] == 2){
+      transfers = "∞";
+    }
     String header = "GW: " + doc['totals'][0].toString()
-      + "\t\tBudget: £" + doc['transfers'][1].toString()
+      + "\t\t\tBudget: £" + doc['transfers'][1].toString()
       + "\nTotal: " + doc['totals'][1]
-      + "\t\tTransfers: " + doc['transfers'][0];
+      + "\t\tTransfers: " + transfers;
     return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,13 +94,14 @@ class MyTeamPageState extends State<MyTeamPage> {
             ],
           ),
 
-
-
           // Substitute
-          Container( 
-            color: Colors.purple,
-            child: getStructuredGridCell(6, doc, Colors.grey, context)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              getStructuredGridCell(6, doc, Colors.grey, context),
+            ],
           ),
+          
           
           //Adverts
           SizedBox(
@@ -120,19 +126,27 @@ class MyTeamPageState extends State<MyTeamPage> {
   */
   ButtonTheme getStructuredGridCell(int index, DocumentSnapshot doc, Color color, BuildContext context) {
     String player = doc['players'][index];
-    int points = doc['points'][index];
-    String price = doc['prices'][index];
+    String points = doc['points'][index].toString();
+    String price = "£" + doc['prices'][index];
     int cap = doc['captain'];
-
+    double size = 18;
+    int setting = doc['transferSetting'];
 
     String display = player;
     // Special treatment for captain
     if(cap == index){
       display = display + " (C)";
     }
+    if(display.length > 15){
+      size = 15;
+    }
+    //Check if transfers enabled
+    if(setting == 1){ 
+      points = "Last Week: " + points;
+    } else {
+      points = "This Week: " + points;
+    }
 
-    //Create Display String
-    display = display + "\nLast GW: " + points.toString() + "\n£" + price;
 
     return new ButtonTheme(
       minWidth: 180,
@@ -140,22 +154,22 @@ class MyTeamPageState extends State<MyTeamPage> {
       child: RaisedButton(
         elevation: 10,
         color: color,
-        child: new Center(
-              child: new Text(
-                display,
-                style: new TextStyle(fontSize: 22, color: Colors.black, fontFamily: 'Titillium'),
-                textAlign: TextAlign.center,                  
-              ),
+        child: new Column(
+              children: <Widget>[
+                Text(display, style: TextStyle(fontSize: size, color: Colors.black, fontFamily: 'Titillium')),
+                Text(points, style: TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'Titillium')),
+                Text(price, style: TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'Titillium'))
+              ] 
+                //textAlign: TextAlign.center,                  
             ),
         onPressed: () {
           Future<Response> popup =  _asyncSimpleDialog(context, player);
           popup.then((value) => 
             _handleMenuChoice(value, index, doc)).catchError((error) => 
               _handleMenuChoiceError(error));
-
           }
-      )
-    );
+        ),
+      );
   }
 
   /*
