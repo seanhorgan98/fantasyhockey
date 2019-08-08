@@ -70,21 +70,22 @@ class LeaguePageState extends State<LeaguePage>{
                     Divider(height: 20,),
                     //Headings
                     Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Container(
+                        Expanded(
                           child: Text("Pos."),
+                          flex: 1,
                         ),
-                        Container(
+                        Expanded(
                           child: Text("Team Name"),
+                          flex: 4,
                         ),
-                        Container(
+                        Expanded(
                           child: Text("GW"),
+                          flex: 1,
                         ),
-                        Container(
+                        Expanded(
                           child: Text("Total"),
+                          flex: 1,
                         ),
                       ],
                     ),
@@ -125,15 +126,12 @@ class LeaguePageState extends State<LeaguePage>{
 
 Widget _buildListItem(BuildContext context, int index, List<Team> teams){
   return Row(
-    mainAxisSize: MainAxisSize.max,
-    mainAxisAlignment: MainAxisAlignment.spaceBetween, //Changes horizontal spacing
-    crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
       //Might need to switch from flexible to something else to sort out alignment issues
-      Flexible(flex: 2,child: Text((index+1).toString())),
-      Flexible(flex: 5,child: Text(teams[index].teamName)),
-      Flexible(flex: 2,child: Text(teams[index].gw.toString())),
-      Flexible(flex: 2,child: Text(teams[index].total.toString()))
+      Expanded(flex: 1,child: Text((index+1).toString())),
+      Expanded(flex: 4,child: Text(teams[index].teamName)),
+      Expanded(flex: 1,child: Text(teams[index].gw.toString())),
+      Expanded(flex: 1,child: Text(teams[index].total.toString()))
     ],
   );
 }

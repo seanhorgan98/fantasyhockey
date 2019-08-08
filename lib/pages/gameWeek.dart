@@ -16,9 +16,9 @@ class _GameWeekState extends State<GameWeek> {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text((index+1).toString() + ". "),
-            Text(snapshot.data.documents[index].documentID),
-            Text(snapshot.data.documents[index]['gw'].toString()),
+            Expanded(child: Text("\t" + (index+1).toString() + ". "), flex: 2),
+            Flexible(child: Text(snapshot.data.documents[index].documentID), flex: 6, fit: FlexFit.tight),
+            Expanded(child: Text(snapshot.data.documents[index]['gw'].toString()), flex: 3)            
           ],
         );
       },
@@ -31,7 +31,7 @@ class _GameWeekState extends State<GameWeek> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text("Top Game Week"),
+          title: Text("Game Week"),
         ),
         body: Container(
               child: StreamBuilder(

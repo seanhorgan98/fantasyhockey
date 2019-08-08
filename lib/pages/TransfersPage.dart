@@ -31,6 +31,7 @@ class TransfersPageState extends State<TransfersPage>{
         title: Text("Player Stats", style: TextStyle(fontFamily: 'Titillium')),
       ),
       body: Container(
+        margin: EdgeInsets.all(4),
         child: StreamBuilder(
           stream: Firestore.instance.collection("Players").snapshots(),
           builder: (context, snapshot){
@@ -83,12 +84,12 @@ class TransfersPageState extends State<TransfersPage>{
   Widget _buildHeaders(){
     var headers = ['Name', 'Price', 'Points', 'Games\nPlayed'];
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        _addHeader(headers[0], 0),
-        _addHeader(headers[1], 1),
-        _addHeader(headers[2], 2),
-        _addHeader(headers[3], 3)
+        Flexible(child:_addHeader(headers[0], 0), flex: 4, fit: FlexFit.tight),
+        Flexible(child:_addHeader(headers[1], 1), flex: 3),
+        Flexible(child:_addHeader(headers[2], 2), flex: 3),
+        Flexible(child:_addHeader(headers[3], 3), flex: 3)
       ],
     );
   }
@@ -145,20 +146,39 @@ class TransfersPageState extends State<TransfersPage>{
           return Container(width: 0, height: 0);
         }
         return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          
           children: <Widget>[
-            RaisedButton(
-              child: Text(snapshot.data.documents[index].documentID), 
-              onPressed: () {
-              Future<int> popup = _asyncConfirmPopup(context, snapshot.data.documents[index].documentID);
-              popup.then((value) => 
-                confirmTransfer(value, snapshot.data.documents[index])).catchError((error) 
-                => confirmError(error));
-              }
+            Flexible(
+              child: RaisedButton(
+                child: Column(
+                  children: <Widget>[
+                    Text(snapshot.data.documents[index].documentID.split(" ")[0]),
+                    Text(snapshot.data.documents[index].documentID.split(" ")[1])
+                  ] 
+                ), 
+                onPressed: () {
+                Future<int> popup = _asyncConfirmPopup(context, snapshot.data.documents[index].documentID);
+                popup.then((value) => 
+                  confirmTransfer(value, snapshot.data.documents[index])).catchError((error) 
+                  => confirmError(error));
+                }
               ),
-            Text(snapshot.data.documents[index]['price'].toString()),
-            Text(snapshot.data.documents[index]['totalPoints'].toString()),
-            Text(snapshot.data.documents[index]['appearances'].toString()),
+              flex: 4,
+              fit: FlexFit.tight,
+            ), 
+            Expanded(
+              child : Center(child:Text(snapshot.data.documents[index]['price'].toString())),
+              flex: 3,
+            ),
+            Expanded(
+              child : Center(child:Text(snapshot.data.documents[index]['totalPoints'].toString())),
+              flex: 3,
+            ),
+            Expanded(
+              child : Center(child:Text(snapshot.data.documents[index]['appearances'].toString())),
+              flex: 3,
+            ),
           ],
         );
       },
@@ -239,7 +259,7 @@ class TransfersPageState extends State<TransfersPage>{
       barrierDismissible: true,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: Text("Transfer in:" + name),
+          title: Text("Transfer in: " + name),
           children: <Widget>[
             SimpleDialogOption(
               onPressed: () {

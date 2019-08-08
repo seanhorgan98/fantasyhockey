@@ -16,12 +16,12 @@ class PlayerStatsState extends State<PlayerStats>{
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text(snapshot.data.documents[index].documentID),
-            Text(snapshot.data.documents[index]['goals'].toString()),
-            Text(snapshot.data.documents[index]['gw'].toString()),
-            Text(snapshot.data.documents[index]['totalPoints'].toString()),
-            Text(snapshot.data.documents[index]['appearances'].toString()),
-            Text(snapshot.data.documents[index]['motms'].toString()),
+            Flexible(child: Text(snapshot.data.documents[index].documentID), flex: 3, fit: FlexFit.tight),
+            Expanded(child: Text(snapshot.data.documents[index]['goals'].toString()), flex: 1),
+            Expanded(child: Text(snapshot.data.documents[index]['gw'].toString()), flex: 1),
+            Expanded(child: Text(snapshot.data.documents[index]['totalPoints'].toString()), flex: 1),
+            Expanded(child: Text(snapshot.data.documents[index]['appearances'].toString()), flex: 1),
+            Expanded(child: Text(snapshot.data.documents[index]['motms'].toString()), flex: 1)
           ],
         );
       },

@@ -14,11 +14,10 @@ class _AssistersState extends State<Assisters> {
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
         if(!snapshot.hasData) {return const Text('Loading...');}
         return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text((index+1).toString() + ". "),
-            Text(snapshot.data.documents[index].documentID),
-            Text(snapshot.data.documents[index]['assists'].toString()),
+            Expanded(child: Text("\t" + (index+1).toString() + ". "), flex: 2),
+            Flexible(child: Text(snapshot.data.documents[index].documentID), flex: 6, fit: FlexFit.tight),
+            Expanded(child: Text(snapshot.data.documents[index]['assists'].toString()), flex: 3)
           ],
         );
       },
