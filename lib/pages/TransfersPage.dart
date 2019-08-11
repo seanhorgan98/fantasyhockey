@@ -22,6 +22,17 @@ class TransfersPageState extends State<TransfersPage>{
   int outIndex;
   DocumentSnapshot teamData;
   String sortBy = "totalPoints";
+  var teams;
+
+
+  //Garbage cheat way to implement limit to teams
+  @override
+  void initState() {
+    setState(() {
+      teams = teamData['teams'];
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,21 +138,23 @@ class TransfersPageState extends State<TransfersPage>{
     return StreamBuilder(
       stream: Firestore.instance.collection("Players").orderBy(sortBy, descending: true).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+        //Get data before printing
         if(!snapshot.hasData) {return const Text('Loading...');}
-
+        //If row is player being sold, emitt
         if(snapshot.data.documents[index].documentID == teamData['players'][outIndex]) {
           return Container(width: 0, height: 0);
         }
-
+        //Filter players by position
         int position;
         if (outIndex < 2) { position = 0;}
         else if (outIndex == 2 || outIndex == 3) { position = 1; }        
         else if (outIndex == 4 || outIndex == 5) { position = 2; }
-        else if (outIndex == 6) {position = snapshot.data.documents[index]['position'];}      
+        //if sold player is sub, ignore filter
+        else if (outIndex == 6) {position = snapshot.data.documents[index]['position'];}
         if(snapshot.data.documents[index]['position'] != position) {
           return Container(width: 0, height: 0);
         }
-
+        //Filter out team mates
         if (teamData['players'].contains(snapshot.data.documents[index].documentID)){
           return Container(width: 0, height: 0);
         }
@@ -189,7 +202,7 @@ class TransfersPageState extends State<TransfersPage>{
     IMPORTANT FUNCTION
     All validation for transfer goes on here
     Ensures user confirmed transfer
-    Ensures valid transfer
+    Ensures valid transfer x3
     Handles Firestore writes to user team
     Returns to Team page
   */
@@ -207,10 +220,25 @@ class TransfersPageState extends State<TransfersPage>{
       return;      
     }
     //Transfer too expensive
-    if (int.parse(teamData['transfers'][0]) + int.parse(teamData['prices'][outIndex]) < player['price'] ) {
+    if (int.parse(teamData['transfers'][1]) + int.parse(teamData['prices'][outIndex]) < player['price'] ) {
       _ackAlert(context, 'Invalid Transfer', 'Player too expensive');
       return;
     }
+
+    //Validate team limit
+    //update global state holder
+    // Garbage, don't try to understand - Probably pretty easy to break somehow
+    Firestore.instance.document("/Players/" + teamData['players'][outIndex]).get().then(
+      (snapshot) {
+        validateTeams(player, snapshot);
+      }
+    );
+    //valiate number of players per team
+    if (teams[player['team']] >= 3){
+      _ackAlert(context, 'Invalid Transfer', 'Too many players from a team');
+      Navigator.pop(context);
+      return;
+    } 
 
     //update number of transfers left
     var transfers = teamData['transfers'];
@@ -240,7 +268,8 @@ class TransfersPageState extends State<TransfersPage>{
         'points': points,
         'players': players,
         'prices' : prices,
-        'sub' : sub
+        'sub' : sub,
+        'teams' : teams
       });     
     });   
 
@@ -303,6 +332,21 @@ class TransfersPageState extends State<TransfersPage>{
         );
       },
     );
+  }
+
+  // Get new player List for validation
+  void validateTeams(DocumentSnapshot buy, DocumentSnapshot sell){
+    //take away old
+    String sellTeam = sell['team'];
+    setState(() {
+      teams[sellTeam] = teams[sellTeam] - 1;
+    });
+
+    //check new
+    String buyTeam = buy['team'];
+    setState(() {
+      teams[buyTeam] = teams[buyTeam] + 1;
+    });
   }
 
 }
