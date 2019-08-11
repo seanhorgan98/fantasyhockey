@@ -179,7 +179,7 @@ class MyTeamPageState extends State<MyTeamPage> {
     If error - _handleMenuChoiceError
     NULLs ignored safely
   */
-  _handleMenuChoice(Response value, int index, DocumentSnapshot doc) {
+  void _handleMenuChoice(Response value, int index, DocumentSnapshot doc) {
     if (value == Response.Captain) { 
       _handleCaptainResponse(index, doc);
     } else if (value == Response.Substitute ) {
@@ -194,7 +194,7 @@ class MyTeamPageState extends State<MyTeamPage> {
   /*
     Simple Error handler with basic message and error as string
   */  
-  _handleMenuChoiceError(Error error) {
+  void _handleMenuChoiceError(Error error) {
       _ackAlert(context,  "Error",  "Something went wrong\n" + error.toString());
   }
 
@@ -204,7 +204,7 @@ class MyTeamPageState extends State<MyTeamPage> {
     Substitute has helper function - _makeSub
     NULL handled safely
   */
-  _handleCaptainResponse(int index, DocumentSnapshot doc){
+  void _handleCaptainResponse(int index, DocumentSnapshot doc){
     //check if valid player to make captain
     if (index == 6 || index == doc['captain']) {
       _ackAlert(context,  "Invalid Sub",  "Invalid Player to make Captain");
@@ -222,40 +222,40 @@ class MyTeamPageState extends State<MyTeamPage> {
     });
   }
 
-  _handleSubstituteResponse(int index, DocumentSnapshot doc){
+  void _handleSubstituteResponse(int index, DocumentSnapshot doc){
     //Handle subbing sub
     if(index == 6){
       int position = doc['sub'];
       if (position == 0){
         Future<int> popup =  _asyncSimpleDialogSubs(context, doc['players'][0], doc['players'][1]);
         popup.then((value) => 
-          _makeSub(value, doc)).catchError((error) => 
+          _makeSub(value, doc, 0)).catchError((error) => 
             _handleMenuChoiceError(error));
       } else if (position == 1) {
         Future<int> popup =  _asyncSimpleDialogSubs(context, doc['players'][2], doc['players'][3]);
-        popup.then((value) => 
-          _makeSub(value + 2, doc)).catchError((error) => 
+        popup.then((value) =>
+          _makeSub(value, doc, 1)).catchError((error) => 
             _handleMenuChoiceError(error));
       } else if (position == 2) {
         Future<int> popup =  _asyncSimpleDialogSubs(context, doc['players'][4], doc['players'][5]);
         popup.then((value) => 
-          _makeSub(value + 4, doc)).catchError((error) => 
+          _makeSub(value, doc, 2)).catchError((error) => 
             _handleMenuChoiceError(error));
       }
     //swap choice with 6
     } else if(doc['sub']*2 == index || doc['sub']*2 == index -1 ) {
-      _makeSub(index, doc);
+      _makeSub(index, doc, 0);
     } else {
       // Handle Invalid Sub
       _ackAlert(context,  "Invalid Sub",  "Substitute can't come on for this Player");
     }
   }
 
-  _handleStatsResponse(int index, DocumentSnapshot doc){
+  void _handleStatsResponse(int index, DocumentSnapshot doc){
     _ackAlert(context,  "Coming Soon",  "Low Priotity");
   }
 
-  _handleTransferResponse(int index, DocumentSnapshot doc){
+  void _handleTransferResponse(int index, DocumentSnapshot doc){
     Navigator.push(context, MaterialPageRoute(
       builder: (context) => 
         TransfersPage(outIndex: index, teamData: doc)));
@@ -265,9 +265,13 @@ class MyTeamPageState extends State<MyTeamPage> {
     Helper method for _handleSubstituteResponse
     Null index handled
   */  
-  _makeSub(int index, DocumentSnapshot doc){
+  void _makeSub(int index, DocumentSnapshot doc, int position){
     // Handle normal sub
-    if(index == null) {return;}
+    if(index == null) {
+      return;
+    } else {
+      index = index + 2*position;
+    }
     var players = doc['players'];
     var points = doc['points'];
     var prices = doc['prices'];
@@ -289,7 +293,6 @@ class MyTeamPageState extends State<MyTeamPage> {
     });   
   }
   
-
   /*
     Methods for popups
     Copied from example online
@@ -382,4 +385,5 @@ class MyTeamPageState extends State<MyTeamPage> {
       },
     );
   }
+  
 }
