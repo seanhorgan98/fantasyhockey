@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
+// Player data classs
+// Incomplete - to be used for adding mod games
 class PlayerData {
   String name;
   int price;

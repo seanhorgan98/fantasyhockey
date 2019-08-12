@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fantasy_hockey/pages/Rules.dart';
+import 'package:fantasy_hockey/pages/RulesPage.dart';
 import 'package:fantasy_hockey/pages/PlayerStats.dart';
 import 'package:fantasy_hockey/pages/Mod.dart';
 import 'package:fantasy_hockey/pages/assisters.dart';
@@ -240,7 +240,7 @@ class StatsPage extends StatelessWidget{
               minWidth: MediaQuery.of(context).size.width,
               color: Colors.white,
               onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Rules()));                 
+                Navigator.push(context, MaterialPageRoute(builder: (context) => RulesPage()));                 
               },
               child: Text("Rules & Scoring", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
             ),
