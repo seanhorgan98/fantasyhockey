@@ -23,6 +23,7 @@ class MyTeamPageState extends State<MyTeamPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
+      //Will need to get this testTeam name from the team associated with the currentUser()
       stream: Firestore.instance.collection('testTeam').snapshots(),
       builder: (context, snapshot){
         if(!snapshot.hasData) {return const Text('Loading...');}

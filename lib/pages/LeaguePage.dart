@@ -17,8 +17,8 @@ class LeaguePageState extends State<LeaguePage>{
     //Loop through firebase teams and add them to list of teams
     for(var i = 0;i<snapshot.data.documents.length;i++){
       Team team = new Team(teamName: snapshot.data.documents[i]['teamName'],
-                            gw: snapshot.data.documents[i]['gw'],
-                            total: snapshot.data.documents[i]['points']);
+                            gw: snapshot.data.documents[i]['totals'][0],
+                            total: snapshot.data.documents[i]['totals'][1]);
       teams.add(team);
     }
     teams.sort((a,b) => b.total.compareTo(a.total));
