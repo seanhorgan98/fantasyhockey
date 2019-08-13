@@ -110,7 +110,7 @@ class _LogInPageState extends State<LogInPage> {
     
     await auth.signInWithFacebook();
 
-    StreamSubscription<DocumentSnapshot> subscription;
+    
 
     //Get UID
     auth.currentUser().then((user){
@@ -118,12 +118,12 @@ class _LogInPageState extends State<LogInPage> {
       
       DocumentReference docRef = Firestore.instance.document("Users/$user");
 
-      subscription = docRef.snapshots().listen((onData) {
-        print(onData.exists);
+      StreamSubscription<DocumentSnapshot> subscription = docRef.snapshots().listen((onData) async {
         if(onData.exists == false){
           //Document does not exist
           Navigator.push(context, MaterialPageRoute(builder: (context) => TeamCreation(auth: widget.auth, onSignedIn: signMeInHamachi)));
         }else{
+          await Future.delayed(Duration(milliseconds: 50));
           onSignedIn();
         }
       });

@@ -90,7 +90,7 @@ class _TeamCreationState extends State<TeamCreation> {
     //Log in with facebook
     await auth.signInWithFacebook();
 
-    StreamSubscription<DocumentSnapshot> subscription;
+    
 
     //Get UID
     auth.currentUser().then((user){
@@ -98,8 +98,8 @@ class _TeamCreationState extends State<TeamCreation> {
       
       DocumentReference docRef = Firestore.instance.document("Users/$user");
 
-      subscription = docRef.snapshots().listen((onData) async {
-        if(!onData.exists){
+      StreamSubscription<DocumentSnapshot> subscription = docRef.snapshots().listen((onData) async {
+        if(onData.exists == false){
           //Document does not exist
           Navigator.push(context, MaterialPageRoute(builder: (context) => TeamNameCreation(facebookUser: user)));
         }else{
