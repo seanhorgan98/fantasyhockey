@@ -86,18 +86,3 @@ class _TeamNameCreationState extends State<TeamNameCreation> {
 
 }
 
-/*Possible errors:
-User Does not need to click on the sign up button as an account is already created for them.
-Although, we could just check after clicking the sign in button if a team exists for this accout and if not then go to 
-the team creation page. This would 
-
-Validation:
-1. 
-
-2. Already completed
-
-3. 
-
-*/
-
-
