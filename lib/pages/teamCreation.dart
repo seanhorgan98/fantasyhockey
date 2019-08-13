@@ -101,10 +101,8 @@ class _TeamCreationState extends State<TeamCreation> {
       subscription = docRef.snapshots().listen((onData) async {
         if(!onData.exists){
           //Document does not exist
-          print("No team exists for this user. Sending to team name creation...");
           Navigator.push(context, MaterialPageRoute(builder: (context) => TeamNameCreation(facebookUser: user)));
         }else{
-          print("Team Exists. Sending to main navigation...");
           //Display snackbar
           _scaffoldKey.currentState.showSnackBar(snackBar);
           //Delay 2 seconds while snackbar is displayed

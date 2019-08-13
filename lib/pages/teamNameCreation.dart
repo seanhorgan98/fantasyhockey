@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class TeamNameCreation extends StatefulWidget {
@@ -12,11 +13,22 @@ class _TeamNameCreationState extends State<TeamNameCreation> {
 
   final _formKey = GlobalKey<FormState>();
   final int maxTeamNameLength = 75;
+  final textController = TextEditingController();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final snackBar = SnackBar(content: Text("Team Created!"));
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    textController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -32,6 +44,7 @@ class _TeamNameCreationState extends State<TeamNameCreation> {
                 child: Form(
                   key: _formKey,
                   child: TextFormField(
+                    controller: textController,
                     obscureText: false,
                     validator: (value){
                       if(value.isEmpty){
@@ -58,7 +71,7 @@ class _TeamNameCreationState extends State<TeamNameCreation> {
                   onPressed: (){
                     if(_formKey.currentState.validate()){
                       //Create Team
-                      _createTeam();
+                      _createTeam(widget.facebookUser, textController.text);
                     }
                   },
                   child: Text("Create team"),
@@ -71,17 +84,63 @@ class _TeamNameCreationState extends State<TeamNameCreation> {
     );
   }
 
-  _createTeam(){
+  _createTeam(String userID, String teamName) async {
 
-    //Check team doesn't already exist for this user
+    //Create Team document with autogen ID and 7 No Players on the roster and 0's for everything else
+    DocumentReference teamDoc = Firestore.instance.collection("Teams").document();
 
-    //Add user to firebase
+    Firestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot newSnap = await transaction.get(teamDoc);
+      await transaction.set(newSnap.reference, {
+        //Add Players etc
+        'captain': 0,
+        'teamName': teamName,
+        'total': 0,
+        'gw': 0,
+        'prices':[
+          0,0,0,0,0,0,0
+        ],
+        'points':[
+          0,0,0,0,0,0,0
+        ],
+        'players':[
+          "No Player", "No Player", "No Player", "No Player", "No Player", "No Player", "No Player"
+        ],
+        'sub': 0,
+        'teams':{
+          '1XI': 0,
+          '2XI': 0,
+          '3XI': 0
+        },
+        'totals':[
+          0,0
+        ],
+        'transferSetting': 2,
+        'transfers':[
+          0,100
+        ]
+      });
+    });
 
-    //Create Team on firebase with user attached and teamname
+    //Create document under User collection with currentUser() uid as the document ID
+    DocumentReference userDoc = Firestore.instance.collection("Users").document(userID);
 
-    //Attach team to user document on firebase
+    Firestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot freshSnap = await transaction.get(userDoc);
+      await transaction.set(freshSnap.reference, {
+        //Add all fields
+        'team': teamDoc.documentID,
+      });
+    });
 
-    //onSignedIn() callback to go to navigator AT THE END to continue on to navigator
+    //Somehow navigate to the main screen or log in screen
+    //Display snackbar
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+    //Delay 2 seconds while snackbar is displayed
+    await Future.delayed(Duration(seconds: 2));
+    //Navigate back
+    Navigator.of(context).pop();
+          
   }
 
 }

@@ -118,16 +118,12 @@ class _LogInPageState extends State<LogInPage> {
       
       DocumentReference docRef = Firestore.instance.document("Users/$user");
 
-      subscription = docRef.snapshots().listen((onData) async {
-        bool test = false;
-        test = await onData.exists;
-        print(test);
-        if(test == false){
+      subscription = docRef.snapshots().listen((onData) {
+        print(onData.exists);
+        if(onData.exists == false){
           //Document does not exist
-          print("No team exists for this user. Sending to team creation...");
           Navigator.push(context, MaterialPageRoute(builder: (context) => TeamCreation(auth: widget.auth, onSignedIn: signMeInHamachi)));
         }else{
-          print("Team Exists");
           onSignedIn();
         }
       });
@@ -135,7 +131,6 @@ class _LogInPageState extends State<LogInPage> {
   }
 
   signMeInHamachi(){
-    print("test?");
     widget.onSignedIn();
   }
 
