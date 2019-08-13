@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fantasy_hockey/pages/AddGamePage.dart';
 
 class Mod extends StatefulWidget{
   @override
@@ -7,7 +8,68 @@ class Mod extends StatefulWidget{
 }
 
 class ModState extends State<Mod>{
-  void addDataToFirebase(){
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text("Moderation", style: TextStyle(fontFamily: 'Titillium')),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(15),
+        child: Column(
+          children: <Widget>[
+            //Add Game
+            Container(
+              margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
+              height: 50,
+              child: MaterialButton(
+                minWidth: MediaQuery.of(context).size.width,
+                color: Theme.of(context).accentColor,
+                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => AddGamePage()));},
+                child: Text("Add Game", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
+              ),
+            ),
+            //Freeze Transfers
+            Container(
+              margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
+              height: 50,
+              child: MaterialButton(
+                minWidth: MediaQuery.of(context).size.width,
+                color: Theme.of(context).accentColor,
+                onPressed: freezeTransfers(),
+                child: Text("Freeze Transfers", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
+              ),
+            ),
+            //Test button to add data to firebase
+            Container(
+              margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
+              height: 50,
+              child: MaterialButton(
+                minWidth: MediaQuery.of(context).size.width,
+                color: Theme.of(context).accentColor,
+                onPressed: addDataToFirebase(),
+                child: Text("Add Player to firebase", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  freezeTransfers(){
+    // TODO script for freezing transfers
+    // Loop through teams, set transfer[0] = 0?
+    return;
+  }
+  
+  //TODO add button for unfreezing transfers, popup if fail
+
+
+
+  addDataToFirebase(){
     String player = "Ben Dunwoody";
     Firestore.instance.runTransaction((transaction) async { await transaction.set(Firestore.instance.collection("Players").document(player),
         {
@@ -41,57 +103,9 @@ class ModState extends State<Mod>{
       );
     });
     print("Added: $player");
+    print("Transaction Cancelled");
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text("Moderation", style: TextStyle(fontFamily: 'Titillium')),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          children: <Widget>[
-            //Add Game
-            Container(
-              margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
-              height: 50,
-              child: MaterialButton(
-                minWidth: MediaQuery.of(context).size.width,
-                color: Theme.of(context).accentColor,
-                onPressed: (){print("Add Game");},
-                child: Text("Add Game", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
-              ),
-            ),
-            //Freeze Transfers
-            Container(
-              margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
-              height: 50,
-              child: MaterialButton(
-                minWidth: MediaQuery.of(context).size.width,
-                color: Theme.of(context).accentColor,
-                onPressed: (){print("Freeze Transfers");},
-                child: Text("Freeze Transfers", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
-              ),
-            ),
-            //Test button to add data to firebase
-            Container(
-              margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
-              height: 50,
-              child: MaterialButton(
-                minWidth: MediaQuery.of(context).size.width,
-                color: Theme.of(context).accentColor,
-                onPressed: addDataToFirebase,
-                child: Text("Add Player to firebase", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class Data{
@@ -120,6 +134,7 @@ class Data{
   final int shortGoals = 0;
   final int totalPoints = 0;
   final int yellowCards = 0;
+  
 
 
   Map<String, dynamic> toJson() =>

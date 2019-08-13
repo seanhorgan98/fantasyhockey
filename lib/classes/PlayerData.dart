@@ -2,48 +2,109 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 // Player data classs
-// Incomplete - to be used for adding mod games
 class PlayerData {
+  //every field in player document
   String name;
-  int price;
-  int totalPoint;
+  int goals;
   int appearances;
-  int goal;
-  int penalty;
+  int assistFlicks;
   int assists;
-  int sheet;
-  double ppg;
-  int boatRace;
-  int motm;
-  int donkey;
-  int cards;
+  int boatRaceLoss;
+  int boatRaceWin;
+  int defender2Conceeded;
+  int defender5Conceeded;
+  int defenderCleanSheets;
+  int defenderGoals;
+  int donkeys;
+  int motms;
+  int flickGoals;
+  int forwardGoals;
+  int greenCards;
+  int gw;
+  int midfieldCleenSheets;
+  int midfielderGoals;
+  int missedFlicks;
+  int ownGoals;
+  int price;
+  int redCards;
+  int shortGoals;
+  int totalPoints;
+  int yellowCards;
+  int position;
+  String team;
 
-  PlayerData(DocumentSnapshot player){
+
+  PlayerData(String name, String team, int position){
+    if(name == null || team == null || position == null){
+      return;
+    }
+    this.name = name;
+    this.goals = 0;
+    this.appearances = 0;
+    this.assistFlicks = 0;
+    this.assists = 0;
+    this.boatRaceLoss = 0;
+    this.boatRaceWin = 0;
+    this.defender2Conceeded = 0;
+    this.defender5Conceeded = 0;
+    this.defenderCleanSheets = 0;
+    this.defenderGoals = 0;
+    this.donkeys = 0;
+    this.motms = 0;
+    this.flickGoals = 0;
+    this.forwardGoals = 0;
+    this.greenCards = 0;
+    this.gw = 0;
+    this.midfieldCleenSheets = 0;
+    this.midfielderGoals = 0;
+    this.missedFlicks = 0;
+    this.ownGoals = 0;
+    this.price = 0;
+    this.redCards = 0;
+    this.shortGoals = 0;
+    this.totalPoints = 0;
+    this.yellowCards = 0;
+    this.position = position;
+    this.team = team;
+  }
+
+  getFullData(DocumentSnapshot player){
     this.name = player.documentID;
-    this.price = player['price'];
-    this.totalPoint = player['totalPoints'];
+    this.goals = player['defenderGoals'] + player['midfielderGoals'] + player['forwardGoals'];
     this.appearances = player['appearances'];
-    this.goal = player['defenderGoals'] + player['midfielderGoals'] + player['forwardGoals'];
-    this.penalty = player['flickGoals'] + player['shortGoals'] - player['missedFlicks'];
-    this.assists = player['assists'] + player['assistFlicks'];
-    this.sheet = player['defenderCleanSheets'] + player['midfieldCleanSheets'];
-    this.ppg = player['totalPoints'] / player['appearances'];
-    this.boatRace = player['boatRaceWin'] - player['boatRaceLoss'];
-    this.motm = player['motms'];
-    this.donkey = player['donkeys'];
-    this.cards = player['greenCards'] + player['yellowCards'] * 2 + player['redCards'] * 5;
+    this.assistFlicks = player['assistFlicks'];
+    this.assists = player['assists'];
+    this.boatRaceLoss = player['boatRaceLoss'];
+    this.boatRaceWin = player['boatRaceWin'];
+    this.defender2Conceeded = player['defender2Conceeded'];
+    this.defender5Conceeded = player['defender5Conceeded'];
+    this.defenderCleanSheets = player['defenderCleanSheets'];
+    this.defenderGoals = player['defenderGoals'];
+    this.donkeys = player['donkeys'];
+    this.motms = player['motms'];
+    this.flickGoals = player['flickGoals'];
+    this.forwardGoals = player['forwardGoals'];
+    this.greenCards = player['greenCards'];
+    this.gw = player['gw'];
+    this.midfieldCleenSheets = player['midfieldCleanSheets'];
+    this.midfielderGoals = player['midfielderGoals'];
+    this.missedFlicks = player['missedFlicks'];
+    this.ownGoals = player['ownGoals'];
+    this.price = player['price'];
+    this.redCards = player['redCards'];
+    this.shortGoals = player['shortGoals'];
+    this.totalPoints = player['totalPoints'];
+    this.yellowCards = player['yellowCards'];
+    this.position = player['position'];
+    this.team = player['team'];
   }
 
+  String getName(){
+    return name;
+  }
+  
   List toList() {
-    return [name, price, totalPoint, appearances, ppg, goal, penalty, assists, sheet, boatRace, motm, donkey, cards];
-  }
-
-  List transferList(){
-    return [name, price, totalPoint, appearances];
-  }
-
-  String transferListString(){
-    return transferList().toString();
+    return [name, price, totalPoints, appearances,goals, assists, boatRaceWin, motms, donkeys];
   }
 
   @override

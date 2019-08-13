@@ -19,8 +19,8 @@ class TransfersPageState extends State<TransfersPage>{
   
   TransfersPageState({Key key, @required this.outIndex, @required this.teamData});
 
-  int outIndex;
-  DocumentSnapshot teamData;
+  final int outIndex;
+  final DocumentSnapshot teamData;
   String sortBy = "totalPoints";
   var teams;
 
