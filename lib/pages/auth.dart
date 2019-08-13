@@ -38,7 +38,7 @@ class Auth implements BaseAuth{
       return user.uid;
     } else {
       // No user is signed in.
-      return null;
+      return "";
     }
 
   }

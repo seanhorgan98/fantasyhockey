@@ -38,7 +38,7 @@ class ModState extends State<Mod>{
               child: MaterialButton(
                 minWidth: MediaQuery.of(context).size.width,
                 color: Theme.of(context).accentColor,
-                onPressed: freezeTransfers(),
+                onPressed: addDataToFirebase(),
                 child: Text("Freeze Transfers", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
               ),
             ),
@@ -62,7 +62,6 @@ class ModState extends State<Mod>{
   freezeTransfers(){
     // TODO script for freezing transfers
     // Loop through teams, set transfer[0] = 0?
-    return;
   }
   
   //TODO add button for unfreezing transfers, popup if fail
