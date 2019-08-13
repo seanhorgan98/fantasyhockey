@@ -11,7 +11,7 @@ class TeamNameCreation extends StatefulWidget {
 class _TeamNameCreationState extends State<TeamNameCreation> {
 
   final _formKey = GlobalKey<FormState>();
-  final int maxTeamNameLength = 20;
+  final int maxTeamNameLength = 75;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +19,7 @@ class _TeamNameCreationState extends State<TeamNameCreation> {
       child: Scaffold(
         body: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               //Team Name title
               Container(
@@ -37,7 +38,7 @@ class _TeamNameCreationState extends State<TeamNameCreation> {
                         return "You must have a team name.";
                       }
                       if(value.length> maxTeamNameLength){
-                        return "You must choose a team name less than 20 characters";
+                        return "You must choose a team name less than 75 characters";
                       }
                       return null;
                     },
@@ -57,7 +58,7 @@ class _TeamNameCreationState extends State<TeamNameCreation> {
                   onPressed: (){
                     if(_formKey.currentState.validate()){
                       //Create Team
-                      print("Creating Team...");
+                      _createTeam();
                     }
                   },
                   child: Text("Create team"),
@@ -69,9 +70,34 @@ class _TeamNameCreationState extends State<TeamNameCreation> {
       ),
     );
   }
+
+  _createTeam(){
+
+    //Check team doesn't already exist for this user
+
+    //Add user to firebase
+
+    //Create Team on firebase with user attached and teamname
+
+    //Attach team to user document on firebase
+
+    //onSignedIn() callback to go to navigator AT THE END to continue on to navigator
+  }
+
 }
 
+/*Possible errors:
+User Does not need to click on the sign up button as an account is already created for them.
+Although, we could just check after clicking the sign in button if a team exists for this accout and if not then go to 
+the team creation page. This would 
 
-//Create Team
+Validation:
+1. 
 
-//onSignedIn() callback to go to navigator
+2. Already completed
+
+3. 
+
+*/
+
+

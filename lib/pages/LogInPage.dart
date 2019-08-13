@@ -1,5 +1,8 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fantasy_hockey/pages/auth.dart';
-import 'package:fantasy_hockey/pages/teamcreation.dart';
+import 'package:fantasy_hockey/pages/teamCreation.dart';
 import 'package:flutter/material.dart';
 
 class LogInPage extends StatefulWidget {
@@ -7,13 +10,13 @@ class LogInPage extends StatefulWidget {
   final BaseAuth auth;
   final VoidCallback onSignedIn;
 
+
   @override
   _LogInPageState createState() => _LogInPageState();
 }
 
 class _LogInPageState extends State<LogInPage> {
   Color facebookColor = Color(0xff4267B2);
-
 
   _onSignUp(){
     //Navigate to team creation page
@@ -101,12 +104,38 @@ class _LogInPageState extends State<LogInPage> {
       )
     );
   }
-}
 
-//Async Facebook Login
-void startFacebookLogin(BaseAuth auth, VoidCallback onSignedIn) async {
-  //TODO: Check if team exists if not then go to team creation
-  await auth.signInWithFacebook();
-  onSignedIn();
+  //Async Facebook Login
+  void startFacebookLogin(BaseAuth auth, VoidCallback onSignedIn) async {
+    
+    await auth.signInWithFacebook();
+
+    StreamSubscription<DocumentSnapshot> subscription;
+
+    //Get UID
+    auth.currentUser().then((user){
+      //Check if document in Users Collection exists with id user
+      
+      DocumentReference docRef = Firestore.instance.document("Users/$user");
+
+      subscription = docRef.snapshots().listen((onData){
+        if(!onData.exists){
+          //Document does not exist
+          print("No team exists for this user. Sending to team creation...");
+          Navigator.push(context, MaterialPageRoute(builder: (context) => TeamCreation(auth: widget.auth, onSignedIn: signMeInHamachi)));
+        }else{
+          print("Team Exists");
+          onSignedIn();
+        }
+      });
+    });
+  }
+
+  signMeInHamachi(){
+    print("test?");
+    widget.onSignedIn();
+  }
+
+
 }
 

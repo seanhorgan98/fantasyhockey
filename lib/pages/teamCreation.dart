@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fantasy_hockey/pages/auth.dart';
 import 'package:fantasy_hockey/pages/teamNameCreation.dart';
 import 'package:flutter/material.dart';
@@ -13,12 +16,15 @@ class TeamCreation extends StatefulWidget {
 
 class _TeamCreationState extends State<TeamCreation> {
   final Color facebookColor = Color(0xff4267B2);
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final snackBar = SnackBar(content: Text('You already have a team!'));
 
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -67,13 +73,13 @@ class _TeamCreationState extends State<TeamCreation> {
           )
 
 
-          //Login with facebook
+          //Login with facebook [X}]
 
-          //Check if team already exists for this user
+          //Check if team already exists for this user [ ]
 
-          //Create team name (max name length)
+          //Create team name (max name length) [X]
           
-          //Create new team on firebase with teamName and firebaseUsername
+          //Create new team on firebase with teamName and firebaseUsername [ ]
 
         ),
       )
@@ -83,10 +89,32 @@ class _TeamCreationState extends State<TeamCreation> {
   _handleLogIn(BaseAuth auth, VoidCallback onSignedIn) async{
     //Log in with facebook
     await auth.signInWithFacebook();
-    //Send to teamNameCreation with username etc
+
+    StreamSubscription<DocumentSnapshot> subscription;
+
+    //Get UID
     auth.currentUser().then((user){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => TeamNameCreation(facebookUser: user)));
-    });
-    
+      //Check if document in Users Collection exists with id user
+      
+      DocumentReference docRef = Firestore.instance.document("Users/$user");
+
+      subscription = docRef.snapshots().listen((onData) async {
+        if(!onData.exists){
+          //Document does not exist
+          print("No team exists for this user. Sending to team name creation...");
+          Navigator.push(context, MaterialPageRoute(builder: (context) => TeamNameCreation(facebookUser: user)));
+        }else{
+          print("Team Exists. Sending to main navigation...");
+          //Display snackbar
+          _scaffoldKey.currentState.showSnackBar(snackBar);
+          //Delay 2 seconds while snackbar is displayed
+          await Future.delayed(Duration(seconds: 2));
+          //Navigate back
+          Navigator.of(context).pop();
+          
+
+        }
+      });
+    });    
   }
 }

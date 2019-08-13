@@ -8,7 +8,7 @@ class Mod extends StatefulWidget{
 
 class ModState extends State<Mod>{
   void addDataToFirebase(){
-    String player = "Ben Dunwoody";
+    String player = "No Player";
     Firestore.instance.runTransaction((transaction) async { await transaction.set(Firestore.instance.collection("Players").document(player),
         {
           'goals': 0,
@@ -36,7 +36,7 @@ class ModState extends State<Mod>{
           'shortGoals': 0,
           'totalPoints': 0,
           'yellowCards': 0,
-          'team': "2XI"
+          'team': ""
          }
       );
     });
