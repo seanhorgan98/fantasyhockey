@@ -20,15 +20,17 @@ class AddGamePageState extends State<AddGamePage>{
         backgroundColor: Colors.black,
         title: Text("Add Game", style: TextStyle(fontFamily: 'Titillium')),
       ),
+      //gonna have to stream body, on changes to players
       body: ListView(
         padding: EdgeInsets.all(15),
         children: <Widget>[
           RaisedButton(
-            onPressed: subGame(),
+            onPressed: subGame,
             child: Text("Submit Game", style: TextStyle(color: Colors.white),),
             color: Colors.black,
           ),
-          //18 players
+          //Maybe text box for opponent name
+          //15 players
           buildPlayerWidget(0),
           buildPlayerWidget(1),
           buildPlayerWidget(2),
@@ -43,10 +45,7 @@ class AddGamePageState extends State<AddGamePage>{
           buildPlayerWidget(11),
           buildPlayerWidget(12),
           buildPlayerWidget(13),
-          buildPlayerWidget(14),
-          buildPlayerWidget(15),
-          buildPlayerWidget(16),
-          buildPlayerWidget(17)                 
+          buildPlayerWidget(14)             
         ],
       )
     );
@@ -55,30 +54,37 @@ class AddGamePageState extends State<AddGamePage>{
   buildPlayerWidget(int index){
     if(players.length > index ){
       return RaisedButton(
+        color: Colors.red,
         child:Text(index.toString()),
-        onPressed: playerPopup(index),
+        onPressed: () {playerPopup(index);},
       );
     } else {
       return RaisedButton(
         child:Text("Add Player"),
-        onPressed: setPlayerName(),
+        onPressed: setPlayerName,
       );
     } 
   }
 
   playerPopup(int index){
-    //TODO popup to add/subtract 1 in each field
+    //TODO popup
+    // Remove player
+    // Add point
+    // Remove points
     return;
   }
 
   setPlayerName(){
     //TODO give options
+    //Popup with all unused player names
     return;
   }
 
 
   subGame(){
     //TODO add subGame
+    // Could validate?
+    // 1 motm, 1 donkey
     return;
   }
 
