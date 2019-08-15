@@ -31,10 +31,8 @@ class PlayerData {
   int totalPoints;
   int yellowCards;
   int position;
-  String team; //this is a pain to have around
+  String team; 
 
-  //TODO will have to add some functions to this probs
-  //Legit just add whatever you need, think it's only gonna be used by addPlayer
 
   //Constructor for player with given name
   PlayerData(String name){

@@ -141,9 +141,6 @@ class TransfersPageState extends State<TransfersPage>{
         //Get data before printing
         if(!snapshot.hasData) {return const Text('Loading...');}
 
-        //TODO here until 161 are all filters for not allowed players
-        //Nothing to actually do here
-
         // //filter out null player
         if(snapshot.data.documents[index].documentID == "No Player"){
           return Container();
