@@ -30,16 +30,17 @@ class PlayerData {
   int shortGoals;
   int totalPoints;
   int yellowCards;
-  int position;
+  int position; //pos, team, name are exluded from other methods
   String team; 
 
 
   //Constructor for player with given name
-  PlayerData(String name){
-    if(name == null) {
+  PlayerData(String name, int position){
+    if(name == null || position == null) {
       return;
     }
     this.name = name;
+    this.position = position;
     this.goals = 0;
     this.appearances = 0;
     this.assistFlicks = 0;
@@ -100,11 +101,44 @@ class PlayerData {
     this.team = player['team'];
   }
 
+  //get data from a List length 35
+  void setData(List data){
+    this.appearances = data[0];
+    this.assistFlicks = data[1];
+    this.assists = data[2];
+    this.boatRaceLoss = data[3];
+    this.boatRaceWin = data[4];
+    this.defender2Conceeded = data[5];
+    this.defender5Conceeded = data[6];
+    this.defenderCleanSheets = data[7];
+    this.defenderGoals = data[8];
+    this.donkeys = data[9];
+    this.motms = data[10];
+    this.flickGoals = data[11];
+    this.forwardGoals = data[12];
+    this.greenCards = data[13];
+    this.goals = data[14];
+    this.gw = data[15];
+    this.midfieldCleenSheets = data[16];
+    this.midfielderGoals = data[17];
+    this.missedFlicks = data[18];
+    this.ownGoals = data[19];
+    this.price = data[20];
+    this.redCards = data[21];
+    this.shortGoals = data[22];
+    this.totalPoints = data[23];
+    this.yellowCards = data[24];
+  }
+
   //getter for name
   String getName(){
     return name;
   }
   
+  int getPosition(){
+    return this.position;
+  }
+
   //getter for all object data
   List toList() {
     return [this.appearances, this.assistFlicks, this.assists, this.boatRaceLoss,
@@ -113,7 +147,7 @@ class PlayerData {
       this.flickGoals, this.forwardGoals, this.greenCards, this.goals, this.gw,
       this.midfieldCleenSheets, this.midfielderGoals, this.missedFlicks,
       this.ownGoals, this.price, this.redCards, this.shortGoals, this.totalPoints,
-      this.yellowCards, this.position, this.team];
+      this.yellowCards];
   }
 
   @override //This is useless atm
@@ -143,7 +177,7 @@ class PlayerData {
     this.forwardGoals += i[12];
     this.greenCards += i[13];
     this.goals += i[14];
-    this.gw += i[15];
+    this.gw = i[15];
     this.midfieldCleenSheets += i[16];
     this.midfielderGoals += i[17];
     this.missedFlicks += i[18];
@@ -153,8 +187,46 @@ class PlayerData {
     this.shortGoals += i[22];
     this.totalPoints += i[23];
     this.yellowCards += i[24];
-    this.position = i[25];
-    this.team = i[26];
+  }
+
+  int cleanSheetPoints(){
+    switch (position){
+      case 0:
+        return 5;
+        break;
+      case 1:
+        return 1;
+        break;
+    }
+    return 0;
+  }
+
+  int concededPoints(){
+    if(this.position == 0){
+      return ((this.defender2Conceeded * -1) + (this.defender5Conceeded * -2));
+    }
+    return 0;
+  }
+
+  void calcPoints(){
+    this.goals = (this.defenderGoals + this.midfielderGoals + this.forwardGoals) *
+     (6-this.position) + (this.shortGoals + this.flickGoals) * 3;
+      
+    this.gw = (
+      (this.goals) +
+      (this.appearances * 1) +
+      (this.missedFlicks * -3) +
+      (this.assistFlicks + this.assists * 3) +
+      (this.ownGoals * -4) +
+      (this.defenderCleanSheets + this.midfieldCleenSheets * (cleanSheetPoints()) ) +
+      ( concededPoints() ) +
+      (this.greenCards * -2 + this.yellowCards * -5 + this.redCards * -20 ) +
+      (this.motms * 5 + this.donkeys * -3) +
+      (this.boatRaceLoss * -3 + this.boatRaceWin * 5) 
+    );
+
+    this.totalPoints += this.gw;
+
   }
 
   //used to parse data to write
@@ -185,16 +257,68 @@ class PlayerData {
       'shortGoals': this.shortGoals,
       'totalPoints': this.totalPoints,
       'yellowCards': this.yellowCards,
-      'position': this.position,
-      'team': this.team,
     };
   }
 
-  //used to get field names, could maybe format them better
-  List fieldList() {
-    return ['appearances', 'assistFlicks', 'assists', 'boatRaceLoss', 'boatRaceWin', 'defender2Conceeded',
-    'defender5Conceeded', 'defenderCleanSheets', 'defenderGoals', 'donkeys', 'motms', 'flickGoals',
-    'forwardGoals', 'greenCards', 'goals', 'gw', 'midfieldCleenSheets', 'midfielderGoals', 'missedFlicks',
-    'ownGoals', 'price', 'redCards', 'shortGoals', 'totalPoints', 'yellowCards', 'position', 'team'];
+  //used to get formatted field names
+  // only fields in List
+  List fieldListFancy() {
+    return ['Appearances',
+      'Assist Flicks',
+      'Assists',
+      'BoatRace Loss',
+      'BoatRace Win',
+      'Def 2 Against',
+      'Def 5 Against',
+      'Def Clean',
+      'Def Goals',
+      'Donkey',
+      'MotM',
+      'Flick',
+      'Forward Goals',
+      'Green',
+      'Goal',
+      'GW',
+      'Mid Cleen',
+      'Mid Goals',
+      'Missed Flicks',
+      'Own Goals',
+      'Price',
+      'Red Cards',
+      'Short Goals',
+      'Total Points',
+      'Yellow Cards',
+    ];
+  }
+
+  //used for field names to write to db
+  List fieldList(){
+    return [
+      'appearences',
+      'assistFlicks',
+      'assists',
+      'boatRaceLoss',
+      'boatRaceWin',
+      'defender2Conceeded',
+      'defender5Conceeded',
+      'defenderCleanSheets',
+      'defenderGoals',
+      'donkeys',
+      'motms',
+      'flickGoals',
+      'forwardGoals',
+      'greenCards',
+      'goals',
+      'gw',
+      'midfieldCleenSheets',
+      'midfielderGoals',
+      'missedFlicks',
+      'ownGoals',
+      'price',
+      'redCards',
+      'shortGoals',
+      'totalPoints',
+      'yellowCards',
+    ];
   }
 }

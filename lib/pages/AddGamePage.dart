@@ -119,25 +119,32 @@ class AddGamePageState extends State<AddGamePage>{
   //List of all players for popup
   Widget listAllPlayers(){
     return StreamBuilder(
-      stream: Firestore.instance.collection("Players").orderBy('team').snapshots(),
+      stream: Firestore.instance.collection("Players").snapshots(),
       builder: (context, snapshot){
         if(!snapshot.hasData) {return const Text("Loading...");}
         return ListView.builder(
           shrinkWrap: true,
           padding: EdgeInsets.all(5),
-          itemCount: snapshot.data.documents.length - 1,
+          itemCount: snapshot.data.documents.length,
           itemBuilder: (context, index)
-            {return addPlayerButton(context, snapshot.data.documents[index + 1].documentID);}
+            {return addPlayerButton(
+              context,
+              snapshot.data.documents[index].documentID,
+              snapshot.data.documents[index]['position']
+            );}
         );
       }
     );
   }
 
   //list item widget
-  Widget addPlayerButton(BuildContext context, String name) {
+  Widget addPlayerButton(BuildContext context, String name, int position) {
+    if(name == 'No Player') {
+      return Container();
+    }
     return SimpleDialogOption(
       onPressed: () {
-        Navigator.pop(context, new PlayerData(name));
+        Navigator.pop(context, new PlayerData(name, position));
       },
       child: Text(name),
     );
@@ -158,7 +165,7 @@ class AddGamePageState extends State<AddGamePage>{
               height: 450.0,
               width: 400.0,
               child: ListView.builder(
-                itemCount: players[index].fieldList().length,
+                itemCount: players[index].toList().length,
                 itemBuilder: (context, field) {
                   return playerPopupRow(players[index], field);
                 },
@@ -172,9 +179,10 @@ class AddGamePageState extends State<AddGamePage>{
   }
 
   Widget playerPopupRow(PlayerData player, int index){
-    //TODO do some if index = bad number return container()
-    // bad numbers would be index that is name, team, position etc
-    //See transfers todo for examples
+    List<int> badIndex = [0, 15, 20, 23];
+    if(badIndex.contains(index)){
+      return Container();
+    }
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -182,7 +190,7 @@ class AddGamePageState extends State<AddGamePage>{
         //Field Name
         Flexible(
           flex: 2,
-          child: Text(player.fieldList()[index]),
+          child: Text(player.fieldListFancy()[index]),
           fit: FlexFit.tight,
         ),
         Flexible(
@@ -194,26 +202,35 @@ class AddGamePageState extends State<AddGamePage>{
         //Up
         RaisedButton(
           child: Text("+"),
-          //TODO call some function on PlayerData
-          onPressed: () {print("got+");},
+          onPressed: () {increment(1, index, player);},
         ),
         //Down
         RaisedButton(
           child: Text("-"),
-          //TODO call some function on PlayerData
-          onPressed: () {print("got-");},
+          onPressed: () {increment(-1, index, player);},
         ),
       ],
     );
   }
 
 
+  void increment(int change, int index, PlayerData player){
+    List temp = player.toList();
+    temp[index]+= change;
+    for(PlayerData i in players){
+      if (i.getName() == player.getName()){
+        setState(() {
+          i.setData(temp);
+        });
+      }
+    }   
+  }
+
   /*
   Handles reading player data
   Writing back to firestore
   */
   void subGame() async {
-
     //Check players have been added
     if(players.isEmpty){
       _ackAlert(context, "Invalid Command", "No players in game");
@@ -229,25 +246,30 @@ class AddGamePageState extends State<AddGamePage>{
       }
     );
 
-
     for(PlayerData i in players){
-      PlayerData currentData = new PlayerData(i.getName());
-      try{
-        //Update Players
-        Firestore.instance.collection("Players").document(i.getName()).get().then(
+      PlayerData currentData = new PlayerData(i.getName(), i.getPosition());
+
+      //Create Collection
+      i.calcPoints();
+      DocumentReference addedDocRef = Firestore.instance.collection("Games").document();
+      addedDocRef.setData({"Opponent": opponent});
+      addedDocRef.updateData({
+        i.getName(): i.toMap(),
+      });
+
+      //Update Players
+      Firestore.instance.collection("Players").document(i.getName()).get().then(
         (doc) {
-
           currentData.loadData(doc);
-          i.add(currentData);
+          currentData.add(i);
 
-          List fields = i.fieldList();
-          List data = i.toList();
+          List fields = currentData.fieldList();
+          List data = currentData.toList();
 
           //Write to Firestore
           Firestore.instance.runTransaction((transaction) async {
             DocumentSnapshot freshSnap = await transaction.get(doc.reference);
-            await transaction.update(freshSnap.reference,
-            {
+            await transaction.update(freshSnap.reference, {
               fields[0]: data[0],
               fields[1]: data[1],
               fields[2]: data[2],
@@ -272,34 +294,10 @@ class AddGamePageState extends State<AddGamePage>{
               fields[21]: data[21],
               fields[22]: data[22],
               fields[23]: data[23],
-              fields[24]: data[24],
-              fields[25]: data[25],
-            }
-            );
+            });
           });
         }
       );
-      } catch(err){
-        _ackAlert(context, "Write Error", "Something went wrong updating firebase");
-        Navigator.pop(context);
-      }
-    }
-
-    //Create Collection
-    DocumentReference addedDocRef = Firestore.instance.collection("Games").document();
-    addedDocRef.setData({"Opponent": opponent});
-
-    //add all players to collection
-    for(PlayerData i in players){
-      PlayerData player = new PlayerData(i.getName());
-      try{
-        addedDocRef.updateData({
-          player.getName(): player.toMap(),
-        });
-      } catch (err){
-        _ackAlert(context, "Create Error", "Something went wrong writing firebase");
-        Navigator.pop(context);
-      }
     }
     players.clear();
     Navigator.pop(context);
