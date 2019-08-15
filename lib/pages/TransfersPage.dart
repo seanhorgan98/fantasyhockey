@@ -39,7 +39,7 @@ class TransfersPageState extends State<TransfersPage>{
     return new Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text("Player Stats", style: TextStyle(fontFamily: 'Titillium')),
+        title: Text("Transfers", style: TextStyle(fontFamily: 'Titillium')),
       ),
       body: Container(
         margin: EdgeInsets.all(4),
@@ -78,15 +78,16 @@ class TransfersPageState extends State<TransfersPage>{
   
   //builds information to go above table
   Widget _addHeaderInfo(BuildContext context){
-    String outPlayerName = teamData['players'][outIndex];
-    int budget = int.parse(teamData['prices'][outIndex]) + int.parse(teamData['transfers'][1]);
-    String transfers = teamData['transfers'][0];
+    String outPlayerName = (teamData['players'][outIndex]);
+    //Next line breaks
+    int budget = teamData['prices'][outIndex] + teamData['transfers'][1];
+    String transfers = teamData['transfers'][0].toString();
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Text("Remaining Budget:\n" + budget.toString()),
-        Text("Transfer Out:\n" + outPlayerName),
-        Text("Remaining Transfers:\n" + transfers)
+        Text("Remaining Budget:\n${budget.toString()}"),
+        Text("Transfer Out:\n$outPlayerName"),
+        Text("Remaining Transfers:\n${transfers.toString()}")
       ]
     );
   }    
@@ -167,6 +168,7 @@ class TransfersPageState extends State<TransfersPage>{
         if (teamData['players'].contains(snapshot.data.documents[index].documentID)){
           return Container(width: 0, height: 0);
         }
+        
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           
@@ -219,7 +221,7 @@ class TransfersPageState extends State<TransfersPage>{
     //no transfer confirmation
     if (value == null || value == 0) {return;}
     //no remaining transfers
-    if (teamData['transfers'][0] == '0' && teamData['transferSetting'] == 1){
+    if (teamData['transfers'][0] == 0 && teamData['transferSetting'] == 1){
       _ackAlert(context, 'Invalid Transfer', 'No remaining transfers');
       return;
     }
@@ -229,12 +231,12 @@ class TransfersPageState extends State<TransfersPage>{
       return;      
     }
     //Transfer too expensive
-    if (int.parse(teamData['transfers'][1]) + int.parse(teamData['prices'][outIndex]) < player['price'] ) {
+    if ((teamData['transfers'][1] + teamData['prices'][outIndex]) < player['price'] ) {
       _ackAlert(context, 'Invalid Transfer', 'Player too expensive');
       return;
     }
 
-    //Validate team limit
+    /*Validate team limit
     //update global state holder
     // Garbage, don't try to understand - Probably pretty easy to break somehow
     Firestore.instance.document("/Players/" + teamData['players'][outIndex]).get().then(
@@ -243,21 +245,23 @@ class TransfersPageState extends State<TransfersPage>{
       }
     );
     //valiate number of players per team
-    if (teams[player['team']] >= 3){
+    //This doesn't work.
+    if (teams[player['teams']] >= 3){
       _ackAlert(context, 'Invalid Transfer', 'Too many players from a team');
       Navigator.pop(context);
       return;
     } 
+    */
 
     //update number of transfers left
     var transfers = teamData['transfers'];
     if(teamData['transferSetting'] == 1){
-      transfers[0] = (int.parse(transfers[0]) - 1).toString();
+      transfers[0] = transfers[0] - 1;
     }
     //update prices and budget
     var prices = teamData['prices'];
-    transfers[1] = (int.parse(transfers[1])+int.parse(prices[outIndex])-player['price']).toString();
-    prices[outIndex] = player['price'].toString();
+    transfers[1] = transfers[1] + prices[outIndex] - player['price'];
+    prices[outIndex] = player['price'];
 
     //update players, points and sub position
     var players = teamData['players'];

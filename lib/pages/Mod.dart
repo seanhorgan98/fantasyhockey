@@ -43,8 +43,10 @@ class ModState extends State<Mod>{
                 child: Text("Transfer Lock/Unlock", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
               ),
             ),
-            //Aadd player to firebase
+            //Add player to firebase
+            Divider(),
             Container(
+              alignment: Alignment.bottomCenter,
               margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
               height: 50,
               child: MaterialButton(
