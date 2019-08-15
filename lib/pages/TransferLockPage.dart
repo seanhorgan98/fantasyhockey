@@ -10,7 +10,7 @@ class TransferLockPage extends StatelessWidget {
         title: Text("Lock Transfers",),
         backgroundColor: Colors.black,
       ),
-      
+
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
@@ -54,12 +54,20 @@ class TransferLockPage extends StatelessWidget {
       
   }
 
+  //function to send all user profiles to setter function
   getData(Function set){
     Firestore.instance.collection("Teams").where(
       "transferSetting", isLessThan: 3).snapshots().take(1).forEach(
         (snapshot) => set(snapshot) );
   }
 
+
+  /*
+  Near identical functions passed by buttons
+  Take a snapshot and convert it into useable data
+  Then update profile to correct settings
+  */
+  
   lock(QuerySnapshot snapshot){
     var data = snapshot.documents;
     for( DocumentSnapshot i in data){

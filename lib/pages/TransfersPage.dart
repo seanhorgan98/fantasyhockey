@@ -140,6 +140,10 @@ class TransfersPageState extends State<TransfersPage>{
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
         //Get data before printing
         if(!snapshot.hasData) {return const Text('Loading...');}
+
+        //TODO here until 161 are all filters for not allowed players
+        //Nothing to actually do here
+
         //If row is player being sold, emitt
         if(snapshot.data.documents[index].documentID == teamData['players'][outIndex]) {
           return Container(width: 0, height: 0);
