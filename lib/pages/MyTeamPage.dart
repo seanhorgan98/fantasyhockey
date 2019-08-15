@@ -9,31 +9,61 @@ class MyTeamPage extends StatefulWidget{
   //Constructor
   MyTeamPage({this.auth});
   final BaseAuth auth;
-  
   @override
   MyTeamPageState createState() => new MyTeamPageState();
 }
 
 class MyTeamPageState extends State<MyTeamPage> {
 
+  String teamID = "000";
+
+  @override
+  void initState() {
+    super.initState();
+    teamID="000";
+    _getCurrentUser(widget.auth);
+  }
+
+  _getCurrentUser(BaseAuth auth) async{
+    String test = await auth.currentUser();
+    
+    Firestore.instance.collection("Users").document(test).get().then((snapshot){
+      teamID = snapshot.data['team'];
+    });
+
+    setState(() {
+      teamID = test;
+    });
+  }
+  
   /*
     Main Build Method, Starts Widget
     Calls BuildDisplay and reloads when user team db page changes
   */
+  
   @override
   Widget build(BuildContext context) {
+    
+    Firestore.instance.collection("Teams").document(teamID).get().then((data){
+      //Literally no idea why this needs to be here but it fucks up if its not so don't delete
+      print(".");
+    });
+    
     return StreamBuilder(
-      //Will need to get this testTeam name from the team associated with the currentUser()
-      stream: Firestore.instance.collection('Teams').snapshots(),
+      stream: Firestore.instance.collection('Teams').document(teamID).snapshots(),
       builder: (context, snapshot){
+        if(snapshot.connectionState == ConnectionState.waiting) return new Center(child: new CircularProgressIndicator());
+        if(snapshot.data == null) return CircularProgressIndicator();
         if(!snapshot.hasData) {return const Text('Loading...');}
+        var userDocument = snapshot.data;
         return Builder(
           builder: (BuildContext context) {
-            return _buildDisplay(context, snapshot.data.documents[0]);
+            return _buildDisplay(context, userDocument);
           }
         );
       } 
     );
+    
   }
 
   /*
@@ -43,7 +73,7 @@ class MyTeamPageState extends State<MyTeamPage> {
     Calls getStructuredGridCell
   */
   Widget _buildDisplay(BuildContext context, DocumentSnapshot doc){
-    String transfers = doc['transfers'][0].toString();
+    String transfers = doc ['transfers'][0].toString();
     // Check if unlimited transfers
     if(doc['transferSetting'] == 2){
       transfers = "∞";
@@ -387,4 +417,5 @@ class MyTeamPageState extends State<MyTeamPage> {
     );
   }
   
+
 }
