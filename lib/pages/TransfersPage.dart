@@ -144,6 +144,11 @@ class TransfersPageState extends State<TransfersPage>{
         //TODO here until 161 are all filters for not allowed players
         //Nothing to actually do here
 
+        // //filter out null player
+        if(snapshot.data.documents[index].documentID == "No Player"){
+          return Container();
+        }
+
         //If row is player being sold, emitt
         if(snapshot.data.documents[index].documentID == teamData['players'][outIndex]) {
           return Container(width: 0, height: 0);
