@@ -299,8 +299,49 @@ class AddGamePageState extends State<AddGamePage>{
         }
       );
     }
+    updateTeams();
     players.clear();
     Navigator.pop(context);
+
+  }
+
+  void updateTeams(){
+    Firestore.instance.collection('Users').getDocuments().then( 
+      (snap) => eachUser(snap)
+    );
+  }
+
+  eachUser(QuerySnapshot snapshot){
+    for (DocumentSnapshot user in snapshot.documents){
+      List points = new List();
+      int total = user['totalPoints'];
+      int gw;
+
+      for(int index in user['players']){
+        Firestore.instance.collection('Players').document(user['players'][index]).get().then( 
+          (snap) {points[index] = onePlayer(snap, index, user);}
+        );
+        gw += points[index];
+      }
+      total += gw;
+      // Write to array
+      Firestore.instance.runTransaction((transaction) async {
+        DocumentSnapshot freshSnap = await transaction.get(user.reference);
+        await transaction.update(freshSnap.reference, {
+          'points': points,
+          'totalPoints': total,
+          'gw': gw
+        });
+      });
+    }
+  }
+
+  onePlayer(DocumentSnapshot snapshot, int index, DocumentSnapshot user){
+    int captain = user['captain'];
+    int points = snapshot['gw'];
+    if (captain == index){
+      points = points * 2;
+    }
 
   }
 
