@@ -56,10 +56,80 @@ class ModState extends State<Mod>{
                 child: Text("Add Player to firebase", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
               ),
             ),
+            //Update Teams
+            Container(
+              alignment: Alignment.bottomCenter,
+              margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
+              height: 50,
+              child: MaterialButton(
+                minWidth: MediaQuery.of(context).size.width,
+                color: Theme.of(context).accentColor,
+                onPressed: updateTeams,
+                child: Text("Update Team scores", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+
+  /*
+  These 3 functions call each other to update all teams totals + players in firestore
+  */
+  void updateTeams(){
+    Firestore.instance.collection('Teams').getDocuments().then( 
+      (snap) => eachUser(snap)
+    );
+  }
+
+  void eachUser(QuerySnapshot snapshot){
+    for (DocumentSnapshot user in snapshot.documents){
+      if(user.documentID == '000'){
+        continue;
+      }
+      for(int index = 0; index<7; index++){
+        Firestore.instance.collection('Players').document(user['players'][index]).get().then( 
+          (snap) {onePlayer(snap, index, user); }
+        );
+      }
+    }
+  }
+
+  void onePlayer(DocumentSnapshot snapshot, int index, DocumentSnapshot user){
+
+    // Pull current data
+    List points = user['points'];
+    int total = user['totals'][0];
+    int gw = user['totals'][1];
+
+    //reset gw if first player
+    if(index == 0){
+      gw = 0;
+    }
+    // get points for this player
+    points[index] = snapshot['gw'];
+    //double if captain
+    if (user['captain'] == index){
+      points[index] *= 2;
+    }
+
+    //update totals
+    gw +=points[index];
+    if(index == 6){
+      total += gw;
+    }
+
+    //write
+    Firestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot freshSnap = await transaction.get(user.reference);
+      transaction.update(freshSnap.reference, {
+        'points': points,
+        'totals': [total,gw]
+      });
+    });
+
   }
 
   addDataToFirebase(){

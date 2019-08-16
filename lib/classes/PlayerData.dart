@@ -209,11 +209,12 @@ class PlayerData {
   }
 
   void calcPoints(){
-    this.goals = (this.defenderGoals + this.midfielderGoals + this.forwardGoals) *
-     (6-this.position) + (this.shortGoals + this.flickGoals) * 3;
+    this.goals = ( this.defenderGoals + this.midfielderGoals + this.forwardGoals
+     + this.shortGoals + this.flickGoals );
       
     this.gw = (
-      (this.goals) +
+      ( (this.defenderGoals + this.midfielderGoals + this.forwardGoals) *(6-this.position) ) +
+          ( (this.shortGoals + this.flickGoals) * 3) +
       (this.appearances * 1) +
       (this.missedFlicks * -3) +
       (this.assistFlicks + this.assists * 3) +

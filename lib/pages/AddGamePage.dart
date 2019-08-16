@@ -151,7 +151,6 @@ class AddGamePageState extends State<AddGamePage>{
   }
 
 
-
   playerPopup(int index) async {
     // Remove player button somewhere?
     return await showDialog<void>(
@@ -179,7 +178,27 @@ class AddGamePageState extends State<AddGamePage>{
   }
 
   Widget playerPopupRow(PlayerData player, int index){
-    List<int> badIndex = [0, 15, 20, 23];
+    //appearences, goals, gw, price, totalPoints
+    List<int> badIndex = [0, 14, 15, 20, 23];
+    //Remove position fields
+    // 12 is forward goal
+    // 5, 6 are def concede, 7 is clean, 8 is goal
+    // 16 is mid cleen, 17 is goal
+    switch(player.getPosition()){
+      case 0:
+        badIndex.addAll([16,17]);
+        badIndex.add(12);
+        break;
+      case 1:
+        badIndex.add(12);
+        badIndex.addAll([5,6,7,8]);
+        break;
+      case 2:
+        badIndex.addAll([16,17]);
+        badIndex.addAll([5,6,7,8]);
+        break;
+    }
+
     if(badIndex.contains(index)){
       return Container();
     }
@@ -213,7 +232,7 @@ class AddGamePageState extends State<AddGamePage>{
     );
   }
 
-
+  // changes state based on +/- click
   void increment(int change, int index, PlayerData player){
     List temp = player.toList();
     temp[index]+= change;
@@ -223,13 +242,11 @@ class AddGamePageState extends State<AddGamePage>{
           i.setData(temp);
         });
       }
-    }   
+    }
   }
 
-  /*
-  Handles reading player data
-  Writing back to firestore
-  */
+  // Gets confirmation before writing everything
+  // Exits widget
   void subGame() async {
     //Check players have been added
     if(players.isEmpty){
@@ -242,109 +259,81 @@ class AddGamePageState extends State<AddGamePage>{
       (int result) {
         if(result == 0){
           return;
+        } else {
+          writeData();
         }
       }
     );
-
-    for(PlayerData i in players){
-      PlayerData currentData = new PlayerData(i.getName(), i.getPosition());
-
-      //Create Collection
-      i.calcPoints();
-      DocumentReference addedDocRef = Firestore.instance.collection("Games").document();
-      addedDocRef.setData({"Opponent": opponent});
-      addedDocRef.updateData({
-        i.getName(): i.toMap(),
-      });
-
-      //Update Players
-      Firestore.instance.collection("Players").document(i.getName()).get().then(
-        (doc) {
-          currentData.loadData(doc);
-          currentData.add(i);
-
-          List fields = currentData.fieldList();
-          List data = currentData.toList();
-
-          //Write to Firestore
-          Firestore.instance.runTransaction((transaction) async {
-            DocumentSnapshot freshSnap = await transaction.get(doc.reference);
-            await transaction.update(freshSnap.reference, {
-              fields[0]: data[0],
-              fields[1]: data[1],
-              fields[2]: data[2],
-              fields[3]: data[3],
-              fields[4]: data[4],
-              fields[5]: data[5],
-              fields[6]: data[6],
-              fields[7]: data[7],
-              fields[8]: data[8],
-              fields[9]: data[9],
-              fields[10]: data[10],
-              fields[11]: data[11],
-              fields[12]: data[12],
-              fields[13]: data[13],
-              fields[14]: data[14],
-              fields[15]: data[15],
-              fields[16]: data[16],
-              fields[17]: data[17],
-              fields[18]: data[18],
-              fields[19]: data[19],
-              fields[20]: data[20],
-              fields[21]: data[21],
-              fields[22]: data[22],
-              fields[23]: data[23],
-            });
-          });
-        }
-      );
-    }
-    updateTeams();
-    players.clear();
     Navigator.pop(context);
-
   }
 
-  void updateTeams(){
-    Firestore.instance.collection('Users').getDocuments().then( 
-      (snap) => eachUser(snap)
-    );
-  }
+  /*
+  Handles reading player data
+  Writing back to firestore
+  */
+  writeData() async {
+    try{
+      for(PlayerData i in players){
+        PlayerData currentData = new PlayerData(i.getName(), i.getPosition());
 
-  eachUser(QuerySnapshot snapshot){
-    for (DocumentSnapshot user in snapshot.documents){
-      List points = new List();
-      int total = user['totalPoints'];
-      int gw;
-
-      for(int index in user['players']){
-        Firestore.instance.collection('Players').document(user['players'][index]).get().then( 
-          (snap) {points[index] = onePlayer(snap, index, user);}
-        );
-        gw += points[index];
-      }
-      total += gw;
-      // Write to array
-      Firestore.instance.runTransaction((transaction) async {
-        DocumentSnapshot freshSnap = await transaction.get(user.reference);
-        await transaction.update(freshSnap.reference, {
-          'points': points,
-          'totalPoints': total,
-          'gw': gw
+        //Create Collection
+        //TODO i.giveAppearance();
+        i.calcPoints();
+        
+        DocumentReference addedDocRef = Firestore.instance.collection("Games").document();
+        addedDocRef.setData({"Opponent": opponent});
+        addedDocRef.updateData({
+          i.getName(): i.toMap(),
         });
-      });
-    }
+
+        //Update Players
+        Firestore.instance.collection("Players").document(i.getName()).get().then(
+          (doc) {
+            currentData.loadData(doc);
+            currentData.add(i);
+
+            List fields = currentData.fieldList();
+            List data = currentData.toList();
+
+            //Write to Firestore
+            Firestore.instance.runTransaction((transaction) async {
+              DocumentSnapshot freshSnap = await transaction.get(doc.reference);
+              await transaction.update(freshSnap.reference, {
+                fields[0]: data[0],
+                fields[1]: data[1],
+                fields[2]: data[2],
+                fields[3]: data[3],
+                fields[4]: data[4],
+                fields[5]: data[5],
+                fields[6]: data[6],
+                fields[7]: data[7],
+                fields[8]: data[8],
+                fields[9]: data[9],
+                fields[10]: data[10],
+                fields[11]: data[11],
+                fields[12]: data[12],
+                fields[13]: data[13],
+                fields[14]: data[14],
+                fields[15]: data[15],
+                fields[16]: data[16],
+                fields[17]: data[17],
+                fields[18]: data[18],
+                fields[19]: data[19],
+                fields[20]: data[20],
+                fields[21]: data[21],
+                fields[22]: data[22],
+                fields[23]: data[23],
+              });
+            });
+          }
+        );
+      }
+    } catch (err){
+      print(err.toString());
+    } 
   }
-
-  onePlayer(DocumentSnapshot snapshot, int index, DocumentSnapshot user){
-    int captain = user['captain'];
-    int points = snapshot['gw'];
-    if (captain == index){
-      points = points * 2;
-    }
-
-  }
-
+  
+  
   //Simple Popup Messages
   Future<void> _ackAlert(BuildContext context, String alertTitle, String alert) {
     return showDialog<void>(
