@@ -233,7 +233,7 @@ class PlayerData {
   //used to parse data to write
   Map toMap(){
     return {
-      'appearences': this.appearances,
+      'appearances': this.appearances,
       'assistFlicks': this.assistFlicks,
       'assists': this.assists,
       'boatRaceLoss': this.boatRaceLoss,
