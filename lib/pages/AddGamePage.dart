@@ -59,13 +59,15 @@ class AddGamePageState extends State<AddGamePage>{
       )
     );
   }
-
+  
+  // sets state of opponent using textbow
   void updateOpp(String text){
     setState(() {
       opponent = text;
     });
   }
-
+  
+  // build helper
   Widget buildPlayerWidget(BuildContext context, int index){
     if(players.length > index ){
       return RaisedButton(
@@ -80,7 +82,6 @@ class AddGamePageState extends State<AddGamePage>{
       );
     } 
   }
-
 
   //Function to add player to game
   void setPlayerName(BuildContext context){
@@ -149,8 +150,7 @@ class AddGamePageState extends State<AddGamePage>{
       child: Text(name),
     );
   }
-
-
+  //called from above
   playerPopup(int index) async {
     // Remove player button somewhere?
     return await showDialog<void>(
@@ -176,7 +176,7 @@ class AddGamePageState extends State<AddGamePage>{
       }
     );
   }
-
+  //called from above
   Widget playerPopupRow(PlayerData player, int index){
     //appearences, goals, gw, price, totalPoints
     List<int> badIndex = [0, 14, 15, 20, 23];
@@ -276,10 +276,11 @@ class AddGamePageState extends State<AddGamePage>{
       for(PlayerData i in players){
         PlayerData currentData = new PlayerData(i.getName(), i.getPosition());
 
-        //Create Collection
-        //TODO i.giveAppearance();
+        // update player points
+        i.giveApp();
         i.calcPoints();
-        
+
+        //Create Document for game 
         DocumentReference addedDocRef = Firestore.instance.collection("Games").document();
         addedDocRef.setData({"Opponent": opponent});
         addedDocRef.updateData({
