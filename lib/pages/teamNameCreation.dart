@@ -106,12 +106,7 @@ class _TeamNameCreationState extends State<TeamNameCreation> {
         'players':[
           "No Player", "No Player", "No Player", "No Player", "No Player", "No Player", "No Player"
         ],
-        'sub': 0,
-        'teams':{
-          '1XI': 0,
-          '2XI': 0,
-          '3XI': 0
-        },
+        'sub': 1,
         'totals':[
           0,0
         ],
