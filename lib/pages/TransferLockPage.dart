@@ -21,7 +21,7 @@ class TransferLockPage extends StatelessWidget {
             fit: FlexFit.tight,
             child: RaisedButton(
               child: Text("Lock", style: TextStyle(fontSize: 40)),
-              onPressed: () => getData(lock),
+              onPressed: () => getData(0),
             ),
           ),
           Flexible(
@@ -33,7 +33,7 @@ class TransferLockPage extends StatelessWidget {
             fit: FlexFit.tight,          
             child: RaisedButton(
               child: Text("Unlock", style: TextStyle(fontSize: 40)),
-              onPressed:() => getData(unlock),
+              onPressed:() => getData(1),
             )
           ),
           Flexible(
@@ -45,7 +45,7 @@ class TransferLockPage extends StatelessWidget {
             fit: FlexFit.tight,
             child: RaisedButton(
               child: Text("Unlimited", style: TextStyle(fontSize: 40),),
-              onPressed: () => getData(unlimit),
+              onPressed: () => getData(2),
             )
           ),
           Flexible(
@@ -91,6 +91,8 @@ class TransferLockPage extends StatelessWidget {
     );
       
   }
+
+
 
   /*
   First function gets data for section function to handle
@@ -143,6 +145,8 @@ class TransferLockPage extends StatelessWidget {
   }
 
 
+
+
   /*
   First function gets data for section function to handle
   sets gw to 0 
@@ -171,55 +175,26 @@ class TransferLockPage extends StatelessWidget {
   }
 
 
-//TODO stop being fancy lol
 
-  //function to send all user profiles to setter function
-  getData(Function set){
-    Firestore.instance.collection("Teams").where(
-      "transferSetting", isLessThan: 3).snapshots().take(1).forEach(
-        (snapshot) => set(snapshot) );
+  //Functions for Transfer Setting handling
+
+  //Get Teams Document and send to set
+  getData(int value){
+    Firestore.instance.collection("Teams").snapshots().take(1).forEach(
+      (snapshot) => set(snapshot, value) 
+    );
   }
 
-  /*
-  Near identical functions passed by buttons
-  Take a snapshot and convert it into useable data
-  Then update profile to correct settings
-  */
-  
-  lock(QuerySnapshot snapshot){
+  //  Set all transferSetting values to value
+  void set(QuerySnapshot snapshot, int value){
+    WriteBatch batch = Firestore.instance.batch();
     var data = snapshot.documents;
     for( DocumentSnapshot i in data){
-      Firestore.instance.runTransaction((transaction) async {
-        DocumentSnapshot freshSnap = await transaction.get(i.reference);
-        await transaction.update(freshSnap.reference, {
-          'transferSetting': 0
-        });     
-      }); 
+      DocumentReference iref = i.reference;
+      batch.updateData(iref, {'transferSetting': value});
     }
+    batch.commit();
   }
 
-  unlock(QuerySnapshot snapshot){
-    var data = snapshot.documents;
-    for( DocumentSnapshot i in data){
-      Firestore.instance.runTransaction((transaction) async {
-        DocumentSnapshot freshSnap = await transaction.get(i.reference);
-        await transaction.update(freshSnap.reference, {
-          'transferSetting': 1
-        });     
-      }); 
-    }
-  }
-
-  unlimit(QuerySnapshot snapshot){
-    var data = snapshot.documents;
-    for( DocumentSnapshot i in data){
-      Firestore.instance.runTransaction((transaction) async {
-        DocumentSnapshot freshSnap = await transaction.get(i.reference);
-        await transaction.update(freshSnap.reference, {
-          'transferSetting': 2
-        });     
-      }); 
-    }
-  }
 
 }
