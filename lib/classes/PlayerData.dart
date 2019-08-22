@@ -156,12 +156,15 @@ class PlayerData {
   }
 
   //Used to merge firestore and local
-  void add(PlayerData newdata){
-    if(newdata.getName() != this.name){
+  void add(PlayerData newData) {
+    if(newData == null){
+      throw IOException;
+    }
+    if(newData.getName() != this.name){
       throw IOException;
     }
     //Increase all fields in this object by new object
-    List i = newdata.toList();
+    List i = newData.toList();
     this.appearances += i[0];
     this.assistFlicks += i[1];
     this.assists += i[2];
@@ -177,7 +180,7 @@ class PlayerData {
     this.forwardGoals += i[12];
     this.greenCards += i[13];
     this.goals += i[14];
-    this.gw = i[15];
+    this.gw += i[15];
     this.midfieldCleenSheets += i[16];
     this.midfielderGoals += i[17];
     this.missedFlicks += i[18];
@@ -187,6 +190,10 @@ class PlayerData {
     this.shortGoals += i[22];
     this.totalPoints += i[23];
     this.yellowCards += i[24];
+  }
+
+  void giveApp(){
+    this.appearances = 1;
   }
 
   int cleanSheetPoints(){
@@ -226,12 +233,10 @@ class PlayerData {
       (this.boatRaceLoss * -3 + this.boatRaceWin * 5) 
     );
 
-    this.totalPoints += this.gw;
-
   }
 
   //used to parse data to write
-  Map toMap(){
+  Map<String, dynamic> toMap(){
     return {
       'appearances': this.appearances,
       'assistFlicks': this.assistFlicks,
@@ -295,7 +300,7 @@ class PlayerData {
   //used for field names to write to db
   List fieldList(){
     return [
-      'appearences',
+      'appearances',
       'assistFlicks',
       'assists',
       'boatRaceLoss',

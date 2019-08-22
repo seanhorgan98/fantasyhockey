@@ -271,7 +271,7 @@ class AddGamePageState extends State<AddGamePage>{
   Handles reading player data
   Writing back to firestore
   */
-  writeData() async {
+  void writeData() async {
     try{
       for(PlayerData i in players){
         PlayerData currentData = new PlayerData(i.getName(), i.getPosition());
@@ -283,49 +283,17 @@ class AddGamePageState extends State<AddGamePage>{
         //Create Document for game 
         DocumentReference addedDocRef = Firestore.instance.collection("Games").document();
         addedDocRef.setData({"Opponent": opponent});
-        addedDocRef.updateData({
-          i.getName(): i.toMap(),
-        });
+        addedDocRef.updateData( {i.getName(): i.toMap()} );
 
         //Update Players
         Firestore.instance.collection("Players").document(i.getName()).get().then(
           (doc) {
+            //load player data then add
             currentData.loadData(doc);
             currentData.add(i);
-
-            List fields = currentData.fieldList();
-            List data = currentData.toList();
-
             //Write to Firestore
-            Firestore.instance.runTransaction((transaction) async {
-              DocumentSnapshot freshSnap = await transaction.get(doc.reference);
-              await transaction.update(freshSnap.reference, {
-                fields[0]: data[0],
-                fields[1]: data[1],
-                fields[2]: data[2],
-                fields[3]: data[3],
-                fields[4]: data[4],
-                fields[5]: data[5],
-                fields[6]: data[6],
-                fields[7]: data[7],
-                fields[8]: data[8],
-                fields[9]: data[9],
-                fields[10]: data[10],
-                fields[11]: data[11],
-                fields[12]: data[12],
-                fields[13]: data[13],
-                fields[14]: data[14],
-                fields[15]: data[15],
-                fields[16]: data[16],
-                fields[17]: data[17],
-                fields[18]: data[18],
-                fields[19]: data[19],
-                fields[20]: data[20],
-                fields[21]: data[21],
-                fields[22]: data[22],
-                fields[23]: data[23],
-              });
-            });
+            DocumentReference freshRef = doc.reference;
+            freshRef.updateData( currentData.toMap() );
           }
         );
       }
