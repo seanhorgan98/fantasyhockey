@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fantasy_hockey/pages/AddGamePage.dart';
@@ -9,6 +10,18 @@ class Mod extends StatefulWidget{
 }
 
 class ModState extends State<Mod>{
+
+  PlayerList playerData;
+
+  @override
+  void initState() {
+    Firestore.instance.collection('Players').getDocuments().then(
+      (collection) => setState( () {
+        playerData = new PlayerList(collection);
+      })
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +77,8 @@ class ModState extends State<Mod>{
               child: MaterialButton(
                 minWidth: MediaQuery.of(context).size.width,
                 color: Theme.of(context).accentColor,
-                onPressed: updateTeams,
-                child: Text("Update Team scores", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
+                onPressed: () => updateTeams(context),
+                child: Text("Propogate GW scores", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
               ),
             ),
           ],
@@ -76,62 +89,56 @@ class ModState extends State<Mod>{
 
 
   /*
-  These 3 functions call each other to update all teams totals + players in firestore
+    Many functions to propogate data
+    update Teams gets documents to update
+    each user controls flow of other 2
+    batch Team handles all write data
+    do Write handles the write to firestore
   */
-  void updateTeams(){
+  void updateTeams(BuildContext context){
     Firestore.instance.collection('Teams').getDocuments().then( 
       (snap) => eachUser(snap)
     );
   }
 
-  void eachUser(QuerySnapshot snapshot){
-    for (DocumentSnapshot user in snapshot.documents){
+  batchTeam(QuerySnapshot collection, WriteBatch batch){
+    for (DocumentSnapshot user in collection.documents){
+      //Skip null doc
       if(user.documentID == '000'){
         continue;
       }
-      for(int index = 0; index<7; index++){
-        Firestore.instance.collection('Players').document(user['players'][index]).get().then( 
-          (snap) {onePlayer(snap, index, user); }
-        );
+
+      //team var to track data being used here
+      TeamPointData team = new TeamPointData(user);
+      //update team data using state
+      for(int i=0; i<team.names.length;i++){
+        team.setPoints(i, playerData.getPlayerPoints(team.names[i]) );
       }
-    }
-  }
+      team.doubleCap();
+      team.updateGW();
 
-  void onePlayer(DocumentSnapshot snapshot, int index, DocumentSnapshot user){
-
-    // Pull current data
-    List points = user['points'];
-    int total = user['totals'][0];
-    int gw = user['totals'][1];
-
-    //reset gw if first player
-    if(index == 0){
-      gw = 0;
-    }
-    // get points for this player
-    points[index] = snapshot['gw'];
-    //double if captain
-    if (user['captain'] == index){
-      points[index] *= 2;
-    }
-
-    //update totals
-    gw +=points[index];
-    if(index == 6){
-      total += gw;
-    }
-
-    //write
-    Firestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot freshSnap = await transaction.get(user.reference);
-      transaction.update(freshSnap.reference, {
-        'points': points,
-        'totals': [total,gw]
+      // add to batch
+      DocumentReference uRef = user.reference;
+      batch.updateData(uRef, {
+        "points": team.gwPoints,
+        "totals": [team.gw, team.total]
       });
-    });
-
+    }
   }
 
+  eachUser(QuerySnapshot snapshot) async {
+    WriteBatch batch = Firestore.instance.batch();
+
+    await batchTeam(snapshot, batch);
+
+    await doWrite(batch);
+  }
+
+  doWrite(WriteBatch batch){
+    batch.commit();
+  }
+
+  //Depreciated until freshers
   addDataToFirebase(){
     String player = "Ben Dunwoody";
     Firestore.instance.runTransaction((transaction) async { await transaction.set(Firestore.instance.collection("Players").document(player),
@@ -166,6 +173,85 @@ class ModState extends State<Mod>{
       );
     });
     print("Added: $player");
+  }
+ 
+}
+
+class TeamPointData {
+
+  int gw;
+  int total;
+  List gwPoints;
+  List names;
+  int captain;
+
+  void updateGW(){
+    this.gw = this.gwPoints.reduce((a, b) => a + b);
+  }
+
+  void doubleCap(){
+    this.gwPoints[captain] *= 2;
+  }
+
+  TeamPointData(DocumentSnapshot snapshot){
+    if(snapshot == null){
+      throw IOException;
+    }
+    this.gw = snapshot['totals'][0];
+    this.total = snapshot['totals'][1];
+    this.gwPoints = snapshot['points'];
+    this.names = snapshot['players'];
+    this.captain = snapshot['captain'];
+  }
+
+  void setPoints(int i, int value){
+    if( i == null || value == null){
+      throw IOException;
+    }
+    this.gwPoints[i] = value;
+  }
+}
+
+class NamePoints {
+  String name;
+  int gwPoints;
+
+  NamePoints(DocumentSnapshot snapshot){
+    if(snapshot == null){
+      throw IOException;
+    }
+    this.name = snapshot.documentID;
+    this.gwPoints = snapshot['gw'];
+  }
+
+  int getPoints(){
+    return this.gwPoints;
+  }
+
+  String getName(){
+    return this.name;
+  }
+}
+
+class PlayerList {
+  List<NamePoints> players = new List<NamePoints>();
+
+  PlayerList(QuerySnapshot query){
+    if(query == null) {
+      throw IOException;
+    }
+    for (DocumentSnapshot player in query.documents){
+      this.players.add(new NamePoints(player));
+    }
+  }
+
+  int getPlayerPoints(String name){
+    for(NamePoints data in players){
+      if(data.getName() == name){
+        return data.getPoints();
+      }
+    }
+    return 0;
   }
 
 }
