@@ -28,12 +28,11 @@ class MyTeamPageState extends State<MyTeamPage> {
     String test = await auth.currentUser();
     
     Firestore.instance.collection("Users").document(test).get().then((snapshot){
-      teamID = snapshot.data['team'];
+      setState(() {
+        teamID = snapshot.data['team'];
+      });
     });
 
-    setState(() {
-      teamID = test;
-    });
   }
   
   /*
@@ -43,11 +42,6 @@ class MyTeamPageState extends State<MyTeamPage> {
   
   @override
   Widget build(BuildContext context) {
-    
-    Firestore.instance.collection("Teams").document(teamID).get().then((data){
-      //Literally no idea why this needs to be here but it fucks up if its not so don't delete
-      print(".");
-    });
     
     return StreamBuilder(
       stream: Firestore.instance.collection('Teams').document(teamID).snapshots(),
