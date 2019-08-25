@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fantasy_hockey/pages/RulesPage.dart';
-import 'package:fantasy_hockey/pages/PlayerStats.dart';
-import 'package:fantasy_hockey/pages/Mod.dart';
-import 'package:fantasy_hockey/pages/assisters.dart';
+import 'package:fantasy_hockey/pages/Rules/RulesPage.dart';
+import 'package:fantasy_hockey/pages/Rankings/PlayerStats.dart';
+import 'package:fantasy_hockey/pages/Mod/Mod.dart';
+import 'package:fantasy_hockey/pages/Rankings/assisters.dart';
 import 'package:fantasy_hockey/pages/auth.dart';
-import 'package:fantasy_hockey/pages/gameWeek.dart';
-import 'package:fantasy_hockey/pages/goalScorers.dart';
-import 'package:fantasy_hockey/pages/totalPoints.dart';
+import 'package:fantasy_hockey/pages/Rankings/gameWeek.dart';
+import 'package:fantasy_hockey/pages/Rankings/goalScorers.dart';
+import 'package:fantasy_hockey/pages/Rankings/totalPoints.dart';
 import 'package:flutter/material.dart';
 
 class StatsPage extends StatelessWidget{
