@@ -25,8 +25,7 @@ class MyTeamPageState extends State<MyTeamPage> {
   }
 
   _getCurrentUser(BaseAuth auth) async{
-    String test = await auth.currentUser();
-    
+    String test = await auth.currentUser();   
     Firestore.instance.collection("Users").document(test).get().then((snapshot){
       setState(() {
         teamID = snapshot.data['team'];
@@ -42,13 +41,17 @@ class MyTeamPageState extends State<MyTeamPage> {
   
   @override
   Widget build(BuildContext context) {
+
+    while(teamID == "000"){
+      return new Center(child: new CircularProgressIndicator());
+    }
     
     return StreamBuilder(
       stream: Firestore.instance.collection('Teams').document(teamID).snapshots(),
       builder: (context, snapshot){
-        if(snapshot.connectionState == ConnectionState.waiting) return new Center(child: new CircularProgressIndicator());
-        if(snapshot.data == null) return CircularProgressIndicator();
-        if(!snapshot.hasData) {return const Text('Loading...');}
+        if(snapshot.connectionState == ConnectionState.waiting) {
+          return new Center(child: new CircularProgressIndicator());
+        } 
         var userDocument = snapshot.data;
         return Builder(
           builder: (BuildContext context) {
