@@ -8,23 +8,17 @@ class PlayerStats extends StatefulWidget{
 
 class PlayerStatsState extends State<PlayerStats>{
 
-  _buildListItem(BuildContext context, int index) {
-    return StreamBuilder(
-      stream: Firestore.instance.collection("Players").orderBy("totalPoints", descending: true).snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-        if(!snapshot.hasData) {return const Text('Loading...');}
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Flexible(child: Text(snapshot.data.documents[index].documentID), flex: 3, fit: FlexFit.tight),
-            Expanded(child: Text(snapshot.data.documents[index]['goals'].toString()), flex: 1),
-            Expanded(child: Text(snapshot.data.documents[index]['gw'].toString()), flex: 1),
-            Expanded(child: Text(snapshot.data.documents[index]['totalPoints'].toString()), flex: 1),
-            Expanded(child: Text(snapshot.data.documents[index]['appearances'].toString()), flex: 1),
-            Expanded(child: Text(snapshot.data.documents[index]['motms'].toString()), flex: 1)
-          ],
-        );
-      },
+  _buildListItem(BuildContext context, int index, AsyncSnapshot snapshot) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Flexible(child: Text(snapshot.data.documents[index].documentID), flex: 3, fit: FlexFit.tight),
+        Expanded(child: Text(snapshot.data.documents[index]['goals'].toString()), flex: 1),
+        Expanded(child: Text(snapshot.data.documents[index]['gw'].toString()), flex: 1),
+        Expanded(child: Text(snapshot.data.documents[index]['totalPoints'].toString()), flex: 1),
+        Expanded(child: Text(snapshot.data.documents[index]['appearances'].toString()), flex: 1),
+        Expanded(child: Text(snapshot.data.documents[index]['motms'].toString()), flex: 1)
+      ],
     );
   }
 
@@ -37,7 +31,7 @@ class PlayerStatsState extends State<PlayerStats>{
       ),
       body: Container(
         child: StreamBuilder(
-          stream: Firestore.instance.collection("Players").snapshots(),
+          stream: Firestore.instance.collection("Players").where("totalPoints", isGreaterThan: -1).orderBy("totalPoints", descending: true).snapshots(),
           builder: (context, snapshot){
             if(!snapshot.hasData) {return const Text("Loading...");}
 
@@ -46,7 +40,7 @@ class PlayerStatsState extends State<PlayerStats>{
               padding: EdgeInsets.all(15),
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, index) =>
-                _buildListItem(context, index),
+                _buildListItem(context, index, snapshot),
                 separatorBuilder: (BuildContext context, int index) => Divider(height: 15,),
             );
           }
