@@ -218,15 +218,21 @@ class AddGamePageState extends State<AddGamePage>{
           fit: FlexFit.loose,
         ),        
       
-        //Up
-        RaisedButton(
-          child: Text("+"),
-          onPressed: () {increment(1, index, player);},
-        ),
+        
         //Down
         RaisedButton(
           child: Text("-"),
-          onPressed: () {increment(-1, index, player);},
+          onPressed: () {
+              increment(-1, index, player);
+            
+            },
+        ),
+        //Up
+        RaisedButton(
+          child: Text("+"),
+          onPressed: () {
+              increment(1, index, player);
+          }
         ),
       ],
     );
@@ -257,14 +263,15 @@ class AddGamePageState extends State<AddGamePage>{
     //Conformation popup
     await _asyncConfirmPopup(context).then(
       (int result) {
-        if(result == 0){
+        if(result == 0 || result == null){
           return;
         } else {
           writeData();
+          Navigator.pop(context);
         }
       }
     );
-    Navigator.pop(context);
+    
   }
 
   /*
@@ -273,6 +280,10 @@ class AddGamePageState extends State<AddGamePage>{
   */
   void writeData() async {
     try{
+
+      DocumentReference addedDocRef = Firestore.instance.collection("Games").document();
+      addedDocRef.setData({"Opponent": opponent});
+
       for(PlayerData i in players){
         PlayerData currentData = new PlayerData(i.getName(), i.getPosition());
 
@@ -280,9 +291,7 @@ class AddGamePageState extends State<AddGamePage>{
         i.giveApp();
         i.calcPoints();
 
-        //Create Document for game 
-        DocumentReference addedDocRef = Firestore.instance.collection("Games").document();
-        addedDocRef.setData({"Opponent": opponent});
+        //Create Document for game
         addedDocRef.updateData( {i.getName(): i.toMap()} );
 
         //Update Players

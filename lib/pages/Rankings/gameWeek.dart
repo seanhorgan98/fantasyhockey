@@ -8,20 +8,14 @@ class GameWeek extends StatefulWidget {
 
 class _GameWeekState extends State<GameWeek> {
 
-  _buildListItem(BuildContext context, int index){
-    return StreamBuilder(
-      stream: Firestore.instance.collection("Players").orderBy("gw", descending: true).snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-        if(!snapshot.hasData) {return const Text('Loading...');}
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Expanded(child: Text("\t" + (index+1).toString() + ". "), flex: 2),
-            Flexible(child: Text(snapshot.data.documents[index].documentID), flex: 6, fit: FlexFit.tight),
-            Expanded(child: Text(snapshot.data.documents[index]['gw'].toString()), flex: 3)            
-          ],
-        );
-      },
+  _buildListItem(BuildContext context, int index, AsyncSnapshot snapshot){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Expanded(child: Text("\t" + (index+1).toString() + ". "), flex: 2),
+        Flexible(child: Text(snapshot.data.documents[index].documentID), flex: 6, fit: FlexFit.tight),
+        Expanded(child: Text(snapshot.data.documents[index]['gw'].toString()), flex: 3)            
+      ],
     );
   }
 
@@ -35,16 +29,16 @@ class _GameWeekState extends State<GameWeek> {
         ),
         body: Container(
               child: StreamBuilder(
-                stream: Firestore.instance.collection("Players").snapshots(),
+                stream: Firestore.instance.collection("Players").where("gw", isGreaterThan: -1).orderBy("gw", descending: true).snapshots(),
                 builder: (context, snapshot){
                   if(!snapshot.hasData) {return const Text("Loading...");}
 
                   return ListView.separated(
                     shrinkWrap: true,
                     padding: EdgeInsets.all(15),
-                    itemCount: snapshot.data.documents.length,
+                    itemCount: (snapshot.data.documents.length-1),
                     itemBuilder: (context, index) =>
-                      _buildListItem(context, index),
+                      _buildListItem(context, index, snapshot),
                     separatorBuilder: (BuildContext context, int index) => Divider(height: 15,),
                   );
                 }

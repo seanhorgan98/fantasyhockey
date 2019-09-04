@@ -98,12 +98,12 @@ class TransferLockPage extends StatelessWidget {
   First function gets data for section function to handle
   Adds gw to total - only time total is changed
   */
-  void endGW(){
-    Firestore.instance.collection('Teams').getDocuments().then( 
+  void endGW() async{
+    await Firestore.instance.collection('Teams').getDocuments().then( 
       (snap) => eachUserEnd(snap)
     );
 
-    Firestore.instance.collection('Players').getDocuments().then(
+    await Firestore.instance.collection('Players').getDocuments().then(
       (snap) => eachEndPlayer(snap)
     );
   }
