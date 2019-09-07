@@ -11,10 +11,12 @@ class LeaguePage extends StatefulWidget{
 
 class LeaguePageState extends State<LeaguePage>{
   List<Team> teams;
-  Future<Team> sortTeams(AsyncSnapshot snapshot) async {
+
+
+  void sortTeams(AsyncSnapshot snapshot) {
     teams = new List<Team>();
 
-    //Loop through firebase teams and add them to list of teams
+    //Loop through all firebase teams and create a team object
     for(var i = 0;i<snapshot.data.documents.length;i++){
       Team team = new Team(teamName: snapshot.data.documents[i]['teamName'],
                             gw: snapshot.data.documents[i]['totals'][0],
@@ -22,8 +24,6 @@ class LeaguePageState extends State<LeaguePage>{
       teams.add(team);
     }
     teams.sort((a,b) => b.total.compareTo(a.total));
-    //Use list.sort
-    return null;
   }
 
   @override
@@ -36,26 +36,15 @@ class LeaguePageState extends State<LeaguePage>{
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            //Top Bar
+
+            //Surrounding White box for table
             Container(
-              width: MediaQuery.of(context).size.width*0.8,
-              height: 5,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: [0,1],
-                  colors: [
-                    Colors.white,
-                    Colors.red,
-                  ]
-                )
-              ),
-            ),
-            //Container for League Table white box
-            Container(
-              color: Colors.white,
               width: MediaQuery.of(context).size.width*0.9,
+              height: MediaQuery.of(context).size.height*0.84,
+
+              //Rounded edges
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.white),
+              
               child: Padding(
                 padding: EdgeInsets.fromLTRB(10, 15, 10, 10),
                 child: Column(
@@ -63,33 +52,41 @@ class LeaguePageState extends State<LeaguePage>{
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    //Title
                     Text(
                       "League Table",
                       style: TextStyle(fontSize: 24, fontFamily: 'Titillium'),
                     ),
+
+                    //Divider
                     Divider(height: 20,),
-                    //Headings
+
+                    //Column Headings
                     Row(
                       children: <Widget>[
                         Expanded(
-                          child: Text("Pos."),
+                          child: Text("Pos.", style: TextStyle(fontWeight: FontWeight.bold),),
                           flex: 1,
                         ),
                         Expanded(
-                          child: Text("Team Name"),
+                          child: Text(" Team Name", style: TextStyle(fontWeight: FontWeight.bold),),
                           flex: 4,
                         ),
                         Expanded(
-                          child: Text("GW"),
+                          child: Text("GW", style: TextStyle(fontWeight: FontWeight.bold),),
                           flex: 1,
                         ),
                         Expanded(
-                          child: Text("Total"),
+                          child: Text("Total", style: TextStyle(fontWeight: FontWeight.bold),),
                           flex: 1,
                         ),
                       ],
                     ),
-                    //DataTable || ACTUAL LEAGUE TABLE
+
+                    //Divider
+                    Divider(color: Colors.white,),
+
+                    //League Table Data
                     Flexible(
                       child: StreamBuilder(
                         stream: Firestore.instance.collection('Teams').snapshots(),
@@ -115,7 +112,7 @@ class LeaguePageState extends State<LeaguePage>{
               ),
             ),
             Container(
-              //Very unsure why this needs to be here but it does
+              //Very unsure why this needs to be here but it does (Alignment purposes probably)
             )
           ],
         )
@@ -127,7 +124,6 @@ class LeaguePageState extends State<LeaguePage>{
 Widget _buildListItem(BuildContext context, int index, List<Team> teams){
   return Row(
     children: <Widget>[
-      //Might need to switch from flexible to something else to sort out alignment issues
       Expanded(flex: 1,child: Text((index+1).toString())),
       Expanded(flex: 4,child: Text(teams[index].teamName)),
       Expanded(flex: 1,child: Text(teams[index].gw.toString())),
