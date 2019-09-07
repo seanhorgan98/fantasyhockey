@@ -81,6 +81,18 @@ class ModState extends State<Mod>{
                 child: Text("Propogate GW scores", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
               ),
             ),
+            //Add Dummy Team
+            Container(
+              alignment: Alignment.bottomCenter,
+              margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
+              height: 50,
+              child: MaterialButton(
+                minWidth: MediaQuery.of(context).size.width,
+                color: Theme.of(context).accentColor,
+                onPressed: () => addDummyTeam(context),
+                child: Text("Add dummy team to firebase", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
+              ),
+            ),
           ],
         ),
       ),
@@ -136,6 +148,17 @@ class ModState extends State<Mod>{
 
   doWrite(WriteBatch batch){
     batch.commit();
+  }
+
+  void addDummyTeam(BuildContext context){
+    Firestore.instance.runTransaction((transaction) async { await transaction.set(Firestore.instance.collection("Teams").document(),
+        {
+          'teamName': "Autogen Team",
+          'totals': [0, 0]
+         }
+      );
+    });
+    
   }
 
   //Depreciated until freshers
