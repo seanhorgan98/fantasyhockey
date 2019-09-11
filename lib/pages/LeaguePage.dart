@@ -17,7 +17,7 @@ class LeaguePageState extends State<LeaguePage>{
     teams = new List<Team>();
 
     //Loop through all firebase teams and create a team object
-    for(var i = 0;i<snapshot.data.documents.length;i++){
+    for(var i = 1;i<snapshot.data.documents.length;i++){
       Team team = new Team(teamName: snapshot.data.documents[i]['teamName'],
                             gw: snapshot.data.documents[i]['totals'][0],
                             total: snapshot.data.documents[i]['totals'][1]);
@@ -99,7 +99,7 @@ class LeaguePageState extends State<LeaguePage>{
                           return ListView.separated(
                             shrinkWrap: true,
                             padding: const EdgeInsets.all(8.0),
-                            itemCount: snapshot.data.documents.length,
+                            itemCount: snapshot.data.documents.length-1,
                             itemBuilder: (context, index) => 
                               _buildListItem(context, index, teams),  
                             separatorBuilder: (BuildContext context, int index) => const Divider(height: 30,),
