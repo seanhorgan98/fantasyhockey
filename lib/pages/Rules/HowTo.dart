@@ -16,15 +16,15 @@ class HowTo extends StatelessWidget{
             Text("Aim of the game", style: TextStyle(fontFamily: 'Titillium', fontSize: 40)),
             Text(
               "Your goal is to create the highest scoring team from the players available. " +
-              "For details on points, see the SCORING section",
+              "For details on points, see the SCORING section.",
               style: TextStyle(fontFamily: 'Titillium', fontSize: 25)
             ),
             Text("Managing Your Team", style: TextStyle(fontFamily: 'Titillium', fontSize: 40)),
             Text(
               "Every week you should pick a Captain for the week, " +
               "this player's points are doubled.\n" +
-              "The sub player's points are not counted.\n"
-              "You are also given 1 free transfer each week, for more details see TRANSFERS",
+              "The Flex position player can be a player from any position and will get the same points as they would get form their normal position.\n"
+              "You are also given 1 free transfer each week, for more details see TRANSFERS.",
               style: TextStyle(fontFamily: 'Titillium', fontSize: 25)
             ),
           ],

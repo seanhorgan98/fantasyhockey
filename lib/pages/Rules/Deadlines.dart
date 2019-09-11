@@ -24,7 +24,7 @@ class Deadlines extends StatelessWidget{
             Text(
               "In the event of a Re-arranged midweek game, " +
               "the transfer window may be shortened or moved.\n" +
-              "This is to ensure matches do not occur during the window",
+              "This is to ensure matches do not occur during the window.",
               style: TextStyle(fontFamily: 'Titillium', fontSize: 25)
             ),
           ],

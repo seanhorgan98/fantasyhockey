@@ -17,7 +17,7 @@ class Transfers extends StatelessWidget{
             Text(
               "After each gameweek, you will be given one transfer.\n" +
               "This will stack up to two but after that, any extra transfers are discarded.\n" +
-              "There are no other transfers outside of this",
+              "There are no other transfers outside of this.",
               style: TextStyle(fontFamily: 'Titillium', fontSize: 25)
             ),
             Text("Valid Transfers", style: TextStyle(fontFamily: 'Titillium', fontSize: 40)),
@@ -25,8 +25,7 @@ class Transfers extends StatelessWidget{
               "For a transfer to be valid:\n" +
               "- You must be able to afford the new player\n" +
               "- You must have a transfer available\n" +
-              "- You must be in the Transfer Window, see DEADLINES for details\n" + 
-              "- You must not be trying to get more than 3 players from 1 team",
+              "- You must be in the Transfer Window, see DEADLINES for details\n",
               style: TextStyle(fontFamily: 'Titillium', fontSize: 25)
             ),
             Text("Prices", style: TextStyle(fontFamily: 'Titillium', fontSize: 40)),
