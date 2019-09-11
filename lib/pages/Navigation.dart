@@ -41,7 +41,7 @@ class _NavigationState extends State<Navigation> {
               Color(0xFF3594DD),
               Color(0xFF4563DB),
               Color(0xFF5036D5),
-              Color(0xFF5B16D0)
+              Color(0xFF5036D5)
             ]
           )
         ),

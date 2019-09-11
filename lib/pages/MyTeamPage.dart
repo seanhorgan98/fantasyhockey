@@ -163,7 +163,7 @@ class MyTeamPageState extends State<MyTeamPage> {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: Colors.white
+              color: Color(0xFF25A15F)
             ),
             width: MediaQuery.of(context).size.width*0.9,
             height: MediaQuery.of(context).size.height*0.6,
@@ -173,7 +173,8 @@ class MyTeamPageState extends State<MyTeamPage> {
               children: <Widget>[
                 Text(
                   "Defenders",
-                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold),
+                  
+                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white),
                   //TODO: determine text font size bsaed on screen size
                 ),
 
@@ -190,7 +191,7 @@ class MyTeamPageState extends State<MyTeamPage> {
 
                 Text(
                   "Midfielders",
-                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold),
+                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white),
                   //TODO: determine text font size bsaed on screen size
                 ),
 
@@ -207,7 +208,7 @@ class MyTeamPageState extends State<MyTeamPage> {
 
                 Text(
                   "Attackers",
-                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold),
+                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white),
                   //TODO: determine text font size bsaed on screen size
                 ),
 
@@ -224,7 +225,7 @@ class MyTeamPageState extends State<MyTeamPage> {
 
                 Text(
                   "Flex",
-                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold),
+                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white),
                   //TODO: determine text font size bsaed on screen size
                 ),
 
@@ -347,12 +348,13 @@ class MyTeamPageState extends State<MyTeamPage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
             border: Border.all(color: Colors.grey, width: 0.5),
-            gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [0.1,0.4,0.7,0.9],
-            colors: buttonColor
-          )
+            color: Colors.white,
+            // gradient: LinearGradient(
+            //   begin: Alignment.topCenter,
+            //   end: Alignment.bottomCenter,
+            //   stops: [0.1,0.4,0.7,0.9],
+            //   colors: buttonColor
+            // )
           ),
           child: MaterialButton(            
             child: new Column(
