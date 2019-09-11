@@ -98,7 +98,7 @@ class _TeamCreationState extends State<TeamCreation> {
       
       DocumentReference docRef = Firestore.instance.document("Users/$user");
 
-      StreamSubscription<DocumentSnapshot> subscription = docRef.snapshots().listen((onData) async {
+      docRef.snapshots().listen((onData) async {
         if(onData.exists == false){
           //Document does not exist
           Navigator.push(context, MaterialPageRoute(builder: (context) => TeamNameCreation(facebookUser: user)));

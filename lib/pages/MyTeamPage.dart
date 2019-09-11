@@ -70,77 +70,180 @@ class MyTeamPageState extends State<MyTeamPage> {
     Calls getStructuredGridCell
   */
   Widget _buildDisplay(BuildContext context, DocumentSnapshot doc){
-    String transfers = doc ['transfers'][0].toString();
+    var transfers = doc ['transfers'][0].toString() + "\nTransfers";
     // Check if unlimited transfers
     if(doc['transferSetting'] == 2){
-      transfers = "∞";
+      transfers = "∞\nTransfers";
     }
-    String header = "GW: " + doc['totals'][0].toString()
-      + "\t\t\tBudget: £" + doc['transfers'][1].toString()
-      + "\nTotal: " + doc['totals'][1].toString()
-      + "\t\tTransfers: " + transfers;
+    //Header update
+    var headerGW = doc['totals'][0].toString() + "\nGW";
+    var headerBudget = "£" + doc['transfers'][1].toString() + "m" + "\nBudget";
+    var headerTotal = doc['totals'][1].toString() + "\nTotal";
+    var headerTransfers = transfers;
+
+    double headerBarHeight = 50.0;
+
+    //Building Display
     return SafeArea(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children:<Widget>[
-          //Transfer and points info
-          SizedBox(
-            height: 100,
-            child: Card(
-              color: Colors.lightGreen[900],
-              child: Center(
-                child: 
-                  Text(header,
-                    style: TextStyle(fontSize: 30, fontFamily: 'Titillium'),
-                    textAlign: TextAlign.center,
-                  )
-                ,),
+
+          //Team Name
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(5)
             ),
+            width: MediaQuery.of(context).size.width*0.9,
+            height: 50,
+
+            child: Container(
+              alignment: Alignment.center,
+              child:Text(doc['teamName'], style: TextStyle(fontSize: 22, fontFamily: 'Titillium', fontWeight: FontWeight.bold))
+              )
           ),
-          
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[    
-                getStructuredGridCell(0, doc, Colors.white, context),
-                getStructuredGridCell(1, doc, Colors.white, context),            
+
+          Container(
+            color: Colors.white,
+            child: Row(
+              children: <Widget>[
+                //Budget display
+                Expanded(child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    headerBudget,
+                    style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
+                    textAlign: TextAlign.center,
+                  ),
+                ),),
+
+                //Vertical Divider
+                Container(color: Colors.grey, height: headerBarHeight, width: 1,),
+
+                //Transfers display
+                Expanded(child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    headerTransfers,
+                    style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
+                    textAlign: TextAlign.center,
+                  ),
+                ),),
+
+                //Vertical Divider
+                Container(color: Colors.grey, height: headerBarHeight, width: 1,),
+
+                //GW display
+                Expanded(child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    headerGW,
+                    style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
+                    textAlign: TextAlign.center,
+                  ),
+                ),),
+
+                //Vertical Divider
+                Container(color: Colors.grey, height: headerBarHeight, width: 1,),
+                
+                //Total Points display
+                Expanded(child: Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    headerTotal,
+                    style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
+                    textAlign: TextAlign.center,
+                  ),
+                ),)
               ],
             ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[    
-              getStructuredGridCell(2, doc, Colors.white, context),
-              getStructuredGridCell(3, doc, Colors.white, context),            
-            ],
           ),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              getStructuredGridCell(4, doc, Colors.white, context),
-              getStructuredGridCell(5, doc, Colors.white, context),              
-            ],
-          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: Colors.white
+            ),
+            width: MediaQuery.of(context).size.width*0.9,
+            height: MediaQuery.of(context).size.height*0.6,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Defenders",
+                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold),
+                  //TODO: determine text font size bsaed on screen size
+                ),
 
-          // Substitute
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              getStructuredGridCell(6, doc, Colors.grey, context),
-            ],
-          ),
-          
-          
-          //Adverts
-          SizedBox(
-            height: 80,
-            child: Card(
-              color: Colors.green,
-              child: Center( child: Text("Advert Space", style: TextStyle(fontSize: 30, fontFamily: 'Titillium'),),),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Expanded(flex: 1,child: Container(),),
+                    getStructuredGridCell(0, doc, Colors.white, context),
+                    Expanded(flex: 1,child: Container(),),
+                    getStructuredGridCell(1, doc, Colors.white, context),
+                    Expanded(flex: 1,child: Container(),),          
+                  ],
+                ),
+
+                Text(
+                  "Midfielders",
+                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold),
+                  //TODO: determine text font size bsaed on screen size
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Expanded(flex: 1,child: Container(),),
+                    getStructuredGridCell(2, doc, Colors.white, context),
+                    Expanded(flex: 1,child: Container(),),
+                    getStructuredGridCell(3, doc, Colors.white, context),
+                    Expanded(flex: 1,child: Container(),),          
+                  ],
+                ),
+
+                Text(
+                  "Attackers",
+                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold),
+                  //TODO: determine text font size bsaed on screen size
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Expanded(flex: 1,child: Container(),),
+                    getStructuredGridCell(4, doc, Colors.white, context),
+                    Expanded(flex: 1,child: Container(),),
+                    getStructuredGridCell(5, doc, Colors.white, context),
+                    Expanded(flex: 1,child: Container(),),          
+                  ],
+                ),
+
+                Text(
+                  "Flex",
+                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold),
+                  //TODO: determine text font size bsaed on screen size
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Expanded(flex: 1,child: Container(),),
+                    getStructuredGridCell(6, doc, Colors.white, context),
+                    Expanded(flex: 1,child: Container(),),      
+                  ],
+                ),
+                
+                
+              ],
+
             ),
           ),
 
-        ]
+          ]
       )
     );
   }
@@ -159,6 +262,7 @@ class MyTeamPageState extends State<MyTeamPage> {
     int cap = doc['captain'];
     double size = 18;
     int setting = doc['transferSetting'];
+    List<Color> buttonColor;
 
     String display = player;
     // Special treatment for captain
@@ -173,29 +277,100 @@ class MyTeamPageState extends State<MyTeamPage> {
       points = "Last Week: " + points;
     } else {
       points = "This Week: " + points;
+    } 
+
+    switch(index){
+      case 0:
+        buttonColor = [
+          Colors.white,
+          Colors.white,
+          Color(0xFFC9EAFF),
+          Color(0xFFC9EAFF)
+
+        ];
+        break;
+      case 1:
+        buttonColor = [
+          Colors.white,
+          Colors.white,
+          Color(0xFFC9EAFF),
+          Color(0xFFC9EAFF)
+        ];
+        break;
+      case 2:
+        buttonColor = [
+          Colors.white,
+          Colors.white,
+          Color(0xFFAEFEA4),
+          Color(0xFFAEFEA4)
+        ];
+        break;
+      case 3:
+        buttonColor = [
+          Colors.white,
+          Colors.white,
+          Color(0xFFAEFEA4),
+          Color(0xFFAEFEA4)
+        ];
+        break;
+      case 4:
+        buttonColor = [
+          Colors.white,
+          Colors.white,
+          Color(0xFFFFB9AD),
+          Color(0xFFFFB9AD)
+        ];
+        break;
+      case 5:
+        buttonColor = [
+          Colors.white,
+          Colors.white,
+          Color(0xFFFFB9AD),
+          Color(0xFFFFB9AD)
+        ];
+        break;
+      case 6:
+        buttonColor = [
+          Colors.white,
+          Colors.white,
+          Colors.yellow[300],
+          Colors.yellow[300]
+        ];
+        break;
     }
 
-
     return new ButtonTheme(
-      minWidth: 180,
-      height: 95,
-      child: RaisedButton(
-        elevation: 10,
-        color: color,
-        child: new Column(
-              children: <Widget>[
-                Text(display, style: TextStyle(fontSize: size, color: Colors.black, fontFamily: 'Titillium')),
-                Text(points, style: TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'Titillium')),
-                Text(price, style: TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'Titillium'))
-              ] 
-                //textAlign: TextAlign.center,                  
+      //TODO: initialize MediaQuery.of at start to stop calling
+      child: Expanded(
+        flex: 9,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            border: Border.all(color: Colors.grey, width: 0.5),
+            gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.1,0.4,0.7,0.9],
+            colors: buttonColor
+          )
+          ),
+          child: MaterialButton(            
+            child: new Column(
+                  children: <Widget>[
+                    Text(display, style: TextStyle(fontSize: size, color: Colors.black, fontFamily: 'Titillium', fontWeight: FontWeight.bold)),
+                    Text(points, style: TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'Titillium')),
+                    Text(price, style: TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'Titillium'))
+                  ] 
+                    //textAlign: TextAlign.center,                  
+                ),
+            onPressed: () {
+              Future<Response> popup =  _asyncSimpleDialog(context, player);
+              popup.then((value) => 
+                _handleMenuChoice(value, index, doc)).catchError((error) => 
+                  _handleMenuChoiceError(error));
+              }
             ),
-        onPressed: () {
-          Future<Response> popup =  _asyncSimpleDialog(context, player);
-          popup.then((value) => 
-            _handleMenuChoice(value, index, doc)).catchError((error) => 
-              _handleMenuChoiceError(error));
-          }
+        ),
         ),
       );
   }
