@@ -11,12 +11,14 @@ class LogInPage extends StatefulWidget {
   final VoidCallback onSignedIn;
 
 
+
   @override
   _LogInPageState createState() => _LogInPageState();
 }
 
 class _LogInPageState extends State<LogInPage> {
   Color facebookColor = Color(0xff4267B2);
+  bool isLoading = false;
 
   _onSignUp(){
     //Navigate to team creation page
@@ -53,7 +55,19 @@ class _LogInPageState extends State<LogInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return isLoading ? Scaffold(
+      body: Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text("Loading...", style: TextStyle(fontFamily: "Titillium", fontSize: 25),),
+              CircularProgressIndicator(),
+            ],
+          ),
+        )
+    ) : 
+    SafeArea(
       child: Scaffold(
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -85,6 +99,10 @@ class _LogInPageState extends State<LogInPage> {
   //Async Facebook Login
   void startFacebookLogin(BaseAuth auth, VoidCallback onSignedIn) async {
     
+    setState(() {
+      isLoading = true;
+    });
+
     await auth.signInWithFacebook();
 
     
@@ -93,7 +111,14 @@ class _LogInPageState extends State<LogInPage> {
     auth.currentUser().then((user){
       //Check if document in Users Collection exists with id user
       
-      DocumentReference docRef = Firestore.instance.document("Users/$user");
+      DocumentReference docRef = Firestore.instance.collection("Users").document(user);
+      //No User signed in check
+      if(user == "false"){
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
 
       docRef.snapshots().listen((onData) async {
         if(onData.exists == false){
@@ -104,6 +129,7 @@ class _LogInPageState extends State<LogInPage> {
           onSignedIn();
         }
       });
+
     });
   }
 

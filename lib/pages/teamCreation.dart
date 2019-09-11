@@ -24,6 +24,7 @@ class _TeamCreationState extends State<TeamCreation> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(),
         key: _scaffoldKey,
         body: Center(
           child: Column(
@@ -89,11 +90,15 @@ class _TeamCreationState extends State<TeamCreation> {
   _handleLogIn(BaseAuth auth, VoidCallback onSignedIn) async{
     //Log in with facebook
     await auth.signInWithFacebook();
-
+  
     
 
     //Get UID
     auth.currentUser().then((user){
+      if(user == "false"){
+        Navigator.pop(context);
+        return;
+      }
       //Check if document in Users Collection exists with id user
       
       DocumentReference docRef = Firestore.instance.document("Users/$user");

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as prefix0;
 import 'package:flutter/material.dart';
 
 class TeamNameCreation extends StatefulWidget {
@@ -86,12 +87,10 @@ class _TeamNameCreationState extends State<TeamNameCreation> {
 
   _createTeam(String userID, String teamName) async {
 
-    //Create Team document with autogen ID and 7 No Players on the roster and 0's for everything else
+    var teamBatch = Firestore.instance.batch();
     DocumentReference teamDoc = Firestore.instance.collection("Teams").document();
 
-    Firestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot newSnap = await transaction.get(teamDoc);
-      await transaction.set(newSnap.reference, {
+    teamBatch.setData(teamDoc, {
         //Add Players etc
         'captain': 0,
         'teamName': teamName,
@@ -114,21 +113,17 @@ class _TeamNameCreationState extends State<TeamNameCreation> {
         'transfers':[
           0,100
         ]
-      });
     });
 
-    //Create document under User collection with currentUser() uid as the document ID
+    teamBatch.commit();
+
     DocumentReference userDoc = Firestore.instance.collection("Users").document(userID);
 
-    Firestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot freshSnap = await transaction.get(userDoc);
-      await transaction.set(freshSnap.reference, {
-        //Add all fields
-        'team': teamDoc.documentID,
-      });
-    });
+    WriteBatch userBatch = Firestore.instance.batch();
+    userBatch.setData(userDoc, {'team': teamDoc.documentID});
+    userBatch.commit();
 
-    //Somehow navigate to the main screen or log in screen
+
     //Display snackbar
     _scaffoldKey.currentState.showSnackBar(snackBar);
     //Delay 2 seconds while snackbar is displayed
