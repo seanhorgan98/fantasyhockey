@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fantasy_hockey/classes/AddPlayerPopup.dart';
 import 'package:fantasy_hockey/classes/PlayerData.dart';
 import 'package:flutter/material.dart';
 
@@ -71,7 +72,7 @@ class AddGamePageState extends State<AddGamePage>{
   Widget buildPlayerWidget(BuildContext context, int index){
     if(players.length > index ){
       return RaisedButton(
-        color: Colors.red,
+        color: Colors.orange,
         child:Text(players[index].getName()),
         onPressed: () {playerPopup(index);},
       );
@@ -153,101 +154,18 @@ class AddGamePageState extends State<AddGamePage>{
   //called from above
   playerPopup(int index) async {
     // Remove player button somewhere?
-    return await showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text(players[index].getName()),
-          children: <Widget>[
-            Container(
-              height: 450.0,
-              width: 400.0,
-              child: ListView.builder(
-                itemCount: players[index].toList().length,
-                itemBuilder: (context, field) {
-                  return playerPopupRow(players[index], field);
-                },
-              ),
-            )
 
-          ],
-        );
-      }
+    PlayerData playerDataToUpdate = players[index];
+
+    //Open page to update scores for this player
+    playerDataToUpdate = await Navigator.push(
+      context, MaterialPageRoute(
+        builder: (context) => AddPlayerPopup(playerData: players[index])
+      )
     );
-  }
-  //called from above
-  Widget playerPopupRow(PlayerData player, int index){
-    //appearences, goals, gw, price, totalPoints
-    List<int> badIndex = [0, 14, 15, 20, 23];
-    //Remove position fields
-    // 12 is forward goal
-    // 5, 6 are def concede, 7 is clean, 8 is goal
-    // 16 is mid cleen, 17 is goal
-    switch(player.getPosition()){
-      case 0:
-        badIndex.addAll([16,17]);
-        badIndex.add(12);
-        break;
-      case 1:
-        badIndex.add(12);
-        badIndex.addAll([5,6,7,8]);
-        break;
-      case 2:
-        badIndex.addAll([16,17]);
-        badIndex.addAll([5,6,7,8]);
-        break;
-    }
-
-    if(badIndex.contains(index)){
-      return Container();
-    }
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        //Field Name
-        Flexible(
-          flex: 2,
-          child: Text(player.fieldListFancy()[index]),
-          fit: FlexFit.tight,
-        ),
-        Flexible(
-          flex: 1,
-          child: Text(player.toList()[index].toString()),
-          fit: FlexFit.loose,
-        ),        
-      
-        
-        //Down
-        RaisedButton(
-          child: Text("-"),
-          onPressed: () {
-              increment(-1, index, player);
-            
-            },
-        ),
-        //Up
-        RaisedButton(
-          child: Text("+"),
-          onPressed: () {
-              increment(1, index, player);
-          }
-        ),
-      ],
-    );
-  }
-
-  // changes state based on +/- click
-  void increment(int change, int index, PlayerData player){
-    List temp = player.toList();
-    temp[index]+= change;
-    for(PlayerData i in players){
-      if (i.getName() == player.getName()){
-        setState(() {
-          i.setData(temp);
-        });
-      }
+    if(playerDataToUpdate == null){
+      Navigator.pop(context);
+      return;
     }
   }
 
