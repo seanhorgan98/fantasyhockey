@@ -126,6 +126,7 @@ class TransferLockPage extends StatelessWidget {
   }
 
   void eachUserEnd(QuerySnapshot snapshot){
+    WriteBatch batch = Firestore.instance.batch();
     for (DocumentSnapshot user in snapshot.documents){
       if(user.documentID == '000'){
         continue;
@@ -135,13 +136,12 @@ class TransferLockPage extends StatelessWidget {
       var newList = [totalList[0], totalList[1] + totalList[0] ];
       
       //write
-      Firestore.instance.runTransaction( (transaction) async {
-        DocumentSnapshot freshSnap = await transaction.get(user.reference);
-        transaction.update(freshSnap.reference, {
-          'totals': newList
-        });
+      DocumentReference uRef = user.reference;
+      batch.updateData(uRef, {
+        'totals': newList
       });
     }
+    batch.commit();
   }
 
 
@@ -151,13 +151,17 @@ class TransferLockPage extends StatelessWidget {
   First function gets data for section function to handle
   sets gw to 0 
   */
-  void startGW(){
-    Firestore.instance.collection('Players').getDocuments().then( 
+  void startGW() async {
+    await Firestore.instance.collection('Teams').getDocuments().then( 
       (snap) => eachUserStart(snap)
+    );
+
+    await Firestore.instance.collection('Players').getDocuments().then(
+      (snap) => eachPlayerStart(snap)
     );
   }
 
-  void eachUserStart(QuerySnapshot snapshot){
+  void eachPlayerStart(QuerySnapshot snapshot){
     WriteBatch batch = Firestore.instance.batch();
     for (DocumentSnapshot player in snapshot.documents){
       //Skip empty player
@@ -171,6 +175,25 @@ class TransferLockPage extends StatelessWidget {
       });
     }
     //finish writes
+    batch.commit();
+  }
+
+  void eachUserStart(QuerySnapshot snapshot){
+    WriteBatch batch = Firestore.instance.batch();
+    for (DocumentSnapshot user in snapshot.documents){
+      if(user.documentID == '000'){
+        continue;
+      }
+      
+      List totalList = user['totals'];
+      var newList = [0, totalList[1] ];
+      
+      //write
+      DocumentReference uRef = user.reference;
+      batch.updateData(uRef, {
+        'totals': newList
+      });
+    }
     batch.commit();
   }
 
