@@ -25,51 +25,28 @@ class _LogInPageState extends State<LogInPage> {
 
   Widget customSignUpButton(){
     return Container(
-      height: 50,
+      width: MediaQuery.of(context).size.width*0.65,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5), color: Colors.white,
         border: new Border.all(color: Colors.black)
       ),
       
-      child: InkWell(
-        onTap: () => _onSignUp(),
-        child: Text("Sign Up", style: TextStyle(fontSize: 20),),
+      child: MaterialButton(
+        onPressed: () => _onSignUp(),
+        child: Text("Sign Up", style: TextStyle(fontSize: 20, fontFamily: 'Titillium'),),
       ),
     );
   }
 
   Widget customFacebookButton(){
     return Container(
-      height: 50,
       child: 
         Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5), color: Colors.white,
-            border: new Border.all(color: Colors.black)
-          ),
+          height: MediaQuery.of(context).size.height*0.13,
           child: InkWell(
             onTap: () => startFacebookLogin(widget.auth, widget.onSignedIn),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                //Facebook Logo
-                Container(
-                  padding: EdgeInsets.fromLTRB(2, 2, 0, 2),
-                  child: Image.asset(
-                    'assets/images/facebook.jpg', 
-                    colorBlendMode: BlendMode.colorDodge, 
-                    color: facebookColor,
-                  ),
-                ),
-                //Text
-                Container(
-                  padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
-                  child: Text("Log in with Facebook", style: TextStyle(fontSize: 20),),
-                )
-                
-              ],
-            ),
-          )
+            child: Image.asset('assets/images/facebook.png',),
+          ),
         )
     );
   }

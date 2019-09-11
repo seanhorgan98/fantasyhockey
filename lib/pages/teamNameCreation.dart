@@ -12,7 +12,7 @@ class TeamNameCreation extends StatefulWidget {
 class _TeamNameCreationState extends State<TeamNameCreation> {
 
   final _formKey = GlobalKey<FormState>();
-  final int maxTeamNameLength = 75;
+  final int maxTeamNameLength = 30;
   final textController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final snackBar = SnackBar(content: Text("Team Created!"));
