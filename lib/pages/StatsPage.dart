@@ -48,7 +48,7 @@ class StatsPage extends StatelessWidget{
     double titleFontSize = 30;
     double buttonFontSize = 18;
     double leaderFontSize = 20;
-    double buttonHeight;
+    double buttonHeight = 50;
     if(MediaQuery.of(context).size.height < 540){
       titleFontSize = 18;
       buttonFontSize = 12;
