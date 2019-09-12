@@ -29,7 +29,7 @@ class LeaguePageState extends State<LeaguePage>{
   @override
   Widget build(BuildContext context) {
     double height;
-    if(MediaQuery.of(context).size.height < 540){
+    if(MediaQuery.of(context).size.height < 600){
       height = 420;
     } else {
       height = MediaQuery.of(context).size.height * 0.84;

@@ -28,7 +28,7 @@ class StatsPage extends StatelessWidget{
 
   Widget buildLeaderWidgets(BuildContext context, String queryString){
     double leaderFontSize = 20;
-    if(MediaQuery.of(context).size.height < 540){
+    if(MediaQuery.of(context).size.height < 600){
       leaderFontSize = 14;
     }
     return StreamBuilder<QuerySnapshot>(
@@ -49,7 +49,7 @@ class StatsPage extends StatelessWidget{
     double buttonFontSize = 18;
     double leaderFontSize = 20;
     double buttonHeight = 50;
-    if(MediaQuery.of(context).size.height < 540){
+    if(MediaQuery.of(context).size.height < 600){
       titleFontSize = 18;
       buttonFontSize = 12;
       leaderFontSize = 14;

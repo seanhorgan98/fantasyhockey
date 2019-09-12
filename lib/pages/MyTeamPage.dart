@@ -72,9 +72,9 @@ class MyTeamPageState extends State<MyTeamPage> {
   Widget _buildDisplay(BuildContext context, DocumentSnapshot doc){
     double fontHead = 22;
     double fontBody = 18; 
-    if(MediaQuery.of(context).size.height < 540 ){
+    if(MediaQuery.of(context).size.height < 600 ){
       fontHead = 14;
-      fontBody = 10;
+      fontBody = 12;
     }
 
     var transfers = doc ['transfers'][0].toString() + "\nTransfers";
@@ -284,7 +284,7 @@ class MyTeamPageState extends State<MyTeamPage> {
 
     double fontBody = 18; 
     double captain  = 18;
-    if(MediaQuery.of(context).size.height < 540 ){
+    if(MediaQuery.of(context).size.height < 600 ){
       fontBody = 12;
       captain = 12;
     }

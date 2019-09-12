@@ -126,7 +126,7 @@ class TransfersPageState extends State<TransfersPage>{
   //adds header button to header bar
   Widget _addHeader(String text, int index){
     double textSize = 14;
-    if(MediaQuery.of(context).size.height < 540){
+    if(MediaQuery.of(context).size.height < 600){
       textSize = 12;
     }
     return RaisedButton(
@@ -141,7 +141,7 @@ class TransfersPageState extends State<TransfersPage>{
   //builds a row in table
   Widget _buildListItem(BuildContext context, int index) {
     double nameSize = 14;
-    if(MediaQuery.of(context).size.height < 540){
+    if(MediaQuery.of(context).size.height < 600){
       nameSize = 11;
     }
 
