@@ -81,164 +81,184 @@ class MyTeamPageState extends State<MyTeamPage> {
     var headerTotal = doc['totals'][1].toString() + "\nTotal";
     var headerTransfers = transfers;
 
-    double headerBarHeight = 50.0;
+    double headerBarHeight = 35.0;
 
     //Building Display
     return SafeArea(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children:<Widget>[
 
           //Team Name
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5)
-            ),
-            width: MediaQuery.of(context).size.width*0.9,
-            height: 50,
 
+          Flexible(flex: 1, child: Container(),),
+
+          Flexible(
+            fit: FlexFit.loose,
+            flex: 4,
             child: Container(
-              alignment: Alignment.center,
-              child:Text(doc['teamName'], style: TextStyle(fontSize: 22, fontFamily: 'Titillium', fontWeight: FontWeight.bold))
-              )
-          ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(5)
+              ),
+              width: MediaQuery.of(context).size.width*0.9,
+              height: 50,
 
-          Container(
-            color: Colors.white,
-            child: Row(
-              children: <Widget>[
-                //Budget display
-                Expanded(child: Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    headerBudget,
-                    style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
-                    textAlign: TextAlign.center,
-                  ),
-                ),),
-
-                //Vertical Divider
-                Container(color: Colors.grey, height: headerBarHeight, width: 1,),
-
-                //Transfers display
-                Expanded(child: Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    headerTransfers,
-                    style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
-                    textAlign: TextAlign.center,
-                  ),
-                ),),
-
-                //Vertical Divider
-                Container(color: Colors.grey, height: headerBarHeight, width: 1,),
-
-                //GW display
-                Expanded(child: Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    headerGW,
-                    style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
-                    textAlign: TextAlign.center,
-                  ),
-                ),),
-
-                //Vertical Divider
-                Container(color: Colors.grey, height: headerBarHeight, width: 1,),
-                
-                //Total Points display
-                Expanded(child: Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    headerTotal,
-                    style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
-                    textAlign: TextAlign.center,
-                  ),
-                ),)
-              ],
+              child: Container(
+                alignment: Alignment.center,
+                child:Text(doc['teamName'], style: TextStyle(fontSize: 22, fontFamily: 'Titillium', fontWeight: FontWeight.bold))
+                )
             ),
           ),
 
-          Container(
-            width: MediaQuery.of(context).size.width*0.9,
-            height: MediaQuery.of(context).size.height*0.6,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "Defenders",
+          Flexible(flex: 1, child: Container(),),
+
+          Flexible(
+            fit: FlexFit.loose,
+            flex: 4,
+            child: Container(
+              color: Colors.white,
+              child: Row(
+                children: <Widget>[
+                  //Budget display
+                  Expanded(child: Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      headerBudget,
+                      style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),),
+
+                  //Vertical Divider
+                  Container(color: Colors.grey, height: headerBarHeight, width: 1,),
+
+                  //Transfers display
+                  Expanded(child: Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      headerTransfers,
+                      style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),),
+
+                  //Vertical Divider
+                  Container(color: Colors.grey, height: headerBarHeight, width: 1,),
+
+                  //GW display
+                  Expanded(child: Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      headerGW,
+                      style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),),
+
+                  //Vertical Divider
+                  Container(color: Colors.grey, height: headerBarHeight, width: 1,),
                   
-                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
-                  //TODO: determine text font size bsaed on screen size
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Expanded(flex: 1,child: Container(),),
-                    getStructuredGridCell(0, doc, Colors.white, context),
-                    Expanded(flex: 1,child: Container(),),
-                    getStructuredGridCell(1, doc, Colors.white, context),
-                    Expanded(flex: 1,child: Container(),),          
-                  ],
-                ),
-
-                Text(
-                  "Midfielders",
-                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
-                  //TODO: determine text font size bsaed on screen size
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Expanded(flex: 1,child: Container(),),
-                    getStructuredGridCell(2, doc, Colors.white, context),
-                    Expanded(flex: 1,child: Container(),),
-                    getStructuredGridCell(3, doc, Colors.white, context),
-                    Expanded(flex: 1,child: Container(),),          
-                  ],
-                ),
-
-                Text(
-                  "Attackers",
-                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
-                  //TODO: determine text font size bsaed on screen size
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Expanded(flex: 1,child: Container(),),
-                    getStructuredGridCell(4, doc, Colors.white, context),
-                    Expanded(flex: 1,child: Container(),),
-                    getStructuredGridCell(5, doc, Colors.white, context),
-                    Expanded(flex: 1,child: Container(),),          
-                  ],
-                ),
-
-                Text(
-                  "Flex",
-                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
-                  //TODO: determine text font size bsaed on screen size
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Expanded(flex: 1,child: Container(),),
-                    getStructuredGridCell(6, doc, Colors.white, context),
-                    Expanded(flex: 1,child: Container(),),      
-                  ],
-                ),
-                
-                
-              ],
-
+                  //Total Points display
+                  Expanded(child: Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      headerTotal,
+                      style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),)
+                ],
+              ),
             ),
           ),
+
+          Flexible(flex: 1, child: Container(),),
+
+          Expanded(
+            flex: 35,
+            child: Container(
+              width: MediaQuery.of(context).size.width*0.9,
+              height: MediaQuery.of(context).size.height*0.6,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "Defenders",
+                    
+                    style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                    //TODO: determine text font size bsaed on screen size
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Expanded(flex: 1,child: Container(),),
+                      getStructuredGridCell(0, doc, Colors.white, context),
+                      Expanded(flex: 1,child: Container(),),
+                      getStructuredGridCell(1, doc, Colors.white, context),
+                      Expanded(flex: 1,child: Container(),),          
+                    ],
+                  ),
+
+                  Text(
+                    "Midfielders",
+                    style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                    //TODO: determine text font size bsaed on screen size
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Expanded(flex: 1,child: Container(),),
+                      getStructuredGridCell(2, doc, Colors.white, context),
+                      Expanded(flex: 1,child: Container(),),
+                      getStructuredGridCell(3, doc, Colors.white, context),
+                      Expanded(flex: 1,child: Container(),),          
+                    ],
+                  ),
+
+                  Text(
+                    "Attackers",
+                    style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                    //TODO: determine text font size bsaed on screen size
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Expanded(flex: 1,child: Container(),),
+                      getStructuredGridCell(4, doc, Colors.white, context),
+                      Expanded(flex: 1,child: Container(),),
+                      getStructuredGridCell(5, doc, Colors.white, context),
+                      Expanded(flex: 1,child: Container(),),          
+                    ],
+                  ),
+
+                  Text(
+                    "Flex",
+                    style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                    //TODO: determine text font size bsaed on screen size
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Expanded(flex: 1,child: Container(),),
+                      getStructuredGridCell(6, doc, Colors.white, context),
+                      Expanded(flex: 1,child: Container(),),      
+                    ],
+                  ),
+                  
+                  
+                ],
+
+              ),
+            ),
+          ),
+
+          Flexible(flex: 1, child: Container(),),
 
           ]
       )
