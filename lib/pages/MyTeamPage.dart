@@ -161,10 +161,6 @@ class MyTeamPageState extends State<MyTeamPage> {
           ),
 
           Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Color(0xFF25A15F)
-            ),
             width: MediaQuery.of(context).size.width*0.9,
             height: MediaQuery.of(context).size.height*0.6,
             child: Column(
@@ -174,7 +170,7 @@ class MyTeamPageState extends State<MyTeamPage> {
                 Text(
                   "Defenders",
                   
-                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                   //TODO: determine text font size bsaed on screen size
                 ),
 
@@ -191,7 +187,7 @@ class MyTeamPageState extends State<MyTeamPage> {
 
                 Text(
                   "Midfielders",
-                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                   //TODO: determine text font size bsaed on screen size
                 ),
 
@@ -208,7 +204,7 @@ class MyTeamPageState extends State<MyTeamPage> {
 
                 Text(
                   "Attackers",
-                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                   //TODO: determine text font size bsaed on screen size
                 ),
 
@@ -225,7 +221,7 @@ class MyTeamPageState extends State<MyTeamPage> {
 
                 Text(
                   "Flex",
-                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                   //TODO: determine text font size bsaed on screen size
                 ),
 
