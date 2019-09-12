@@ -28,6 +28,13 @@ class LeaguePageState extends State<LeaguePage>{
 
   @override
   Widget build(BuildContext context) {
+    double height;
+    print(MediaQuery.of(context).size.height.toString());
+    if(MediaQuery.of(context).size.height < 850){
+      height = 420;
+    } else {
+      height = MediaQuery.of(context).size.height * 0.84;
+    }
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 25, 0, 0),
@@ -40,7 +47,7 @@ class LeaguePageState extends State<LeaguePage>{
             //Surrounding White box for table
             Container(
               constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height*0.84,
+                maxHeight: height,
                 maxWidth: MediaQuery.of(context).size.width*0.9
               ),
 

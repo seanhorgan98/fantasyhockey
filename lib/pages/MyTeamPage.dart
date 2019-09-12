@@ -70,6 +70,13 @@ class MyTeamPageState extends State<MyTeamPage> {
     Calls getStructuredGridCell
   */
   Widget _buildDisplay(BuildContext context, DocumentSnapshot doc){
+    double fontHead = 22;
+    double fontBody = 18; 
+    if(MediaQuery.of(context).size.height < 850 ){
+      fontHead = 14;
+      fontBody = 10;
+    }
+
     var transfers = doc ['transfers'][0].toString() + "\nTransfers";
     // Check if unlimited transfers
     if(doc['transferSetting'] == 2){
@@ -106,7 +113,7 @@ class MyTeamPageState extends State<MyTeamPage> {
 
               child: Container(
                 alignment: Alignment.center,
-                child:Text(doc['teamName'], style: TextStyle(fontSize: 22, fontFamily: 'Titillium', fontWeight: FontWeight.bold))
+                child:Text(doc['teamName'], style: TextStyle(fontSize: fontHead, fontFamily: 'Titillium', fontWeight: FontWeight.bold))
                 )
             ),
           ),
@@ -125,7 +132,7 @@ class MyTeamPageState extends State<MyTeamPage> {
                     alignment: Alignment.center,
                     child: Text(
                       headerBudget,
-                      style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
+                      style: TextStyle(fontSize: fontBody, fontFamily: 'Titillium'),
                       textAlign: TextAlign.center,
                     ),
                   ),),
@@ -138,7 +145,7 @@ class MyTeamPageState extends State<MyTeamPage> {
                     alignment: Alignment.center,
                     child: Text(
                       headerTransfers,
-                      style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
+                      style: TextStyle(fontSize: fontBody, fontFamily: 'Titillium'),
                       textAlign: TextAlign.center,
                     ),
                   ),),
@@ -151,7 +158,7 @@ class MyTeamPageState extends State<MyTeamPage> {
                     alignment: Alignment.center,
                     child: Text(
                       headerGW,
-                      style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
+                      style: TextStyle(fontSize: fontBody, fontFamily: 'Titillium'),
                       textAlign: TextAlign.center,
                     ),
                   ),),
@@ -164,7 +171,7 @@ class MyTeamPageState extends State<MyTeamPage> {
                     alignment: Alignment.center,
                     child: Text(
                       headerTotal,
-                      style: TextStyle(fontSize: 18, fontFamily: 'Titillium'),
+                      style: TextStyle(fontSize: fontBody, fontFamily: 'Titillium'),
                       textAlign: TextAlign.center,
                     ),
                   ),)
@@ -185,10 +192,8 @@ class MyTeamPageState extends State<MyTeamPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "Defenders",
-                    
-                    style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
-                    //TODO: determine text font size bsaed on screen size
+                    "Defenders",  
+                    style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: fontBody),
                   ),
 
                   Row(
@@ -204,8 +209,8 @@ class MyTeamPageState extends State<MyTeamPage> {
 
                   Text(
                     "Midfielders",
-                    style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
-                    //TODO: determine text font size bsaed on screen size
+                    style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: fontBody),
+
                   ),
 
                   Row(
@@ -221,8 +226,7 @@ class MyTeamPageState extends State<MyTeamPage> {
 
                   Text(
                     "Attackers",
-                    style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
-                    //TODO: determine text font size bsaed on screen size
+                    style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: fontBody),
                   ),
 
                   Row(
@@ -238,8 +242,7 @@ class MyTeamPageState extends State<MyTeamPage> {
 
                   Text(
                     "Flex",
-                    style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
-                    //TODO: determine text font size bsaed on screen size
+                    style: TextStyle(fontFamily: 'Titillium', fontWeight: FontWeight.bold, color: Colors.white, fontSize: fontBody),
                   ),
 
                   Row(
@@ -279,7 +282,13 @@ class MyTeamPageState extends State<MyTeamPage> {
     int cap = doc['captain'];
     double size = 18;
     int setting = doc['transferSetting'];
-    List<Color> buttonColor;
+
+    double fontBody = 18; 
+    double captain  = 18;
+    if(MediaQuery.of(context).size.height < 850 ){
+      fontBody = 12;
+      captain = 12;
+    }
 
     String display = player;
     // Special treatment for captain
@@ -287,7 +296,7 @@ class MyTeamPageState extends State<MyTeamPage> {
       display = display + " (C)";
     }
     if(display.length > 15){
-      size = 15;
+      captain = 10;
     }
     //Check if transfers enabled
     if(setting == 1){ 
@@ -296,68 +305,7 @@ class MyTeamPageState extends State<MyTeamPage> {
       points = "This Week: " + points;
     } 
 
-    switch(index){
-      case 0:
-        buttonColor = [
-          Colors.white,
-          Colors.white,
-          Color(0xFFC9EAFF),
-          Color(0xFFC9EAFF)
-
-        ];
-        break;
-      case 1:
-        buttonColor = [
-          Colors.white,
-          Colors.white,
-          Color(0xFFC9EAFF),
-          Color(0xFFC9EAFF)
-        ];
-        break;
-      case 2:
-        buttonColor = [
-          Colors.white,
-          Colors.white,
-          Color(0xFFAEFEA4),
-          Color(0xFFAEFEA4)
-        ];
-        break;
-      case 3:
-        buttonColor = [
-          Colors.white,
-          Colors.white,
-          Color(0xFFAEFEA4),
-          Color(0xFFAEFEA4)
-        ];
-        break;
-      case 4:
-        buttonColor = [
-          Colors.white,
-          Colors.white,
-          Color(0xFFFFB9AD),
-          Color(0xFFFFB9AD)
-        ];
-        break;
-      case 5:
-        buttonColor = [
-          Colors.white,
-          Colors.white,
-          Color(0xFFFFB9AD),
-          Color(0xFFFFB9AD)
-        ];
-        break;
-      case 6:
-        buttonColor = [
-          Colors.white,
-          Colors.white,
-          Colors.yellow[300],
-          Colors.yellow[300]
-        ];
-        break;
-    }
-
     return new ButtonTheme(
-      //TODO: initialize MediaQuery.of at start to stop calling
       child: Expanded(
         flex: 9,
         child: Container(
@@ -365,19 +313,13 @@ class MyTeamPageState extends State<MyTeamPage> {
             borderRadius: BorderRadius.circular(5),
             border: Border.all(color: Colors.grey, width: 0.5),
             color: Colors.white,
-            // gradient: LinearGradient(
-            //   begin: Alignment.topCenter,
-            //   end: Alignment.bottomCenter,
-            //   stops: [0.1,0.4,0.7,0.9],
-            //   colors: buttonColor
-            // )
           ),
           child: MaterialButton(            
             child: new Column(
                   children: <Widget>[
-                    Text(display, style: TextStyle(fontSize: size, color: Colors.black, fontFamily: 'Titillium', fontWeight: FontWeight.bold)),
-                    Text(points, style: TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'Titillium')),
-                    Text(price, style: TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'Titillium'))
+                    Text(display, style: TextStyle(fontSize: captain, color: Colors.black, fontFamily: 'Titillium', fontWeight: FontWeight.bold)),
+                    Text(points, style: TextStyle(fontSize: fontBody, color: Colors.black, fontFamily: 'Titillium')),
+                    Text(price, style: TextStyle(fontSize: fontBody, color: Colors.black, fontFamily: 'Titillium'))
                   ] 
                     //textAlign: TextAlign.center,                  
                 ),
