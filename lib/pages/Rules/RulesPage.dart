@@ -21,30 +21,30 @@ class RulesPage extends StatelessWidget{
           children: <Widget>[
             Center( child: Text(
               "Choose a topic to read up on",
-              style: TextStyle(fontFamily: 'Titillium', fontSize: 30)
+              style: TextStyle(fontFamily: 'Titillium', fontSize: 25)
             )),
 
             RaisedButton(
               child: Text("HOW TO PLAY",
-              style: TextStyle(fontFamily: 'Titillium', fontSize: 50)),
+              style: TextStyle(fontFamily: 'Titillium', fontSize: 45)),
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HowTo()))
             ),
 
             RaisedButton(
               child: Text("TRANSFERS",
-              style: TextStyle(fontFamily: 'Titillium', fontSize: 50)),
+              style: TextStyle(fontFamily: 'Titillium', fontSize: 45)),
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Transfers()))
             ),
 
             RaisedButton(
               child: Text("DEADLINES",
-              style: TextStyle(fontFamily: 'Titillium', fontSize: 50)),
+              style: TextStyle(fontFamily: 'Titillium', fontSize: 45)),
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Deadlines()))
             ),
 
             RaisedButton(
               child: Text("SCORING",
-              style: TextStyle(fontFamily: 'Titillium', fontSize: 50)),
+              style: TextStyle(fontFamily: 'Titillium', fontSize: 45)),
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Scoring()))
             )
           ]

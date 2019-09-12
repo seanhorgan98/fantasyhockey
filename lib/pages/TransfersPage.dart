@@ -85,9 +85,9 @@ class TransfersPageState extends State<TransfersPage>{
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Text("Remaining Budget:\n${budget.toString()}"),
-        Text("Transfer Out:\n$outPlayerName"),
-        Text("Remaining Transfers:\n${transfers.toString()}")
+        Text("Budget:\n£${budget.toString()}m"),
+        Text("Out:\n$outPlayerName"),
+        Text("Transfers:\n${transfers.toString()}")
       ]
     );
   }    
@@ -125,8 +125,12 @@ class TransfersPageState extends State<TransfersPage>{
 
   //adds header button to header bar
   Widget _addHeader(String text, int index){
+    double textSize = 14;
+    if(MediaQuery.of(context).size.height < 540){
+      textSize = 12;
+    }
     return RaisedButton(
-      child: Text(text),
+      child: Text(text, style: TextStyle(fontFamily: 'Titillium', fontSize: textSize),),
       color: Colors.blueGrey[200],
       onPressed: () {
         sortData(index);
@@ -136,6 +140,12 @@ class TransfersPageState extends State<TransfersPage>{
   
   //builds a row in table
   Widget _buildListItem(BuildContext context, int index) {
+    double nameSize = 14;
+    if(MediaQuery.of(context).size.height < 540){
+      nameSize = 11;
+    }
+
+
     return StreamBuilder(
       stream: Firestore.instance.collection("Players").orderBy(sortBy, descending: true).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -174,8 +184,12 @@ class TransfersPageState extends State<TransfersPage>{
               child: RaisedButton(
                 child: Column(
                   children: <Widget>[
-                    Text(snapshot.data.documents[index].documentID.split(" ")[0]),
-                    Text(snapshot.data.documents[index].documentID.split(" ")[1])
+                    Text(snapshot.data.documents[index].documentID.split(" ")[0],
+                    style: TextStyle(fontSize: nameSize),
+                    ),
+                    Text(snapshot.data.documents[index].documentID.split(" ")[1],
+                    style: TextStyle(fontSize: nameSize),
+                    )
                   ] 
                 ), 
                 onPressed: () {
@@ -342,21 +356,6 @@ class TransfersPageState extends State<TransfersPage>{
         );
       },
     );
-  }
-
-  // Get new player List for validation
-  void validateTeams(DocumentSnapshot buy, DocumentSnapshot sell){
-    //take away old
-    String sellTeam = sell['team'];
-    setState(() {
-      teams[sellTeam] = teams[sellTeam] - 1;
-    });
-
-    //check new
-    String buyTeam = buy['team'];
-    setState(() {
-      teams[buyTeam] = teams[buyTeam] + 1;
-    });
   }
 
 }
