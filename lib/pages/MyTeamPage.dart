@@ -72,7 +72,7 @@ class MyTeamPageState extends State<MyTeamPage> {
   Widget _buildDisplay(BuildContext context, DocumentSnapshot doc){
     double fontHead = 22;
     double fontBody = 18; 
-    if(MediaQuery.of(context).size.height < 850 ){
+    if(MediaQuery.of(context).size.height < 540 ){
       fontHead = 14;
       fontBody = 10;
     }
@@ -280,12 +280,11 @@ class MyTeamPageState extends State<MyTeamPage> {
     String points = doc['points'][index].toString();
     String price = "£" + doc['prices'][index].toString();
     int cap = doc['captain'];
-    double size = 18;
     int setting = doc['transferSetting'];
 
     double fontBody = 18; 
     double captain  = 18;
-    if(MediaQuery.of(context).size.height < 850 ){
+    if(MediaQuery.of(context).size.height < 540 ){
       fontBody = 12;
       captain = 12;
     }

@@ -26,31 +26,45 @@ class StatsPage extends StatelessWidget{
     }
   }
 
-  Widget buildLeaderWidgets(String queryString){
+  Widget buildLeaderWidgets(BuildContext context, String queryString){
+    double leaderFontSize = 20;
+    if(MediaQuery.of(context).size.height < 540){
+      leaderFontSize = 14;
+    }
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('Players').orderBy(queryString, descending: true).limit(1).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
         if(!snapshot.hasData) {return const Text('Loading...');}
         return Text(
           //Returning the player name + ": " + number of stat
-          "1.\n${snapshot.data.documents[0].documentID}\t${snapshot.data.documents[0]['team']}\n${snapshot.data.documents[0][queryString].toString()}",
-          style: TextStyle(fontSize: 20, fontFamily: 'Titillium'));
+          "${snapshot.data.documents[0].documentID}\t${snapshot.data.documents[0]['team']}\n${snapshot.data.documents[0][queryString].toString()}",
+          style: TextStyle(fontSize: leaderFontSize, fontFamily: 'Titillium'));
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    double titleFontSize = 30;
+    double buttonFontSize = 18;
+    double leaderFontSize = 20;
+    double buttonHeight;
+    if(MediaQuery.of(context).size.height < 540){
+      titleFontSize = 18;
+      buttonFontSize = 12;
+      leaderFontSize = 14;
+      buttonHeight = 32;
+    }
     return SafeArea(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           //Title
           Container(
             padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
             child: Align(
               alignment: Alignment.center,
-              child: Text("Statistics", style: TextStyle(fontSize: 30, fontFamily: 'Titillium', color: Colors.white)),
+              child: Text("Statistics", style: TextStyle(fontSize: titleFontSize, fontFamily: 'Titillium', color: Colors.white)),
             )
           ),
           Row(
@@ -75,13 +89,13 @@ class StatsPage extends StatelessWidget{
                         width: double.infinity,
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
                         alignment: Alignment.centerLeft,
-                        height: 50,
-                        child: Text("Goals", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        height: buttonHeight,
+                        child: Text("Goals", style: TextStyle(fontSize: leaderFontSize, fontWeight: FontWeight.bold),),
                       ),
                       //Query Players collection for player with most goals
                       Container(
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
-                        child: buildLeaderWidgets('goals')
+                        child: buildLeaderWidgets(context, 'goals')
                       ),
                       //See Full List
                       Container(
@@ -115,13 +129,13 @@ class StatsPage extends StatelessWidget{
                         width: double.infinity,
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
                         alignment: Alignment.centerLeft,
-                        height: 50,
-                        child: Text("Assists", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        height: buttonHeight,
+                        child: Text("Assists", style: TextStyle(fontSize: buttonFontSize, fontWeight: FontWeight.bold),),
                       ),
                       //Query Players collection for player with most assists
                       Container(
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
-                        child: buildLeaderWidgets('assists')
+                        child: buildLeaderWidgets(context, 'assists')
                       ),
                       //See Full List
                       Container(
@@ -159,13 +173,12 @@ class StatsPage extends StatelessWidget{
                         width: double.infinity,
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
                         alignment: Alignment.centerLeft,
-                        height: 50,
-                        child: Text("Total Points", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        height: buttonHeight,                        child: Text("Total Points", style: TextStyle(fontSize: leaderFontSize, fontWeight: FontWeight.bold),),
                       ),
                       //Query Players collection for player with most points
                       Container(
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
-                        child: buildLeaderWidgets('totalPoints')
+                        child: buildLeaderWidgets(context, 'totalPoints')
                       ),
                       //See Full List
                       Container(
@@ -198,13 +211,13 @@ class StatsPage extends StatelessWidget{
                         width: double.infinity,
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
                         alignment: Alignment.centerLeft,
-                        height: 50,
-                        child: Text("GW", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        height: buttonHeight,
+                        child: Text("GW", style: TextStyle(fontSize: leaderFontSize, fontWeight: FontWeight.bold),),
                       ),
                       //Query Players collection for player with most gw points
                       Container(
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
-                        child: buildLeaderWidgets('gw')
+                        child: buildLeaderWidgets(context, 'gw')
                       ),
                       //See Full List
                       Container(
@@ -221,10 +234,10 @@ class StatsPage extends StatelessWidget{
           ),
           //Player stats
           Container(
-            margin: new EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+            margin: new EdgeInsets.symmetric(horizontal: 20, vertical: 0),
             child: MaterialButton(
               minWidth: MediaQuery.of(context).size.width,
-              height: 50,
+              height: buttonHeight,
               color: Colors.white,
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerStats()));                 
@@ -236,7 +249,7 @@ class StatsPage extends StatelessWidget{
           //Rules
           Container(
             margin: new EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-            height: 50,
+            height: buttonHeight,
             child: MaterialButton(
               minWidth: MediaQuery.of(context).size.width,
               color: Colors.white,
