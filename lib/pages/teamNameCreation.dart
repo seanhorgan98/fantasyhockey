@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' as prefix0;
 import 'package:flutter/material.dart';
 
 class TeamNameCreation extends StatefulWidget {
