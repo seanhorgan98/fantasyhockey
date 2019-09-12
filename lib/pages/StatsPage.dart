@@ -14,6 +14,7 @@ class StatsPage extends StatelessWidget{
   StatsPage({this.auth, this.onSignedOut});
   final BaseAuth auth;
   final VoidCallback onSignedOut;
+  var userID = "";
 
 
   void _signOut() async{
@@ -245,20 +246,22 @@ class StatsPage extends StatelessWidget{
               child: Text("Rules & Scoring", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
             ),
           ),
-        //Add Game/Mod button
+        //Mod button
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
-                child: FlatButton(
-                  color: Colors.grey[400],
-                  onPressed: (){
-                   Navigator.push(context, MaterialPageRoute(builder: (context) => Mod()));                 
-                  },
-                  child: Text("MOD"),
-                ),
+            FutureBuilder(
+              future: _getCurrentUser(context),
+              builder: (context, snapshot){
+                if(snapshot.connectionState == ConnectionState.done){
+                  return _buildModButton(context);
+                }else{
+                  return Container();
+                }
+              },
+
             ),
+            
             Container(
               child: FlatButton(
                 color: Colors.red,
@@ -271,5 +274,28 @@ class StatsPage extends StatelessWidget{
         ],
       ),
     );
+  }
+
+  Future<String> _getCurrentUser(BuildContext context) async{
+    userID = await auth.currentUser();
+    return userID;
+  }
+
+  Container _buildModButton(BuildContext context){
+    if (userID == '5Qn4VZcgUCTQIjetjopiA7TIOFD2' || userID == 'ma4IlNLh5SNwhMG0CpmdPpv1kj33'){
+      return Container(
+        padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
+        child: FlatButton(
+          color: Colors.grey[400],
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Mod()));                 
+          },
+          child: Text("MOD"),
+        ),
+      );
+    }else{
+      return Container();
+    }
+    
   }
 }
