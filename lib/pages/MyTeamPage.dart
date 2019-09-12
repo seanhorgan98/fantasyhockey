@@ -295,7 +295,7 @@ class MyTeamPageState extends State<MyTeamPage> {
       display = display + " (C)";
     }
     if(display.length > 15){
-      captain = 10;
+      captain -= 2;
     }
     //Check if transfers enabled
     if(setting == 1){ 
