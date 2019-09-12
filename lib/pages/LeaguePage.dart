@@ -39,8 +39,10 @@ class LeaguePageState extends State<LeaguePage>{
 
             //Surrounding White box for table
             Container(
-              width: MediaQuery.of(context).size.width*0.9,
-              height: MediaQuery.of(context).size.height*0.84,
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height*0.84,
+                maxWidth: MediaQuery.of(context).size.width*0.9
+              ),
 
               //Rounded edges
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.white),
