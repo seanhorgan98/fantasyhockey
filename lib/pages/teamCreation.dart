@@ -18,11 +18,28 @@ class _TeamCreationState extends State<TeamCreation> {
   final Color facebookColor = Color(0xff4267B2);
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final snackBar = SnackBar(content: Text('You already have a team!'));
+  bool isLoading = false;
 
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return isLoading ? SafeArea(
+      child: Container(
+        color: Colors.white,
+        child: Center(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text("Loading...", style: TextStyle(fontFamily: "Titillium", fontSize: 25, color: Colors.black),),
+                Divider(color: Colors.white,),
+                CircularProgressIndicator(),
+              ],
+            ),
+          ),
+      )
+      ) : 
+      SafeArea(
       child: Scaffold(
         appBar: AppBar(),
         key: _scaffoldKey,
@@ -72,22 +89,13 @@ class _TeamCreationState extends State<TeamCreation> {
 
             ],
           )
-
-
-          //Login with facebook [X}]
-
-          //Check if team already exists for this user [ ]
-
-          //Create team name (max name length) [X]
-          
-          //Create new team on firebase with teamName and firebaseUsername [ ]
-
         ),
       )
     );
   }
 
   _handleLogIn(BaseAuth auth, VoidCallback onSignedIn) async{
+
     //Log in with facebook
     await auth.signInWithFacebook();
   
@@ -96,6 +104,9 @@ class _TeamCreationState extends State<TeamCreation> {
     //Get UID
     auth.currentUser().then((user){
       if(user == "false"){
+        setState(() {
+          isLoading = false;
+        });
         Navigator.pop(context);
         return;
       }
