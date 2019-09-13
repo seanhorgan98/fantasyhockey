@@ -372,6 +372,12 @@ class MyTeamPageState extends State<MyTeamPage> {
       _ackAlert(context,  "Invalid Sub",  "Invalid Player to make Captain");
       return;
     }
+
+    if (doc['transferSetting'] == 0){
+      _ackAlert(context, "Invalid Move", "Can't Change Captain During Week");
+      return;
+    }
+
     //Bunch of nonsense to avoid race conditions
     //Copied straight from tutorial
     Firestore.instance.runTransaction((transaction) async {
@@ -385,6 +391,12 @@ class MyTeamPageState extends State<MyTeamPage> {
   }
 
   void _handleSubstituteResponse(int index, DocumentSnapshot doc){
+
+    if (doc['transferSetting'] == 0){
+      _ackAlert(context, "Invalid Move", "Can't Substitute During Week");
+      return;
+    }
+
     //Handle subbing sub
     if(index == 6){
       int position = doc['sub'];
@@ -409,7 +421,7 @@ class MyTeamPageState extends State<MyTeamPage> {
       _makeSub(index, doc, 0);
     } else {
       // Handle Invalid Sub
-      _ackAlert(context,  "Invalid Sub",  "Substitute can't come on for this Player");
+      _ackAlert(context,  "Invalid Sub",  "Can't swap flex with this Player");
     }
   }
 

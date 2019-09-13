@@ -38,7 +38,8 @@ class StatsPage extends StatelessWidget{
         return Text(
           //Returning the player name + ": " + number of stat
           "${snapshot.data.documents[0].documentID}\t${snapshot.data.documents[0]['team']}\n${snapshot.data.documents[0][queryString].toString()}",
-          style: TextStyle(fontSize: leaderFontSize, fontFamily: 'Titillium'));
+          style: TextStyle(fontSize: leaderFontSize, fontFamily: 'Titillium'),
+          softWrap: false,);
       },
     );
   }
