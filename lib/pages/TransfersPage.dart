@@ -22,17 +22,6 @@ class TransfersPageState extends State<TransfersPage>{
   final int outIndex;
   final DocumentSnapshot teamData;
   String sortBy = "totalPoints";
-  var teams;
-
-
-  //Garbage cheat way to implement limit to teams
-  @override
-  void initState() {
-    setState(() {
-      teams = teamData['teams'];
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -292,8 +281,7 @@ class TransfersPageState extends State<TransfersPage>{
         'points': points,
         'players': players,
         'prices' : prices,
-        'sub' : sub,
-        'teams' : teams
+        'sub' : sub
       });     
     });   
 
