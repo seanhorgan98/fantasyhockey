@@ -55,6 +55,18 @@ class TransferLockPage extends StatelessWidget {
           Flexible(
             flex: 2,
             fit: FlexFit.tight,
+            child: RaisedButton(
+              child: Text("Add Transfer", style: TextStyle(fontSize: 40),),
+              onPressed: () => addTransfer(),
+            )
+          ),
+          Flexible(
+            flex: 1,
+            child: Container(),
+          ),
+          Flexible(
+            flex: 2,
+            fit: FlexFit.tight,
             child: Container(
               alignment: Alignment.bottomCenter,
               margin: new EdgeInsets.symmetric(horizontal: 30, vertical: 7),
@@ -92,6 +104,38 @@ class TransferLockPage extends StatelessWidget {
       
   }
 
+
+  addTransfer(){
+    Firestore.instance.collection("Teams").getDocuments().then(
+      (snapshot) => increaseTransfers(snapshot) 
+    );
+  }
+
+  increaseTransfers(QuerySnapshot snapshot){
+    WriteBatch batch = Firestore.instance.batch(); 
+    for( DocumentSnapshot team in snapshot.documents){
+      var newValue;
+      switch(team['transferSetting']) { 
+        case 0: { 
+          newValue = 1;
+        } 
+        break; 
+        
+        case 1: { 
+          newValue = 2;
+        } 
+        break; 
+            
+        case 2: { 
+          newValue = 2; 
+        }
+        break;
+      }
+      DocumentReference iref = team.reference;
+      batch.updateData(iref, {'transferSetting': newValue});
+    }
+    batch.commit();
+  }
 
 
   /*
