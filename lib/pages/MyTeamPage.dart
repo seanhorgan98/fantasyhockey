@@ -31,7 +31,6 @@ class MyTeamPageState extends State<MyTeamPage> {
         teamID = snapshot.data['team'];
       });
     });
-
   }
   
   /*
@@ -298,10 +297,10 @@ class MyTeamPageState extends State<MyTeamPage> {
       captain -= 2;
     }
     //Check if transfers enabled
-    if(setting == 1){ 
-      points = "Last Week: " + points;
-    } else {
+    if(setting == 0){ 
       points = "This Week: " + points;
+    } else {
+      points = "Last Week: " + points;
     } 
 
     return new ButtonTheme(
