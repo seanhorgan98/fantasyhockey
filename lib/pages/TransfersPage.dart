@@ -21,11 +21,19 @@ class TransfersPageState extends State<TransfersPage>{
 
   final int outIndex;
   final DocumentSnapshot teamData;
-  String sortBy = "totalPoints";
+  String sortBy = "price";
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    
+    //Filter players by position
+    var position;
+    if (outIndex < 2) { position = 0;}
+    else if (outIndex == 2 || outIndex == 3) { position = 1; }        
+    else if (outIndex == 4 || outIndex == 5) { position = 2; }
+    //if sold player is sub, ignore filter
+    else if (outIndex == 6) {
+      return new Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text("Transfers", style: TextStyle(fontFamily: 'Titillium')),
@@ -36,12 +44,60 @@ class TransfersPageState extends State<TransfersPage>{
           stream: Firestore.instance.collection("Players").snapshots(),
           builder: (context, snapshot){
             if(!snapshot.hasData) {return const Text("Loading...");}
-            return ListView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.all(5),
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) =>
-                _headerCheck(context, index),
+
+          
+
+            return Column(
+              children: <Widget>[
+                _addHeaderInfo(context),
+                _buildHeaders(),
+                
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.all(5),
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (context, index) =>
+                      _buildListItem(context, index),
+                  ),
+                ),
+              ],
+            );
+          }
+        )
+      )
+    ); 
+    }
+
+    return new Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text("Transfers", style: TextStyle(fontFamily: 'Titillium')),
+      ),
+      body: Container(
+        margin: EdgeInsets.all(4),
+        child: StreamBuilder(
+          stream: Firestore.instance.collection("Players").where('position', isEqualTo: position ).snapshots(),
+          builder: (context, snapshot){
+            if(!snapshot.hasData) {return const Text("Loading...");}
+
+          
+
+            return Column(
+              children: <Widget>[
+                _addHeaderInfo(context),
+                _buildHeaders(),
+                
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.all(5),
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (context, index) =>
+                      _buildListItem(context, index),
+                  ),
+                ),
+              ],
             );
           }
         )
@@ -49,21 +105,6 @@ class TransfersPageState extends State<TransfersPage>{
     );  
   }
 
-  //used by build to create headers on first run through
-  //Need to move this so 
-  Widget _headerCheck(BuildContext context, int index){
-    if(index == 0){
-      return Column(
-        children: <Widget>[
-          _addHeaderInfo(context),
-          _buildHeaders(),
-          _buildListItem(context, index)
-        ]
-      );
-    } else {
-      return _buildListItem(context, index);
-    }
-  }
   
   //builds information to go above table
   Widget _addHeaderInfo(BuildContext context){
@@ -134,32 +175,19 @@ class TransfersPageState extends State<TransfersPage>{
       nameSize = 11;
     }
 
+    
 
     return StreamBuilder(
       stream: Firestore.instance.collection("Players").orderBy(sortBy, descending: true).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-        //Get data before printing
-        if(!snapshot.hasData) {return const Text('Loading...');}
+
+        if(!snapshot.hasData) {return const Text("Loading...");}
 
         // //filter out null player
         if(snapshot.data.documents[index].documentID == "No Player"){
           return Container();
         }
 
-        //If row is player being sold, emitt
-        if(snapshot.data.documents[index].documentID == teamData['players'][outIndex]) {
-          return Container(width: 0, height: 0);
-        }
-        //Filter players by position
-        int position;
-        if (outIndex < 2) { position = 0;}
-        else if (outIndex == 2 || outIndex == 3) { position = 1; }        
-        else if (outIndex == 4 || outIndex == 5) { position = 2; }
-        //if sold player is sub, ignore filter
-        else if (outIndex == 6) {position = snapshot.data.documents[index]['position'];}
-        if(snapshot.data.documents[index]['position'] != position) {
-          return Container(width: 0, height: 0);
-        }
         //Filter out team mates
         if (teamData['players'].contains(snapshot.data.documents[index].documentID)){
           return Container(width: 0, height: 0);
