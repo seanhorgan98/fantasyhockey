@@ -76,6 +76,9 @@ class MyTeamPageState extends State<MyTeamPage> {
       fontBody = 12;
     }
 
+    fontHead *= 1/MediaQuery.of(context).textScaleFactor;
+    fontBody *= 1/MediaQuery.of(context).textScaleFactor;
+
     var transfers = doc ['transfers'][0].toString() + "\nTransfers";
     // Check if unlimited transfers
     if(doc['transferSetting'] == 2){
@@ -288,10 +291,18 @@ class MyTeamPageState extends State<MyTeamPage> {
       captain = 12;
     }
 
+    fontBody *= 1/MediaQuery.of(context).textScaleFactor;
+    captain *= 1/MediaQuery.of(context).textScaleFactor;
+
+    Color captainColour = Colors.grey;
+    double captainWidth = 0.5;
+
     String display = player;
     // Special treatment for captain
     if(cap == index){
       display = display + " (C)";
+      captainColour = Colors.yellow;
+      captainWidth = 5;
     }
     if(display.length > 15){
       captain -= 2;
@@ -309,13 +320,13 @@ class MyTeamPageState extends State<MyTeamPage> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            border: Border.all(color: Colors.grey, width: 0.5),
+            border: Border.all(color: captainColour, width: captainWidth),
             color: Colors.white,
           ),
           child: MaterialButton(            
             child: new Column(
                   children: <Widget>[
-                    Text(display, style: TextStyle(fontSize: captain, color: Colors.black, fontFamily: 'Titillium', fontWeight: FontWeight.bold)),
+                    Text(display, softWrap: false, style: TextStyle(fontSize: captain, color: Colors.black, fontFamily: 'Titillium', fontWeight: FontWeight.bold)),
                     Text(points, style: TextStyle(fontSize: fontBody, color: Colors.black, fontFamily: 'Titillium')),
                     Text(price, style: TextStyle(fontSize: fontBody, color: Colors.black, fontFamily: 'Titillium'))
                   ] 
