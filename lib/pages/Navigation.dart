@@ -22,6 +22,7 @@ class _NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
+
     //Pages in the navigation bar
     final List<Widget> _children = [
       LeaguePage(),
@@ -29,15 +30,21 @@ class _NavigationState extends State<Navigation> {
       StatsPage(auth: widget.auth, onSignedOut: widget.onSignedOut,)
     ];
     return Scaffold(
-      backgroundColor: Colors.purple[900],
       body: Container(
         //Draw background
-        //decoration: BoxDecoration(
-         // image: DecorationImage(
-            //image: AssetImage("assets/images/geometry.png"),
-           // fit: BoxFit.cover,
-          //),
-        //),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.1,0.4,0.7,0.9],
+            colors: [
+              Color(0xFF3594DD),
+              Color(0xFF4563DB),
+              Color(0xFF5036D5),
+              Color(0xFF5036D5)
+            ]
+          )
+        ),
         child: _children[_currentIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(

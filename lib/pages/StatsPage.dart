@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fantasy_hockey/pages/Rules.dart';
-import 'package:fantasy_hockey/pages/PlayerStats.dart';
-import 'package:fantasy_hockey/pages/Mod.dart';
-import 'package:fantasy_hockey/pages/assisters.dart';
+import 'package:fantasy_hockey/pages/Rules/RulesPage.dart';
+import 'package:fantasy_hockey/pages/Rankings/PlayerStats.dart';
+import 'package:fantasy_hockey/pages/Mod/Mod.dart';
+import 'package:fantasy_hockey/pages/Rankings/assisters.dart';
 import 'package:fantasy_hockey/pages/auth.dart';
-import 'package:fantasy_hockey/pages/gameWeek.dart';
-import 'package:fantasy_hockey/pages/goalScorers.dart';
-import 'package:fantasy_hockey/pages/totalPoints.dart';
+import 'package:fantasy_hockey/pages/Rankings/gameWeek.dart';
+import 'package:fantasy_hockey/pages/Rankings/goalScorers.dart';
+import 'package:fantasy_hockey/pages/Rankings/totalPoints.dart';
 import 'package:flutter/material.dart';
 
 class StatsPage extends StatelessWidget{
@@ -14,6 +14,7 @@ class StatsPage extends StatelessWidget{
   StatsPage({this.auth, this.onSignedOut});
   final BaseAuth auth;
   final VoidCallback onSignedOut;
+  var userID = "";
 
 
   void _signOut() async{
@@ -25,31 +26,46 @@ class StatsPage extends StatelessWidget{
     }
   }
 
-  Widget buildLeaderWidgets(String queryString){
+  Widget buildLeaderWidgets(BuildContext context, String queryString){
+    double leaderFontSize = 20;
+    if(MediaQuery.of(context).size.height < 600){
+      leaderFontSize = 14;
+    }
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('Players').orderBy(queryString, descending: true).limit(1).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
         if(!snapshot.hasData) {return const Text('Loading...');}
         return Text(
           //Returning the player name + ": " + number of stat
-          "1.\n${snapshot.data.documents[0].documentID}\t${snapshot.data.documents[0]['team']}\n${snapshot.data.documents[0][queryString].toString()}",
-          style: TextStyle(fontSize: 20, fontFamily: 'Titillium'));
+          "${snapshot.data.documents[0].documentID}\t${snapshot.data.documents[0]['team']}\n${snapshot.data.documents[0][queryString].toString()}",
+          style: TextStyle(fontSize: leaderFontSize, fontFamily: 'Titillium'),
+          softWrap: false,);
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    double titleFontSize = 30;
+    double buttonFontSize = 18;
+    double leaderFontSize = 20;
+    double buttonHeight = 50;
+    if(MediaQuery.of(context).size.height < 600){
+      titleFontSize = 18;
+      buttonFontSize = 12;
+      leaderFontSize = 14;
+      buttonHeight = 32;
+    }
     return SafeArea(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           //Title
           Container(
             padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
             child: Align(
               alignment: Alignment.center,
-              child: Text("Statistics", style: TextStyle(fontSize: 30, fontFamily: 'Titillium', color: Colors.white)),
+              child: Text("Statistics", style: TextStyle(fontSize: titleFontSize, fontFamily: 'Titillium', color: Colors.white)),
             )
           ),
           Row(
@@ -74,13 +90,13 @@ class StatsPage extends StatelessWidget{
                         width: double.infinity,
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
                         alignment: Alignment.centerLeft,
-                        height: 50,
-                        child: Text("Goals", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        height: buttonHeight,
+                        child: Text("Goals", style: TextStyle(fontSize: leaderFontSize, fontWeight: FontWeight.bold),),
                       ),
                       //Query Players collection for player with most goals
                       Container(
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
-                        child: buildLeaderWidgets('goals')
+                        child: buildLeaderWidgets(context, 'goals')
                       ),
                       //See Full List
                       Container(
@@ -114,13 +130,13 @@ class StatsPage extends StatelessWidget{
                         width: double.infinity,
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
                         alignment: Alignment.centerLeft,
-                        height: 50,
-                        child: Text("Assists", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        height: buttonHeight,
+                        child: Text("Assists", style: TextStyle(fontSize: buttonFontSize, fontWeight: FontWeight.bold),),
                       ),
                       //Query Players collection for player with most assists
                       Container(
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
-                        child: buildLeaderWidgets('assists')
+                        child: buildLeaderWidgets(context, 'assists')
                       ),
                       //See Full List
                       Container(
@@ -158,13 +174,12 @@ class StatsPage extends StatelessWidget{
                         width: double.infinity,
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
                         alignment: Alignment.centerLeft,
-                        height: 50,
-                        child: Text("Total Points", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        height: buttonHeight,                        child: Text("Total Points", style: TextStyle(fontSize: leaderFontSize, fontWeight: FontWeight.bold),),
                       ),
                       //Query Players collection for player with most points
                       Container(
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
-                        child: buildLeaderWidgets('totalPoints')
+                        child: buildLeaderWidgets(context, 'totalPoints')
                       ),
                       //See Full List
                       Container(
@@ -197,13 +212,13 @@ class StatsPage extends StatelessWidget{
                         width: double.infinity,
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
                         alignment: Alignment.centerLeft,
-                        height: 50,
-                        child: Text("GW", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        height: buttonHeight,
+                        child: Text("GW", style: TextStyle(fontSize: leaderFontSize, fontWeight: FontWeight.bold),),
                       ),
                       //Query Players collection for player with most gw points
                       Container(
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 5),
-                        child: buildLeaderWidgets('gw')
+                        child: buildLeaderWidgets(context, 'gw')
                       ),
                       //See Full List
                       Container(
@@ -220,10 +235,10 @@ class StatsPage extends StatelessWidget{
           ),
           //Player stats
           Container(
-            margin: new EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+            margin: new EdgeInsets.symmetric(horizontal: 20, vertical: 0),
             child: MaterialButton(
               minWidth: MediaQuery.of(context).size.width,
-              height: 50,
+              height: buttonHeight,
               color: Colors.white,
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => PlayerStats()));                 
@@ -235,30 +250,32 @@ class StatsPage extends StatelessWidget{
           //Rules
           Container(
             margin: new EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-            height: 50,
+            height: buttonHeight,
             child: MaterialButton(
               minWidth: MediaQuery.of(context).size.width,
               color: Colors.white,
               onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Rules()));                 
+                Navigator.push(context, MaterialPageRoute(builder: (context) => RulesPage()));                 
               },
               child: Text("Rules & Scoring", style: TextStyle(fontSize: 18, fontFamily: 'Titillium')),
             ),
           ),
-        //Add Game/Mod button
+        //Mod button
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
-                child: FlatButton(
-                  color: Colors.grey[400],
-                  onPressed: (){
-                   Navigator.push(context, MaterialPageRoute(builder: (context) => Mod()));                 
-                  },
-                  child: Text("MOD"),
-                ),
+            FutureBuilder(
+              future: _getCurrentUser(context),
+              builder: (context, snapshot){
+                if(snapshot.connectionState == ConnectionState.done){
+                  return _buildModButton(context);
+                }else{
+                  return Container();
+                }
+              },
+
             ),
+            
             Container(
               child: FlatButton(
                 color: Colors.red,
@@ -271,5 +288,28 @@ class StatsPage extends StatelessWidget{
         ],
       ),
     );
+  }
+
+  Future<String> _getCurrentUser(BuildContext context) async{
+    userID = await auth.currentUser();
+    return userID;
+  }
+
+  Container _buildModButton(BuildContext context){
+    if (userID == '5Qn4VZcgUCTQIjetjopiA7TIOFD2' || userID == 'ma4IlNLh5SNwhMG0CpmdPpv1kj33'){
+      return Container(
+        padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
+        child: FlatButton(
+          color: Colors.grey[400],
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Mod()));                 
+          },
+          child: Text("MOD"),
+        ),
+      );
+    }else{
+      return Container();
+    }
+    
   }
 }

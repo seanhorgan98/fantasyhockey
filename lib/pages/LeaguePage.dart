@@ -11,23 +11,29 @@ class LeaguePage extends StatefulWidget{
 
 class LeaguePageState extends State<LeaguePage>{
   List<Team> teams;
-  Future<Team> sortTeams(AsyncSnapshot snapshot) async {
+
+
+  void sortTeams(AsyncSnapshot snapshot) {
     teams = new List<Team>();
 
-    //Loop through firebase teams and add them to list of teams
-    for(var i = 0;i<snapshot.data.documents.length;i++){
+    //Loop through all firebase teams and create a team object
+    for(var i = 1;i<snapshot.data.documents.length;i++){
       Team team = new Team(teamName: snapshot.data.documents[i]['teamName'],
-                            gw: snapshot.data.documents[i]['gw'],
-                            total: snapshot.data.documents[i]['points']);
+                            gw: snapshot.data.documents[i]['totals'][0],
+                            total: snapshot.data.documents[i]['totals'][1]);
       teams.add(team);
     }
     teams.sort((a,b) => b.total.compareTo(a.total));
-    //Use list.sort
-    return null;
   }
 
   @override
   Widget build(BuildContext context) {
+    double height;
+    if(MediaQuery.of(context).size.height < 600){
+      height = 420;
+    } else {
+      height = MediaQuery.of(context).size.height * 0.84;
+    }
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 25, 0, 0),
@@ -36,26 +42,17 @@ class LeaguePageState extends State<LeaguePage>{
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            //Top Bar
+
+            //Surrounding White box for table
             Container(
-              width: MediaQuery.of(context).size.width*0.8,
-              height: 5,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: [0,1],
-                  colors: [
-                    Colors.white,
-                    Colors.red,
-                  ]
-                )
+              constraints: BoxConstraints(
+                maxHeight: height,
+                maxWidth: MediaQuery.of(context).size.width*0.9
               ),
-            ),
-            //Container for League Table white box
-            Container(
-              color: Colors.white,
-              width: MediaQuery.of(context).size.width*0.9,
+
+              //Rounded edges
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.white),
+              
               child: Padding(
                 padding: EdgeInsets.fromLTRB(10, 15, 10, 10),
                 child: Column(
@@ -63,32 +60,41 @@ class LeaguePageState extends State<LeaguePage>{
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    //Title
                     Text(
                       "League Table",
                       style: TextStyle(fontSize: 24, fontFamily: 'Titillium'),
                     ),
+
+                    //Divider
                     Divider(height: 20,),
-                    //Headings
+
+                    //Column Headings
                     Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Container(
-                          child: Text("Pos."),
+                        Expanded(
+                          child: Text("Pos.", style: TextStyle(fontWeight: FontWeight.bold),),
+                          flex: 1,
                         ),
-                        Container(
-                          child: Text("Team Name"),
+                        Expanded(
+                          child: Text(" Team Name", style: TextStyle(fontWeight: FontWeight.bold),),
+                          flex: 4,
                         ),
-                        Container(
-                          child: Text("GW"),
+                        Expanded(
+                          child: Text("GW", style: TextStyle(fontWeight: FontWeight.bold),),
+                          flex: 1,
                         ),
-                        Container(
-                          child: Text("Total"),
+                        Expanded(
+                          child: Text("Total", style: TextStyle(fontWeight: FontWeight.bold),),
+                          flex: 1,
                         ),
                       ],
                     ),
-                    //DataTable || ACTUAL LEAGUE TABLE
+
+                    //Divider
+                    Divider(color: Colors.white,),
+
+                    //League Table Data
                     Flexible(
                       child: StreamBuilder(
                         stream: Firestore.instance.collection('Teams').snapshots(),
@@ -101,7 +107,7 @@ class LeaguePageState extends State<LeaguePage>{
                           return ListView.separated(
                             shrinkWrap: true,
                             padding: const EdgeInsets.all(8.0),
-                            itemCount: snapshot.data.documents.length,
+                            itemCount: snapshot.data.documents.length-1,
                             itemBuilder: (context, index) => 
                               _buildListItem(context, index, teams),  
                             separatorBuilder: (BuildContext context, int index) => const Divider(height: 30,),
@@ -114,7 +120,7 @@ class LeaguePageState extends State<LeaguePage>{
               ),
             ),
             Container(
-              //Very unsure why this needs to be here but it does
+              //Very unsure why this needs to be here but it does (Alignment purposes probably)
             )
           ],
         )
@@ -125,15 +131,11 @@ class LeaguePageState extends State<LeaguePage>{
 
 Widget _buildListItem(BuildContext context, int index, List<Team> teams){
   return Row(
-    mainAxisSize: MainAxisSize.max,
-    mainAxisAlignment: MainAxisAlignment.spaceBetween, //Changes horizontal spacing
-    crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
-      //Might need to switch from flexible to something else to sort out alignment issues
-      Flexible(flex: 2,child: Text((index+1).toString())),
-      Flexible(flex: 5,child: Text(teams[index].teamName)),
-      Flexible(flex: 2,child: Text(teams[index].gw.toString())),
-      Flexible(flex: 2,child: Text(teams[index].total.toString()))
+      Expanded(flex: 1,child: Text((index+1).toString())),
+      Expanded(flex: 4,child: Text(teams[index].teamName)),
+      Expanded(flex: 1,child: Text(teams[index].gw.toString())),
+      Expanded(flex: 1,child: Text(teams[index].total.toString()))
     ],
   );
 }
