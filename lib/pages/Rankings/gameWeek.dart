@@ -36,7 +36,7 @@ class _GameWeekState extends State<GameWeek> {
                   return ListView.separated(
                     shrinkWrap: true,
                     padding: EdgeInsets.all(15),
-                    itemCount: (snapshot.data.documents.length-1),
+                    itemCount: (snapshot.data.documents.length),
                     itemBuilder: (context, index) =>
                       _buildListItem(context, index, snapshot),
                     separatorBuilder: (BuildContext context, int index) => Divider(height: 15,),
