@@ -196,18 +196,6 @@ class PlayerData {
     this.appearances = 1;
   }
 
-  int cleanSheetPoints(){
-    switch (position){
-      case 0:
-        return 5;
-        break;
-      case 1:
-        return 1;
-        break;
-    }
-    return 0;
-  }
-
   int concededPoints(){
     if(this.position == 0){
       return ((this.defender2Conceeded * -1) + (this.defender5Conceeded * -2));
@@ -226,7 +214,7 @@ class PlayerData {
       (this.missedFlicks * -3) +
       (this.assistFlicks + this.assists * 3) +
       (this.ownGoals * -4) +
-      (this.defenderCleanSheets + this.midfieldCleenSheets * (cleanSheetPoints()) ) +
+      (this.defenderCleanSheets * 5 + this.midfieldCleenSheets ) +
       ( concededPoints() ) +
       (this.greenCards * -2 + this.yellowCards * -5 + this.redCards * -20 ) +
       (this.motms * 5 + this.donkeys * -3) +

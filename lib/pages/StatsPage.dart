@@ -296,7 +296,7 @@ class StatsPage extends StatelessWidget{
   }
 
   Container _buildModButton(BuildContext context){
-    if (userID == '5Qn4VZcgUCTQIjetjopiA7TIOFD2' || userID == 'ma4IlNLh5SNwhMG0CpmdPpv1kj33'){
+    if (userID == '7wgl837Doecj1OZb8bgu0FejGHF2' || userID == '3XRpbDRTr7gxwEMy8QMH25WRXJM2'){
       return Container(
         padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
         child: FlatButton(
