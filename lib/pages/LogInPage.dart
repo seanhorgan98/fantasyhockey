@@ -10,8 +10,6 @@ class LogInPage extends StatefulWidget {
   final BaseAuth auth;
   final VoidCallback onSignedIn;
 
-
-
   @override
   _LogInPageState createState() => _LogInPageState();
 }
@@ -20,100 +18,116 @@ class _LogInPageState extends State<LogInPage> {
   Color facebookColor = Color(0xff4267B2);
   bool isLoading = false;
 
-  _onSignUp(){
+  _onSignUp() {
     //Navigate to team creation page
-    Navigator.push(context, MaterialPageRoute(builder: (context) => TeamCreation(auth: widget.auth, onSignedIn: widget.onSignedIn)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TeamCreation(
+                auth: widget.auth, onSignedIn: widget.onSignedIn)));
   }
 
-  Widget customSignUpButton(){
+  Widget customSignUpButton() {
     return Container(
-      width: MediaQuery.of(context).size.width*0.65,
+      width: MediaQuery.of(context).size.width * 0.65,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5), color: Colors.white,
-        border: new Border.all(color: Colors.black)
-      ),
-      
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.white,
+          border: new Border.all(color: Colors.black)),
       child: MaterialButton(
         onPressed: () => _onSignUp(),
-        child: Text("Sign Up", style: TextStyle(fontSize: 20, fontFamily: 'Titillium'),),
+        child: Text(
+          "Sign Up",
+          style: TextStyle(fontSize: 20, fontFamily: 'Titillium'),
+        ),
       ),
     );
   }
 
-  Widget customFacebookButton(){
+  Widget customFacebookButton() {
     return Container(
-      child: 
-        Container(
-          height: MediaQuery.of(context).size.height*0.13,
-          child: InkWell(
-            onTap: () => startFacebookLogin(widget.auth, widget.onSignedIn),
-            child: Image.asset('assets/images/facebook.png',),
-          ),
-        )
-    );
+        child: Container(
+      height: MediaQuery.of(context).size.height * 0.13,
+      child: InkWell(
+        onTap: () => startFacebookLogin(widget.auth, widget.onSignedIn),
+        child: Image.asset(
+          'assets/images/facebook.png',
+        ),
+      ),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return isLoading ? Scaffold(
-      body: Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text("Loading...", style: TextStyle(fontFamily: "Titillium", fontSize: 25),),
-              CircularProgressIndicator(),
-            ],
-          ),
-        )
-    ) : 
-    SafeArea(
-      child: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              //Header Image
-              child: Image.asset("assets/images/wallpaper.jpg"),
+    return isLoading
+        ? Scaffold(
+            body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Loading...",
+                  style: TextStyle(fontFamily: "Titillium", fontSize: 25),
+                ),
+                CircularProgressIndicator(),
+              ],
             ),
-            Divider(color: Colors.white,),
-            //Title
-            Text("Fantasy Hockey", style: TextStyle(fontFamily: 'Titillium', fontSize: 35, fontWeight: FontWeight.bold)),
+          ))
+        : SafeArea(
+            child: Scaffold(
+                body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                //Header Image
+                child: Image.asset("assets/images/wallpaper2.jpg"),
+              ),
+              Divider(
+                color: Colors.white,
+              ),
+              //Title
+              Text("Fantasy Hockey",
+                  style: TextStyle(
+                      fontFamily: 'Titillium',
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold)),
 
-            //Spacer
-            Divider(color: Colors.white, height: MediaQuery.of(context).size.height/4,),
+              //Spacer
+              Divider(
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height / 8,
+              ),
 
-            //Login Button
-            customFacebookButton(),
+              //Login Button
+              customFacebookButton(),
 
-            Divider(color: Colors.white,),
+              Divider(
+                color: Colors.white,
+              ),
 
-            //Sign Up button
-            customSignUpButton(),
-          ],
-        )
-      )
-    );
+              //Sign Up button
+              customSignUpButton(),
+            ],
+          )));
   }
 
   //Async Facebook Login
   void startFacebookLogin(BaseAuth auth, VoidCallback onSignedIn) async {
-    
     setState(() {
       isLoading = true;
     });
 
     await auth.signInWithFacebook();
 
-    
-
     //Get UID
-    auth.currentUser().then((user){
+    auth.currentUser().then((user) {
       //Check if document in Users Collection exists with id user
-      
-      DocumentReference docRef = Firestore.instance.collection("Users").document(user);
+
+      DocumentReference docRef =
+          Firestore.instance.collection("Users").document(user);
       //No User signed in check
-      if(user == "false"){
+      if (user == "false") {
         setState(() {
           isLoading = false;
         });
@@ -121,22 +135,22 @@ class _LogInPageState extends State<LogInPage> {
       }
 
       docRef.snapshots().listen((onData) async {
-        if(onData.exists == false){
+        if (onData.exists == false) {
           //Document does not exist
-          Navigator.push(context, MaterialPageRoute(builder: (context) => TeamCreation(auth: widget.auth, onSignedIn: signMeInHamachi)));
-        }else{
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TeamCreation(
+                      auth: widget.auth, onSignedIn: signMeInHamachi)));
+        } else {
           await Future.delayed(Duration(milliseconds: 50));
           onSignedIn();
         }
       });
-
     });
   }
 
-  signMeInHamachi(){
+  signMeInHamachi() {
     widget.onSignedIn();
   }
-
-
 }
-
