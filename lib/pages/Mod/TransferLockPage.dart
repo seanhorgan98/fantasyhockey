@@ -114,8 +114,9 @@ class TransferLockPage extends StatelessWidget {
   increaseTransfers(QuerySnapshot snapshot){
     WriteBatch batch = Firestore.instance.batch(); 
     for( DocumentSnapshot team in snapshot.documents){
+      //if(team['teamName'] != 'Horgan Donors' ){continue;} 
       var newValue;
-      switch(team['transferSetting']) { 
+      switch(team['transfers'][0]) { 
         case 0: { 
           newValue = 1;
         } 
@@ -131,8 +132,10 @@ class TransferLockPage extends StatelessWidget {
         }
         break;
       }
+      var oldData = team['transfers'];
+      var newData = [newValue, oldData[1]];
       DocumentReference iref = team.reference;
-      batch.updateData(iref, {'transferSetting': newValue});
+      batch.updateData(iref, {'transfers': newData});
     }
     batch.commit();
   }

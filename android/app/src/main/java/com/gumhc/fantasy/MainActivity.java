@@ -1,4 +1,4 @@
-package com.example.fantasy_hockey;
+package com.gumhc.fantasy;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

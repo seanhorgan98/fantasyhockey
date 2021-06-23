@@ -10,12 +10,20 @@
       "client_info": {
         "mobilesdk_app_id": "1:563628459438:android:c0fe057e68ecd75b",
         "android_client_info": {
-          "package_name": "com.example.fantasy_hockey"
+          "package_name": "com.gumhc.fantasy_hockey"
         }
       },
       "oauth_client": [
         {
-          "client_id": "563628459438-57r1p98p0qf7ha95mdobsu6hekvthetc.apps.googleusercontent.com",
+          "client_id": "563628459438-tcqpp3lbd3bu4rn7i9295nhp83632ooq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fantasy_hockey",
+            "certificate_hash": "1377756dd125074ad7d38545567be530515936be"
+          }
+        },
+        {
+          "client_id": "563628459438-i2bm62esngpfemmd5v8m07trhrrcr92j.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.fantasy_hockey",
@@ -38,6 +46,57 @@
             {
               "client_id": "563628459438-0qu8g8s24dehm2go851lm2ll0oojrdsq.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "563628459438-t83pfds2hi1n3f5utuopumrd8ompd5da.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gumhc.fantasy"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:563628459438:android:b5e462655080285739b43f",
+        "android_client_info": {
+          "package_name": "com.gumhc.fantasy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "563628459438-1ebiccvm6h826kosas6182joor5pb59r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gumhc.fantasy",
+            "certificate_hash": "1377756dd125074ad7d38545567be530515936be"
+          }
+        },
+        {
+          "client_id": "563628459438-0qu8g8s24dehm2go851lm2ll0oojrdsq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfXF1XJFFVaTp4hTbyNf_UXnHLh06CYqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "563628459438-0qu8g8s24dehm2go851lm2ll0oojrdsq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "563628459438-t83pfds2hi1n3f5utuopumrd8ompd5da.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gumhc.fantasy"
+              }
             }
           ]
         }

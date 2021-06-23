@@ -15,10 +15,10 @@ class PlayerStatsState extends State<PlayerStats>{
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         Flexible(child: Text(snapshot.data.documents[index].documentID), flex: 2, fit: FlexFit.tight),
+        Expanded(child: Center(child: Text(snapshot.data.documents[index]['appearances'].toString())), flex: 1),
+        Expanded(child: Center(child: Text(snapshot.data.documents[index]['motms'].toString())), flex: 1),
         Expanded(child: Center(child: Text(snapshot.data.documents[index]['gw'].toString())), flex: 1),
         Expanded(child: Center(child: Text(snapshot.data.documents[index]['totalPoints'].toString())), flex: 1),
-        Expanded(child: Center(child: Text(snapshot.data.documents[index]['appearances'].toString())), flex: 1),
-        Expanded(child: Center(child: Text(snapshot.data.documents[index]['motms'].toString())), flex: 1)
       ],
     );
   }
@@ -68,10 +68,10 @@ class PlayerStatsState extends State<PlayerStats>{
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         Flexible(child: Center(child: Text("Name", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)), flex: 2, fit: FlexFit.tight),
-        header("GW", "gw"),
-        header("Total", "totalPoints"),
         header("Apps", "appearances"),
         header("MotM", "motms"),
+        header("GW", "gw"),
+        header("Total", "totalPoints"),
       ],
     );
   }

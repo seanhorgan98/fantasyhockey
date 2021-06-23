@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fantasy_hockey/classes/PlayerList.dart';
 
 class TransfersPage extends StatefulWidget{
 
@@ -21,56 +22,86 @@ class TransfersPageState extends State<TransfersPage>{
 
   final int outIndex;
   final DocumentSnapshot teamData;
-  String sortBy = "totalPoints";
+  String sortBy = "price";
+  PlayerList players;
+
+
+  @override
+  void initState() {
+
+    var position;
+    if (outIndex < 2) { position = 0;}
+    else if (outIndex == 2 || outIndex == 3) { position = 1; }        
+    else if (outIndex == 4 || outIndex == 5) { position = 2; }
+    //if sold player is sub, ignore filter
+    else if (outIndex == 6) { position = 3; }
+
+
+    Firestore.instance.collection("Players").getDocuments().then(
+      (snapshot) => buildState(snapshot, position)
+
+    );
+    super.initState();
+  }
+
+  void buildState(QuerySnapshot snapshot, int position){
+    var tempPlayers;
+    tempPlayers = new PlayerList(snapshot);
+    tempPlayers = tempPlayers.filterPos(position);
+    print("got here");
+    setState(() {
+      players = tempPlayers.sort(sortBy);
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+
+    while(players == null){
+      return CircularProgressIndicator();
+    }
+
+    return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text("Transfers", style: TextStyle(fontFamily: 'Titillium')),
       ),
       body: Container(
         margin: EdgeInsets.all(4),
-        child: StreamBuilder(
-          stream: Firestore.instance.collection("Players").snapshots(),
-          builder: (context, snapshot){
-            if(!snapshot.hasData) {return const Text("Loading...");}
-            return ListView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.all(5),
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) =>
-                _headerCheck(context, index),
-            );
-          }
+        child: Column(
+          children: <Widget>[
+            _addHeaderInfo(context),
+            _buildHeaders(),
+                  
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: EdgeInsets.all(5),
+                itemCount: players.getLength(),
+                itemBuilder: (context, index) =>
+                  _buildListItem(context, index),
+              ),
+            ),
+          ],
         )
+          
       )
     );  
   }
 
-  //used by build to create headers on first run through
-  //Need to move this so 
-  Widget _headerCheck(BuildContext context, int index){
-    if(index == 0){
-      return Column(
-        children: <Widget>[
-          _addHeaderInfo(context),
-          _buildHeaders(),
-          _buildListItem(context, index)
-        ]
-      );
-    } else {
-      return _buildListItem(context, index);
-    }
-  }
   
   //builds information to go above table
   Widget _addHeaderInfo(BuildContext context){
     String outPlayerName = (teamData['players'][outIndex]);
     //Next line breaks
     int budget = teamData['prices'][outIndex] + teamData['transfers'][1];
-    String transfers = teamData['transfers'][0].toString();
+    String transfers;
+    if(teamData['transferSetting'] == 2){
+      transfers = "∞";
+    } else {
+      transfers = teamData['transfers'][0].toString();
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -83,7 +114,7 @@ class TransfersPageState extends State<TransfersPage>{
   
   //builds headers
   Widget _buildHeaders(){
-    var headers = ['Name', 'Price', 'Points', 'Games\nPlayed'];
+    var headers = ['Name', 'Price', 'Points', 'Played'];
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -100,14 +131,17 @@ class TransfersPageState extends State<TransfersPage>{
     if(column == 1){
       setState(() {
         sortBy = "price";
+        players = players.sort(sortBy);
       });
     } else if(column == 2){
       setState(() {
         sortBy = "totalPoints";
+        players = players.sort(sortBy);
       });
     } else if(column == 3) {
       setState(() {
-        sortBy = "appearances";
+        sortBy = "apps";
+        players = players.sort(sortBy);
       });
     } 
   }
@@ -134,79 +168,57 @@ class TransfersPageState extends State<TransfersPage>{
       nameSize = 11;
     }
 
+    // //filter out null player
+    if(players.getPlayer(index).getName() == "No Player"){
+      return Container();
+    }
 
-    return StreamBuilder(
-      stream: Firestore.instance.collection("Players").orderBy(sortBy, descending: true).snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-        //Get data before printing
-        if(!snapshot.hasData) {return const Text('Loading...');}
-
-        // //filter out null player
-        if(snapshot.data.documents[index].documentID == "No Player"){
-          return Container();
-        }
-
-        //If row is player being sold, emitt
-        if(snapshot.data.documents[index].documentID == teamData['players'][outIndex]) {
-          return Container(width: 0, height: 0);
-        }
-        //Filter players by position
-        int position;
-        if (outIndex < 2) { position = 0;}
-        else if (outIndex == 2 || outIndex == 3) { position = 1; }        
-        else if (outIndex == 4 || outIndex == 5) { position = 2; }
-        //if sold player is sub, ignore filter
-        else if (outIndex == 6) {position = snapshot.data.documents[index]['position'];}
-        if(snapshot.data.documents[index]['position'] != position) {
-          return Container(width: 0, height: 0);
-        }
-        //Filter out team mates
-        if (teamData['players'].contains(snapshot.data.documents[index].documentID)){
-          return Container(width: 0, height: 0);
-        }
-        
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          
-          children: <Widget>[
-            Flexible(
-              child: RaisedButton(
-                child: Column(
-                  children: <Widget>[
-                    Text(snapshot.data.documents[index].documentID.split(" ")[0],
-                    style: TextStyle(fontSize: nameSize),
-                    ),
-                    Text(snapshot.data.documents[index].documentID.split(" ")[1],
-                    style: TextStyle(fontSize: nameSize),
-                    )
-                  ] 
-                ), 
-                onPressed: () {
-                Future<int> popup = _asyncConfirmPopup(context, snapshot.data.documents[index].documentID);
-                popup.then((value) => 
-                  confirmTransfer(value, snapshot.data.documents[index])).catchError((error) 
-                  => confirmError(error));
-                }
-              ),
-              flex: 4,
-              fit: FlexFit.tight,
+    //Filter out team mates
+    if (teamData['players'].contains(players.getPlayer(index).getName())){
+      return Container();
+    }
+    
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      
+      children: <Widget>[
+        Flexible(
+          flex: 4,
+          fit: FlexFit.tight,
+          child: RaisedButton(
+            child: Column(
+              children: <Widget>[
+                Text(players.getPlayer(index).getName().split(" ")[0],
+                style: TextStyle(fontSize: nameSize),
+                ),
+                Text(players.getPlayer(index).getName().split(" ")[1],
+                style: TextStyle(fontSize: nameSize),
+                )
+              ] 
             ), 
-            Expanded(
-              child : Center(child:Text(snapshot.data.documents[index]['price'].toString())),
-              flex: 3,
-            ),
-            Expanded(
-              child : Center(child:Text(snapshot.data.documents[index]['totalPoints'].toString())),
-              flex: 3,
-            ),
-            Expanded(
-              child : Center(child:Text(snapshot.data.documents[index]['appearances'].toString())),
-              flex: 3,
-            ),
-          ],
-        );
-      },
+            onPressed: () {
+            Future<int> popup = _asyncConfirmPopup(context, players.getPlayer(index).getName());
+            popup.then((value) => 
+              confirmTransfer(value, players.getPlayer(index))).catchError((error) 
+              => confirmError(error));
+            }
+          ),
+        ), 
+        Expanded(
+          flex: 3,
+          child : Center(child:Text(players.getPlayer(index).getPrice().toString())),
+        ),
+        Expanded(
+          flex: 3,
+          child : Center(child:Text(players.getPlayer(index).getTotal().toString())),
+        ),
+        Expanded(
+          flex: 3,
+          child : Center(child:Text(players.getPlayer(index).getApps().toString())),
+        ),
+      ]
     );
+
   }
 
   /*
@@ -217,7 +229,7 @@ class TransfersPageState extends State<TransfersPage>{
     Handles Firestore writes to user team
     Returns to Team page
   */
-  void confirmTransfer(int value, DocumentSnapshot player){
+  void confirmTransfer(int value, NamePoints player){
     //no transfer confirmation
     if (value == null || value == 0) {return;}
     //no remaining transfers
@@ -231,27 +243,11 @@ class TransfersPageState extends State<TransfersPage>{
       return;      
     }
     //Transfer too expensive
-    if ((teamData['transfers'][1] + teamData['prices'][outIndex]) < player['price'] ) {
+    if ((teamData['transfers'][1] + teamData['prices'][outIndex]) < player.getPrice() ) {
       _ackAlert(context, 'Invalid Transfer', 'Player too expensive');
       return;
     }
 
-    /*Validate team limit
-    //update global state holder
-    // Garbage, don't try to understand - Probably pretty easy to break somehow
-    Firestore.instance.document("/Players/" + teamData['players'][outIndex]).get().then(
-      (snapshot) {
-        validateTeams(player, snapshot);
-      }
-    );
-    //valiate number of players per team
-    //This doesn't work.
-    if (teams[player['teams']] >= 3){
-      _ackAlert(context, 'Invalid Transfer', 'Too many players from a team');
-      Navigator.pop(context);
-      return;
-    } 
-    */
 
     //update number of transfers left
     var transfers = teamData['transfers'];
@@ -260,17 +256,17 @@ class TransfersPageState extends State<TransfersPage>{
     }
     //update prices and budget
     var prices = teamData['prices'];
-    transfers[1] = transfers[1] + prices[outIndex] - player['price'];
-    prices[outIndex] = player['price'];
+    transfers[1] = transfers[1] + prices[outIndex] - player.getPrice();
+    prices[outIndex] = player.getPrice();
 
     //update players, points and sub position
     var players = teamData['players'];
-    players[outIndex] = player.documentID;
+    players[outIndex] = player.getName();
     var points = teamData['points'];
-    points[outIndex] = player['gw'];
+    points[outIndex] = player.getGWPoints();
     var sub = teamData['sub'];
     if(outIndex == 6){
-      sub = player['position'];
+      sub = player.getPosition();
     }
 
     //Write to Firestore
