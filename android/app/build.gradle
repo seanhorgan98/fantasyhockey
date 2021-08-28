@@ -59,6 +59,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    implementation platform('com.google.firebase:firebase-bom:28.4.0')
+    implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-core:16.0.9'
     implementation 'com.facebook.android:facebook-login:5.1.0'
 

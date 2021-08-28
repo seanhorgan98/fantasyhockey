@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 void main(){
   runApp(MaterialApp(
     home: MainApp(),
-    theme: ThemeData(fontFamily: 'Titillium'),
+    theme: ThemeData(fontFamily: 'Titillium Web'),
   ));
 }
 
@@ -20,4 +20,3 @@ class MainApp extends StatelessWidget {
     );
   }
 }
-

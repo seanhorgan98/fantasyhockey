@@ -163,7 +163,7 @@ class ModState extends State<Mod>{
 
   //Depreciated until freshers
   addDataToFirebase(){
-    String player = "Adam Stevenson";
+    String player = "Adam Stevenson"; //edit here
     Firestore.instance.runTransaction((transaction) async { await transaction.set(Firestore.instance.collection("Players").document(player),
         {
           'goals': 0,
@@ -186,13 +186,13 @@ class ModState extends State<Mod>{
           'midfielderGoals': 0,
           'missedFlicks': 0,
           'ownGoals': 0,
-          'position': 0,
-          'price': 9,
+          'position': 0, //edit here
+          'price': 9, //edit here
           'redCards': 0,
           'shortGoals': 0,
           'totalPoints': 0,
           'yellowCards': 0,
-          'team': "2XI"
+          'team': "2XI" //edit here
          }
       );
     });
